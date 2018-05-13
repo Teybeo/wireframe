@@ -4,16 +4,15 @@
 
 #include <stdio.h>
 
-void core_init(char *filepath)
+void renderer_init(char *filepath)
 {
 	ft_putendl("Core awaken");
-
 }
 
-void core_draw()
+void renderer_draw()
 {
 }
 
-void core_event()
+void renderer_event()
 {
 }
