@@ -1,5 +1,0 @@
-set(SOURCES "${CMAKE_CURRENT_LIST_DIR}/renderer.c")
-
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
-
-#add_library(app ${SOURCES})
