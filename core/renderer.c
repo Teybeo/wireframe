@@ -1,9 +1,19 @@
 #include "renderer.h"
 
-void Render() {
+#include "libft.h"
+
+#include <stdio.h>
+
+void core_init(char *filepath)
+{
+	ft_putendl("Core awaken");
 
 }
 
-void Event() {
+void core_draw()
+{
+}
 
+void core_event()
+{
 }

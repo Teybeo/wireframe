@@ -1,7 +1,7 @@
 #include "sdl_gui.h"
 #include <SDL2/SDL.h>
 
-void app_init()
+void sdl_init()
 {
 	SDL_Window *window;
 
@@ -12,6 +12,6 @@ void app_init()
 							  SDL_WINDOW_HIDDEN);
 }
 
-void app_run()
+void sdl_run()
 {
 }

@@ -8,4 +8,5 @@ set(CMAKE_PREFIX_PATH "D:/Dev/Lib/SDL2-2.0.8")
 
 find_package(SDL2 REQUIRED)
 
-target_link_libraries(fdf SDL2::SDL2-static)
+target_link_libraries(fdf SDL2::SDL2)
+target_link_libraries(fdf core)
