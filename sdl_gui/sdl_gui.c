@@ -1,5 +1,6 @@
 #include "sdl_gui.h"
 #include <SDL.h>
+#include <zconf.h>
 
 void sdl_init()
 {
@@ -9,7 +10,7 @@ void sdl_init()
 	window = SDL_CreateWindow("Wireframe",
 							  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 							  1600, 900,
-							  SDL_WINDOW_HIDDEN);
+							  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 }
 
 void sdl_run()

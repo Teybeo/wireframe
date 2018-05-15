@@ -10,7 +10,7 @@ int	main(int argc, char **argv)
 		ft_putendl("usage:\t./fdf file");
 		return (0);
 	}
-	read_map(argv[1]);
+	load_fdf(argv[1]);
 	renderer_init(argv[1]);
 	sdl_init();
 	sdl_run();
