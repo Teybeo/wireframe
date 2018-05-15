@@ -1,5 +1,5 @@
 #include "sdl_gui.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 void sdl_init()
 {

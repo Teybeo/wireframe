@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.9)
 project(wireframe C)
 
 set(CMAKE_C_STANDARD_REQUIRED 90)
