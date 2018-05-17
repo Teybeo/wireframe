@@ -27,7 +27,7 @@ void	array_append(t_array *vec, void *data, size_t count)
 		return (array_append(vec, data, count));
 	}
 //	printf("%p\n", (void *) data);
-	ft_memcpy(vec->data + vec->size, data, count * vec->elem_size);
+	ft_memcpy(vec->data + (vec->size * vec->elem_size), data, count * vec->elem_size);
 //	printf("appending: %p\n", *(char **)data);
 	vec->size += count;
 }
