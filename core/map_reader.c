@@ -24,11 +24,12 @@ void	load_fdf(char const *filepath)
 void parse_map_lines(t_array line_array)
 {
 	int i;
+	t_array point_array;
 
 	i = 0;
 	while (i < line_array.size)
 	{
-		generate_point_array(line_array.data + i, i);
+		point_array = generate_point_array(((char**)line_array.data)[i], i);
 		i++;
 	}
 }
@@ -49,14 +50,9 @@ t_array	load_map_lines(char const *filepath)
 	while (status == GNL_OK)
 	{
 		status = get_next_line(fd, &line);
-		printf("%p\n", (void *) line);
 		array_append(&line_array, &line, 1);
-		printf("%p\n", *((char**)line_array.data) + i);
 		i++;
-		ft_putendl(line);
 	}
-
-	print_data(&line_array);
 	return (line_array);
 }
 
@@ -75,7 +71,7 @@ t_array generate_point_array(char *line, int y)
 		if (ft_is_space(line[i]) == false)
 		{
 			point.z = ft_atoi(&line[i]);
-//			printf("x: %d, y: %d, z: %d\n", point.x, point.y, point.z);
+			printf("x: %d, y: %d, z: %d\n", point.x, point.y, point.z);
 			array_append(&point_array, &point, 1);
 			point.x++;
 			while (ft_is_space(line[i]) == false && line[i] != '\0')
