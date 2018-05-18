@@ -8,34 +8,92 @@
 #include <fcntl.h>
 #include <array.h>
 #include <printf.h>
+#include <math.h>
 
-static t_array generate_point_array(char *line, int y);
-static t_array	load_map_lines(char const *filepath);
-static void parse_map_lines(t_array line_array);
-
-void	load_fdf(char const *filepath)
+t_array	load_fdf(char const *filepath)
 {
-	t_array line_array;
+	int		i;
+	t_array	line_array;
+	t_array	segment_array;
 
 	line_array = load_map_lines(filepath);
-	parse_map_lines(line_array);
+	segment_array = parse_map_lines(line_array);
+	i = 0;
+	while (i < segment_array.size)
+	{
+		t_point a, b;
+		a = ((t_segment*)segment_array.data)[i].start;
+		b = ((t_segment*)segment_array.data)[i].end;
+		printf("a: %d, %d, %d\n", a.x, a.y, a.z);
+		printf("b: %d, %d, %d\n", b.x, b.y, b.z);
+		i++;
+	}
+	return segment_array;
 }
 
-void parse_map_lines(t_array line_array)
+t_array	parse_map_lines(t_array line_array)
 {
-	int i;
-	t_array point_array;
+	int		i;
+	t_array	point_array;
+	t_array	previous_point_array;
+	t_array	segment_array;
 
 	i = 0;
+	segment_array = array_create(sizeof(t_segment), 16);
 	while (i < line_array.size)
 	{
 		point_array = generate_point_array(((char**)line_array.data)[i], i);
+		add_horizontal_segments(&segment_array, point_array);
+		if (i >= 1)
+			add_vertical_segments(
+					&segment_array, point_array, previous_point_array);
+		i++;
+		previous_point_array = point_array;
+	}
+	return (segment_array);
+}
+
+
+void	add_vertical_segments(t_array *segment_array,
+							  t_array point_array, t_array prev_point_array)
+{
+	int			i;
+	int			count;
+	t_segment	segment;
+	t_point		*point_ptr;
+	t_point		*prev_point_ptr;
+
+	point_ptr = point_array.data;
+	prev_point_ptr = prev_point_array.data;
+	i = 0;
+	count = (int)fminf(point_array.size, prev_point_array.size);
+	while (i < count)
+	{
+		segment = (t_segment){prev_point_ptr[i], point_ptr[i]};
+		array_append(segment_array, &segment, 1);
+		i++;
+	}
+}
+
+void	add_horizontal_segments(t_array *segment_array, t_array point_array)
+{
+	int			i;
+	t_segment	segment;
+	t_point		*point_ptr;
+
+	point_ptr = point_array.data;
+	i = 0;
+	while ((i + 1) < point_array.size)
+	{
+		segment = (t_segment){point_ptr[i], point_ptr[i + 1]};
+		array_append(segment_array, &segment, 1);
 		i++;
 	}
 }
 
 t_array	load_map_lines(char const *filepath)
 {
+	int		i;
 	int		fd;
 	char	*line;
 	int		status;
@@ -46,17 +104,18 @@ t_array	load_map_lines(char const *filepath)
 		exit_with_message(ERROR_OPEN_FAILED);
 	status = GNL_OK;
 	line_array = array_create(sizeof(char*), 10);
-	int i = 0;
+	i = 0;
 	while (status == GNL_OK)
 	{
 		status = get_next_line(fd, &line);
-		array_append(&line_array, &line, 1);
+		if (status == GNL_OK)
+			array_append(&line_array, &line, 1);
 		i++;
 	}
 	return (line_array);
 }
 
-t_array generate_point_array(char *line, int y)
+t_array	generate_point_array(char *line, int y)
 {
 	t_array	point_array;
 	t_point	point;
@@ -77,7 +136,8 @@ t_array generate_point_array(char *line, int y)
 			while (ft_is_space(line[i]) == false && line[i] != '\0')
 				i++;
 		}
-		i++;
+		else
+			i++;
 	}
 	return (point_array);
 }
