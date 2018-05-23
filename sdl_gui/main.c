@@ -6,7 +6,7 @@
 int	main(int argc, char **argv)
 {
 	t_array segment_array;
-	t_sdl_context context;
+	t_sdl_app context;
 
 	if (argc != 2)
 	{
@@ -14,8 +14,7 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	segment_array = load_fdf(argv[1]);
-	renderer_init();
-	sdl_init(&context);
-	sdl_run(&context, segment_array);
+	sdl_init(&context, segment_array);
+	sdl_run(&context);
 	return (0);
 }
