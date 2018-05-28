@@ -21,7 +21,7 @@ t_array	load_fdf(char const *filepath)
 	i = 0;
 	while (i < segment_array.size)
 	{
-		t_point a, b;
+		t_vec3 a, b;
 		a = ((t_segment*)segment_array.data)[i].start;
 		b = ((t_segment*)segment_array.data)[i].end;
 		printf("a: %d, %d, %d\n", a.x, a.y, a.z);
@@ -60,8 +60,8 @@ void	add_vertical_segments(t_array *segment_array,
 	int			i;
 	int			count;
 	t_segment	segment;
-	t_point		*point_ptr;
-	t_point		*prev_point_ptr;
+	t_vec3		*point_ptr;
+	t_vec3		*prev_point_ptr;
 
 	point_ptr = point_array.data;
 	prev_point_ptr = prev_point_array.data;
@@ -79,7 +79,7 @@ void	add_horizontal_segments(t_array *segment_array, t_array point_array)
 {
 	int			i;
 	t_segment	segment;
-	t_point		*point_ptr;
+	t_vec3		*point_ptr;
 
 	point_ptr = point_array.data;
 	i = 0;
@@ -118,13 +118,13 @@ t_array	load_map_lines(char const *filepath)
 t_array	generate_point_array(char *line, int y)
 {
 	t_array	point_array;
-	t_point	point;
+	t_vec3	point;
 	int		i;
 
 	i = 0;
 	point.x = 0;
 	point.y = y;
-	point_array = array_create(sizeof(t_point), 16);
+	point_array = array_create(sizeof(t_vec3), 16);
 	while (line[i] != '\0')
 	{
 		if (ft_is_space(line[i]) == false)

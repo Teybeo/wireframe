@@ -1,7 +1,6 @@
 #include "map_reader.h"
 #include "libft.h"
 #include "sdl_gui.h"
-#include "renderer.h"
 
 int	main(int argc, char **argv)
 {

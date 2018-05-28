@@ -11,20 +11,19 @@ void sdl_init(t_sdl_app *ctx, t_array segment_array)
 	ctx->texture_size.y = 900;
 
 	SDL_Init(SDL_INIT_VIDEO);
+
 	ctx->window = SDL_CreateWindow("Wireframe",
 							  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 							  ctx->texture_size.x, ctx->texture_size.y,
 							  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
 	ctx->sdl_renderer = SDL_CreateRenderer(ctx->window, -1,
-										   SDL_RENDERER_ACCELERATED);
+										    SDL_RENDERER_ACCELERATED);
+
 	ctx->texture = SDL_CreateTexture(ctx->sdl_renderer,
-										 SDL_PIXELFORMAT_ARGB8888,
+										 SDL_PIXELFORMAT_RGBA8888,
 										 SDL_TEXTUREACCESS_STREAMING,
 										 ctx->texture_size.x, ctx->texture_size.y);
-
-//	SDL_Rect rect = (SDL_Rect){400, 275, 1600, 900};
-//	SDL_RenderSetViewport(ctx->renderer, &rect);
 
 	renderer_init(&ctx->renderer, segment_array, ctx->texture_size);
 }
@@ -42,22 +41,10 @@ void sdl_run(t_sdl_app *context)
 
 void sdl_draw(t_sdl_app *ctx)
 {
-	int i;
-	t_segment *segment_ptr;
 
-	SDL_SetRenderDrawColor(ctx->sdl_renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-	SDL_RenderClear(ctx->sdl_renderer);
-
-	SDL_SetRenderTarget(ctx->sdl_renderer, ctx->texture);
-	SDL_SetRenderDrawColor(ctx->sdl_renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-	SDL_RenderClear(ctx->sdl_renderer);
-	SDL_SetRenderTarget(ctx->sdl_renderer, NULL);
-	puts("Clear");
-	fflush(stdout);
 #ifndef SDL_RENDER
 	renderer_draw(ctx->renderer);
 
-	SDL_UpdateTexture(ctx->texture, NULL, NULL, ctx->texture_size.x * sizeof(Uint32));
 	SDL_UpdateTexture(ctx->texture, NULL, ctx->renderer.pixels, ctx->texture_size.x * sizeof(Uint32));
 	SDL_RenderCopy(ctx->sdl_renderer, ctx->texture, NULL, NULL);
 #else
@@ -66,8 +53,8 @@ void sdl_draw(t_sdl_app *ctx)
 	i = 0;
 	while (i < ctx->renderer.segment_array.size)
 	{
-		t_point a = segment_ptr[i].start;
-		t_point b = segment_ptr[i].end;
+		t_vec3 a = segment_ptr[i].start;
+		t_vec3 b = segment_ptr[i].end;
 		SDL_RenderDrawLine(ctx->sdl_renderer,
 						   a.x * 10, a.y * 10,
 						   b.x * 10, b.y * 10
@@ -93,5 +80,7 @@ void sdl_event(t_sdl_app* context)
 		if (event.type == SDL_QUIT)
 			context->is_running = 0;
 		renderer_event(&context->renderer);
+//		if (event.type == SDL_KEYDOWN)
+//			camera_key_event()
 	}
 }

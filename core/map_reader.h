@@ -2,17 +2,11 @@
 #define MAP_READER_H
 
 #include <array.h>
-
-struct s_point {
-	int x;
-	int y;
-	int z;
-};
-typedef struct s_point t_point;
+#include "vec3.h"
 
 struct s_segment {
-	t_point start;
-	t_point end;
+	t_vec3 start;
+	t_vec3 end;
 };
 typedef struct s_segment t_segment;
 
