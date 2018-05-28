@@ -20,7 +20,7 @@ void renderer_init(t_renderer *renderer, t_array array, t_vec3 size)
 	init_camera(&renderer->camera);
 }
 
-void renderer_draw(t_renderer renderer) {
+void renderer_draw2(t_renderer renderer) {
 
 	t_vec3 a = {500, 500};
 	t_vec3 b = {801, 800};
@@ -42,7 +42,7 @@ void renderer_draw(t_renderer renderer) {
 //	usleep(100000);
 }
 
-void renderer_draw2(t_renderer renderer)
+void renderer_draw(t_renderer renderer)
 {
 	t_segment *segment_ptr;
 	int i;
