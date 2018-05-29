@@ -11,16 +11,16 @@ void draw_line(t_renderer renderer, t_vec3 a, t_vec3 b);
 void draw_line_x_axis(t_renderer renderer, t_vec3 a, t_vec3 b, int direction);
 void draw_line_y_axis(t_renderer renderer, t_vec3 a, t_vec3 b, int direction);
 
-void renderer_init(t_renderer *renderer, t_array array, t_vec3 size)
+void renderer_init(t_renderer *renderer, void* pixels, t_array array, t_vec3 size)
 {
 	ft_putendl("Core awaken");
 	renderer->segment_array = array;
 	renderer->size = size;
-	renderer->pixels = malloc(sizeof(uint32_t) * size.x * size.y);
+	renderer->pixels = pixels;
 	init_camera(&renderer->camera);
 }
 
-void renderer_draw2(t_renderer renderer) {
+void renderer_draw1(t_renderer renderer) {
 
 	t_vec3 a = {500, 500};
 	t_vec3 b = {801, 800};
@@ -29,7 +29,7 @@ void renderer_draw2(t_renderer renderer) {
 
 	static int step_count = 0;
 	step_count = ((cos(clock() / 1000000.f) * 0.5) + 0.5f) * 1000;
-	printf("step_count: %d\n", step_count);
+//	printf("step_count: %d\n", step_count);
 //	step_count;
 	float angle;
 	float step = (2 * M_PI) / step_count;
@@ -47,6 +47,8 @@ void renderer_draw(t_renderer renderer)
 	t_segment *segment_ptr;
 	int i;
 
+	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y * sizeof(uint32_t));
+
 	segment_ptr = renderer.segment_array.data;
 	i = 0;
 
@@ -62,6 +64,9 @@ void renderer_draw(t_renderer renderer)
 
 		a = vec3_add(a, renderer.camera.pos);
 		b = vec3_add(b, renderer.camera.pos);
+
+		a = vec3_clamp2D(a, renderer.size);
+		b = vec3_clamp2D(b, renderer.size);
 
 		draw_line(renderer, a, b);
 		i++;
@@ -91,12 +96,12 @@ void draw_line_x_axis(t_renderer renderer, t_vec3 a, t_vec3 b, int direction)
 	while (x != b.x)
 	{
 		int i = (((int)y * renderer.size.x) + x);
-//		printf("%d\n", i);
-		renderer.pixels[i] = 0xFFFFFFFF;
+		renderer.pixels[i] = 0x00FFFFFF;
 		y += coeff;
 		x += direction;
 	}
 }
+
 void draw_line_y_axis(t_renderer renderer, t_vec3 a, t_vec3 b, int direction)
 {
 
@@ -110,8 +115,7 @@ void draw_line_y_axis(t_renderer renderer, t_vec3 a, t_vec3 b, int direction)
 	while (y != b.y)
 	{
 		int i = (int) (((int)y * renderer.size.x) + x);
-//		printf("%d\n", i);
-		renderer.pixels[i] = 0xFFFFFFFF;
+		renderer.pixels[i] = 0x00FFFFFF;
 		x += coeff;
 		y += direction;
 	}
@@ -120,4 +124,24 @@ void draw_line_y_axis(t_renderer renderer, t_vec3 a, t_vec3 b, int direction)
 void renderer_event(t_renderer *renderer)
 {
 
+}
+
+void renderer_update(t_renderer *renderer)
+{
+	camera_update(&renderer->camera);
+
+	static clock_t timestamp = 0;
+	static float elapsed_time = 0;
+	float duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
+	duration *= 1000;
+	elapsed_time += duration;
+	if (elapsed_time >= 1000)
+	{
+		printf("Camera pos: ");
+		vec3_print(renderer->camera.pos);
+		printf("\n");
+//		printf("Interval: %f\n", elapsed_time);
+		elapsed_time = 0;
+	}
+	timestamp = clock();
 }

@@ -5,6 +5,9 @@
 #include <renderer.h>
 #include <map_reader.h>
 
+int translate_keycode(SDL_Scancode scancode, t_camera_key *key)
+;
+
 void sdl_init(t_sdl_app *ctx, t_array segment_array)
 {
 	ctx->texture_size.x = 1600;
@@ -12,20 +15,31 @@ void sdl_init(t_sdl_app *ctx, t_array segment_array)
 
 	SDL_Init(SDL_INIT_VIDEO);
 
+
 	ctx->window = SDL_CreateWindow("Wireframe",
 							  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 							  ctx->texture_size.x, ctx->texture_size.y,
 							  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
+//	SDL_SetHintWithPriority(SDL_HINT_RENDER_VSYNC, "1", SDL_HINT_OVERRIDE);
+
 	ctx->sdl_renderer = SDL_CreateRenderer(ctx->window, -1,
-										    SDL_RENDERER_ACCELERATED);
+										    SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	SDL_RendererInfo info;
+	SDL_GetRendererInfo(ctx->sdl_renderer, &info);
+	printf("Renderer: %s\n", info.name);
+	printf("SDL_RENDERER_ACCELERATED: %d\n", (SDL_RENDERER_ACCELERATED & info.flags) == SDL_RENDERER_ACCELERATED);
+	printf("SDL_RENDERER_PRESENTVSYNC: %d\n", (SDL_RENDERER_PRESENTVSYNC & info.flags) == SDL_RENDERER_PRESENTVSYNC);
+	printf("SDL_RENDERER_SOFTWARE: %d\n", (SDL_RENDERER_SOFTWARE & info.flags) == SDL_RENDERER_SOFTWARE);
 
 	ctx->texture = SDL_CreateTexture(ctx->sdl_renderer,
-										 SDL_PIXELFORMAT_RGBA8888,
+										 SDL_PIXELFORMAT_ARGB8888,
 										 SDL_TEXTUREACCESS_STREAMING,
 										 ctx->texture_size.x, ctx->texture_size.y);
 
-	renderer_init(&ctx->renderer, segment_array, ctx->texture_size);
+	ctx->pixels = malloc(sizeof(uint32_t) * ctx->texture_size.x * ctx->texture_size.y);
+
+	renderer_init(&ctx->renderer, ctx->pixels, segment_array, ctx->texture_size);
 }
 
 void sdl_run(t_sdl_app *context)
@@ -33,7 +47,7 @@ void sdl_run(t_sdl_app *context)
 	context->is_running = 1;
 	while (context->is_running) {
 		sdl_event(context);
-		sdl_update();
+		sdl_update(context);
 		sdl_draw(context);
 	}
 
@@ -45,7 +59,7 @@ void sdl_draw(t_sdl_app *ctx)
 #ifndef SDL_RENDER
 	renderer_draw(ctx->renderer);
 
-	SDL_UpdateTexture(ctx->texture, NULL, ctx->renderer.pixels, ctx->texture_size.x * sizeof(Uint32));
+	SDL_UpdateTexture(ctx->texture, NULL, ctx->pixels, ctx->texture_size.x * sizeof(Uint32));
 	SDL_RenderCopy(ctx->sdl_renderer, ctx->texture, NULL, NULL);
 #else
 	SDL_SetRenderDrawColor(ctx->sdl_renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
@@ -66,21 +80,52 @@ void sdl_draw(t_sdl_app *ctx)
 	SDL_RenderPresent(ctx->sdl_renderer);
 }
 
-void sdl_update()
+void sdl_update(t_sdl_app *context)
 {
+	static clock_t timestamp = 0;
+	float duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
+	duration *= 1000;
+	printf("Interval: %f ms\n", duration);
 
+	renderer_update(&context->renderer);
+
+	timestamp = clock();
 }
 
-void sdl_event(t_sdl_app* context)
+void sdl_event(t_sdl_app* ctx)
 {
 	SDL_Event event;
+	t_camera_key key;
 
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
-			context->is_running = 0;
-		renderer_event(&context->renderer);
-//		if (event.type == SDL_KEYDOWN)
-//			camera_key_event()
+			ctx->is_running = 0;
+		renderer_event(&ctx->renderer);
+		if (event.type == SDL_KEYDOWN)
+			if (translate_keycode(event.key.keysym.scancode, &key) == 0)
+				camera_key_event(&ctx->renderer.camera, key, 1);
+		if (event.type == SDL_KEYUP)
+			if (translate_keycode(event.key.keysym.scancode, &key) == 0)
+				camera_key_event(&ctx->renderer.camera, key, 0);
 	}
+}
+
+int translate_keycode(SDL_Scancode scancode, t_camera_key *key)
+{
+	if (scancode == SDL_SCANCODE_W)
+		*key = KEY_FORWARD;
+	else if (scancode == SDL_SCANCODE_S)
+		*key = KEY_BACKWARD;
+	else if (scancode == SDL_SCANCODE_A)
+		*key = KEY_LEFT;
+	else if (scancode == SDL_SCANCODE_D)
+		*key = KEY_RIGHT;
+	else if (scancode == SDL_SCANCODE_Q)
+		*key = KEY_UPWARD;
+	else if (scancode == SDL_SCANCODE_Z)
+		*key = KEY_DOWNWARD;
+	else
+		return -1;
+	return 0;
 }

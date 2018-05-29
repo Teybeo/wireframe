@@ -6,6 +6,7 @@
 int	main(int argc, char **argv)
 {
 	t_array segment_array;
+	t_mlx_context ctx;
 
 	if (argc != 2)
 	{
@@ -13,6 +14,6 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	segment_array = load_fdf(argv[1]);
-	toto();
+	init_mlx(&ctx, segment_array);
 	return (0);
 }

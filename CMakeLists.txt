@@ -7,7 +7,7 @@ set(CMAKE_C_STANDARD_REQUIRED 90)
 # Set warnings globally
 add_compile_options(-Wall -Wextra)
 
-set(GuiBackend "mlx" CACHE STRING "Backend to use for windowing and events")
+set(GuiBackend "sdl" CACHE STRING "Backend to use for windowing and events" FORCE)
 set_property(CACHE GuiBackend PROPERTY STRINGS sdl mlx)
 
 option(USE_ASAN "Enable ASAN (Unix only)" ON)
