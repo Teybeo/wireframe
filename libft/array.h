@@ -5,7 +5,7 @@
 
 struct		s_array {
 	void	*data;
-	size_t	size;
+	int		size;
 	size_t	elem_size;
 	size_t	capacity;
 };
