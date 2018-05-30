@@ -65,6 +65,9 @@ void renderer_draw(t_renderer renderer)
 		a = vec3_add(a, renderer.camera.pos);
 		b = vec3_add(b, renderer.camera.pos);
 
+		a = mat3_mul_vec3(&renderer.camera.rotation, a);
+		b = mat3_mul_vec3(&renderer.camera.rotation, b);
+
 		a = vec3_clamp2D(a, renderer.size);
 		b = vec3_clamp2D(b, renderer.size);
 

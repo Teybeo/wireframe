@@ -18,6 +18,7 @@ target_sources(ft
         ${CMAKE_CURRENT_LIST_DIR}/array.c
         ${CMAKE_CURRENT_LIST_DIR}/get_next_line.c
         ${CMAKE_CURRENT_LIST_DIR}/vec3.c
+        ${CMAKE_CURRENT_LIST_DIR}/mat3.c
         )
 
 target_include_directories(ft PUBLIC ${CMAKE_CURRENT_LIST_DIR})

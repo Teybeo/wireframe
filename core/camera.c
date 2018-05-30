@@ -6,6 +6,8 @@ void init_camera(t_camera *camera)
 {
 	ft_memzero(camera, sizeof(t_camera));
 	camera->pos = (t_vec3){0, 0, 5};
+	camera->x_angle = 0;
+	camera->y_angle = 0;
 }
 
 void camera_key_event(t_camera *camera, t_camera_key key, int state)
@@ -24,6 +26,14 @@ void camera_key_event(t_camera *camera, t_camera_key key, int state)
 		camera->move_upward = (bool)state;
 	if (key == KEY_DOWNWARD)
 		camera->move_downward = (bool)state;
+	if (key == KEY_DOWN_ARROW)
+		camera->down_arrow = (bool)state;
+	if (key == KEY_UP_ARROW)
+		camera->up_arrow = (bool)state;
+	if (key == KEY_RIGHT_ARROW)
+		camera->right_arrow = (bool)state;
+	if (key == KEY_LEFT_ARROW)
+		camera->left_arrow = (bool)state;
 }
 
 void camera_update(t_camera *camera)
@@ -33,10 +43,22 @@ void camera_update(t_camera *camera)
 	t_vec3 upward;
 	t_vec3 strafe;
 
+	if (camera->right_arrow)
+		camera->y_angle += 0.1f;
+	if (camera->left_arrow)
+		camera->y_angle -= 0.1f;
+	if (camera->up_arrow)
+		camera->x_angle += 0.1f;
+	if (camera->down_arrow)
+		camera->x_angle -= 0.1f;
+
+	mat3_set_rotation(camera->x_angle, camera->y_angle, &camera->rotation);
+
 	delta = (t_vec3){};
 	forward = (t_vec3){0, 0, -1};
 	upward = (t_vec3){0, 1, 0};
 	strafe = (t_vec3){1, 0, 0};
+
 	if (camera->move_forward)
 		delta = vec3_add(delta, forward);
 	if (camera->move_backward)

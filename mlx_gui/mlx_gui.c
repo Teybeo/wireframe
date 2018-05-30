@@ -41,6 +41,14 @@ int translate_keycode(int keycode, t_camera_key *key)
 		*key = KEY_UPWARD;
 	else if (keycode == MLX_KEY_Z)
 		*key = KEY_DOWNWARD;
+	else if (keycode == MLX_KEY_LEFT)
+		*key = KEY_LEFT_ARROW;
+	else if (keycode == MLX_KEY_RIGHT)
+		*key = KEY_RIGHT_ARROW;
+	else if (keycode == MLX_KEY_UP)
+		*key = KEY_UP_ARROW;
+	else if (keycode == MLX_KEY_DOWN)
+		*key = KEY_DOWN_ARROW;
 	else
 		return -1;
 	return 0;
@@ -69,7 +77,7 @@ int callback(void *param)
 	static clock_t timestamp = 0;
 	float duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
 	duration *= 1000;
-	printf("Interval: %f\n", duration);
+//	printf("Interval: %f\n", duration);
 	timestamp = clock();
 
 	renderer_update(&ctx->renderer);
