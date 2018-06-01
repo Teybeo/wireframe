@@ -89,7 +89,7 @@ int callback(void *param)
 
 void init_mlx(t_mlx_context *ctx, t_array segment_array)
 {
-	t_vec3 size;
+	t_vec2i size;
 	void* pixels;
 	int osef;
 

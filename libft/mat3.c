@@ -71,7 +71,7 @@ t_vec3 mat3_mul_vec3(t_mat3 *m, t_vec3 vec) {
 
 void mat3_set_identity(t_mat3 *m)
 {
-	ft_memzero(m, 3 * 3 * sizeof(float));
+	ft_memzero(m, 3 * 3, sizeof(float));
 	m->values[0][0] = 1;
 	m->values[1][1] = 1;
 	m->values[2][2] = 1;

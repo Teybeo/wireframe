@@ -4,7 +4,7 @@
 
 void init_camera(t_camera *camera)
 {
-	ft_memzero(camera, sizeof(t_camera));
+	ft_memzero(camera, 1, sizeof(t_camera));
 	camera->pos = (t_vec3){0, 0, 5};
 	camera->x_angle = 0;
 	camera->y_angle = 0;

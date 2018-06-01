@@ -10,12 +10,12 @@
 struct s_renderer {
 	t_array		segment_array;
 	uint32_t	*pixels;
-	t_vec3		size;
+	t_vec2i		size;
 	t_camera	camera;
 };
 typedef struct s_renderer t_renderer;
 
-void renderer_init(t_renderer *renderer, void *pixels, t_array array, t_vec3 size);
+void renderer_init(t_renderer *renderer, void *pixels, t_array array, t_vec2i size);
 void renderer_event(t_renderer* renderer);
 void renderer_update(t_renderer *renderer);
 void renderer_draw(t_renderer renderer);

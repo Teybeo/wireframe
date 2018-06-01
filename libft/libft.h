@@ -12,7 +12,7 @@
 
 int		ft_atoi(char const *str);
 int		ft_is_space(char c);
-void	ft_memzero(void *data, size_t count);
+void	ft_memzero(void *src, size_t elem_count, size_t elem_size);
 int		ft_memchr(char const *data, ssize_t count, char c);
 void	*ft_memcpy(void *dst, const void *src, size_t count);
 void	ft_putendl(char const *s);

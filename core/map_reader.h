@@ -4,12 +4,6 @@
 #include <array.h>
 #include "vec3.h"
 
-struct s_segment {
-	t_vec3 start;
-	t_vec3 end;
-};
-typedef struct s_segment t_segment;
-
 t_array load_fdf(char const *filepath);
 
 t_array	generate_point_array(char *line, int y);

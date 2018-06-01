@@ -30,7 +30,7 @@ float		clamp(float a, float min, float max)
 	return a;
 }
 
-t_vec3 vec3_clamp2D(t_vec3 a, t_vec3 limit)
+t_vec3 vec3_clamp2D(t_vec3 a, t_vec2i limit)
 {
 	t_vec3 res;
 	res.x = clamp(a.x, 0, limit.x - 1);

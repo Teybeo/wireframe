@@ -6,6 +6,7 @@ target_sources(core
             "${CMAKE_CURRENT_LIST_DIR}/map_reader.c"
             "${CMAKE_CURRENT_LIST_DIR}/camera.c"
             "${CMAKE_CURRENT_LIST_DIR}/errors.c"
+            "${CMAKE_CURRENT_LIST_DIR}/line_clipping.c"
         PUBLIC
             "${CMAKE_CURRENT_LIST_DIR}/renderer.h"
         )
