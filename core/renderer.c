@@ -10,8 +10,8 @@
 #include <stdlib.h>
 
 void draw_line(t_renderer renderer, t_vec3 a3, t_vec3 b3);
-void draw_line_y_axis(t_renderer renderer, t_vec2i a, t_vec2i b, int direction);
-void draw_line_x_axis(t_renderer renderer, t_vec2i a, t_vec2i b, int direction);
+void draw_line_y_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i direction);
+void draw_line_x_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i direction);
 
 void renderer_init(t_renderer *renderer, void* pixels, t_array array, t_vec3 size)
 {
@@ -22,7 +22,7 @@ void renderer_init(t_renderer *renderer, void* pixels, t_array array, t_vec3 siz
 	init_camera(&renderer->camera);
 }
 
-void renderer_draw4(t_renderer renderer) {
+void renderer_draw0(t_renderer renderer) {
 
 	t_vec3 a = {500, 500, 0};
 	t_vec3 b = {801, 800, 0};
@@ -30,7 +30,7 @@ void renderer_draw4(t_renderer renderer) {
 	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y * sizeof(uint32_t));
 
 	static int step_count = 8;
-	step_count = ((cos(clock() / 1000000.f) * 0.5) + 0.5f) * 100;
+	step_count = ((cos(clock() / 1000000.f) * 0.5) + 0.5f) * 1000;
 //	printf("step_count: %d\n", step_count);
 //	step_count;
 	float angle;
@@ -41,6 +41,35 @@ void renderer_draw4(t_renderer renderer) {
 		b.y = a.x + sin(angle) * 400;
 		draw_line(renderer, a, b);
 	}
+//	usleep(100000);
+}
+
+#define DEG_TO_RAD(X) (((X) / 180.f) * 3.14159f)
+
+void renderer_draw1(t_renderer renderer) {
+
+	t_vec3 center = {200, 200, 0};
+	int length = 200;
+	t_vec3 a;
+	t_vec3 b;
+
+	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y * sizeof(uint32_t));
+
+	static float angle = 150;
+	float rad = DEG_TO_RAD(angle);
+	{
+		a.x = cosf(rad) * length;
+		a.y = sinf(rad) * length;
+		a = vec3_add(a, center);
+		b = vec3_sub(center, a);
+//		draw_line(renderer, center, a);
+		draw_line(renderer, a, center);
+	}
+	if (angle > 360)
+		angle = 0;
+	angle += .5f;
+	printf("Angle: %f\n", angle);
+
 //	usleep(100000);
 }
 
@@ -84,57 +113,61 @@ void draw_line(t_renderer renderer, t_vec3 a3, t_vec3 b3)
 {
 	t_vec2i a;
 	t_vec2i b;
+	t_vec2i increment;
 	a = vec3_round2D(a3);
 	b = vec3_round2D(b3);
 
 //	printf("(%i, %i) to (%i, %i)\n", a.x, a.y, b.x, b.y);
 	t_vec2i ab = (t_vec2i){b.x - a.x, b.y - a.y};
 
+	increment.x = (ab.x > 0) ? 1 : -1;
+	increment.y = (ab.y > 0) ? 1 : -1;
 	if (abs(ab.x) > abs(ab.y))
-		draw_line_x_axis(renderer, a, b, (ab.x > 0) ? 1 : -1);
+		draw_line_x_axis(renderer, a, b, increment);
 	else
-		draw_line_y_axis(renderer, a, b, (ab.y > 0) ? 1 : -1);
+		draw_line_y_axis(renderer, a, b, increment);
 }
 
-void draw_line_x_axis(t_renderer renderer, t_vec2i a, t_vec2i b, int direction)
+void draw_line_x_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i direction)
 {
 	t_vec2i ab = (t_vec2i){b.x - a.x, b.y - a.y};
 
 	if (ab.x == 0)
 		return;
-	float coeff = (float)ab.y / ab.x;
+	float coeff = fabsf((float)ab.y / ab.x);
 	float y = a.y;
 	int x = a.x;
 	while (x != b.x)
 	{
 		int i = ((int)y * (int)renderer.size.x) + x;
-		if (i < 0)
-			puts("NOPE");
-		else
+
+		if (i >= 0 && i < (renderer.size.x * renderer.size.y))
 			renderer.pixels[i] = 0x00FFFFFF;
-		y += coeff;
-		x += direction;
+//		else
+//			puts("NOPE");
+		y += coeff * direction.y;
+		x += direction.x;
 	}
 }
 
-void draw_line_y_axis(t_renderer renderer, t_vec2i a, t_vec2i b, int direction)
+void draw_line_y_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i direction)
 {
 	t_vec2i ab = (t_vec2i){b.x - a.x, b.y - a.y};
 
 	if (ab.y == 0)
 		return;
-	float coeff = (float)ab.x / ab.y;
+	float coeff = fabsf((float)ab.x / ab.y);
 	float x = a.x;
 	int y = a.y;
 	while (y != b.y)
 	{
 		int i = (y * (int)renderer.size.x) + (int)x;
-		if (i < 0)
-			puts("NOPE");
-		else
+		if (i >= 0 && i < (renderer.size.x * renderer.size.y))
 			renderer.pixels[i] = 0x00FFFFFF;
-		x += coeff;
-		y += direction;
+//		else
+//			puts("NOPE");
+		x += coeff * direction.x;
+		y += direction.y;
 	}
 }
 
@@ -157,7 +190,7 @@ void renderer_update(t_renderer *renderer)
 		printf("Camera pos: ");
 		vec3_print(renderer->camera.pos);
 		printf("\n");
-//		printf("Interval: %f\n", elapsed_time);
+//		printf("Interval: %f\n", elapsed_time);	  glDeleteBuffers(1, &(ctx->vbuffer));
 		elapsed_time = 0;
 	}
 	timestamp = clock();
