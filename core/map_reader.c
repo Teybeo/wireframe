@@ -7,8 +7,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <array.h>
-#include <printf.h>
 #include <math.h>
+#include <stdio.h>
 
 void	do_center_map(t_array *segment_array);
 
@@ -133,6 +133,7 @@ t_array	generate_point_array(char *line, int y)
 		if (ft_is_space(line[i]) == false)
 		{
 			point.z = ft_atoi(&line[i]);
+
 			printf("x: ");vec3_print(point);putchar('\n');
 			array_append(&point_array, &point, 1);
 			point.x++;

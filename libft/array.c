@@ -3,7 +3,7 @@
 #include "libft.h"
 
 #include <stdlib.h>
-#include <printf.h>
+#include <stdio.h>
 
 t_array	array_create(size_t elem_size, size_t count)
 {

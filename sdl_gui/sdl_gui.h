@@ -13,7 +13,7 @@ struct s_sdl_app {
 	SDL_Texture		*texture;
 	uint32_t		*pixels;
 	t_renderer		renderer;
-	t_vec3			texture_size;
+	t_vec2i texture_size;
 	int				is_running;
 };
 typedef struct s_sdl_app t_sdl_app;

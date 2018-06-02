@@ -4,6 +4,7 @@
 #include <array.h>
 #include <renderer.h>
 #include <map_reader.h>
+#include <time.h>
 
 int translate_keycode(SDL_Scancode scancode, t_camera_key *key)
 ;
@@ -113,19 +114,19 @@ void sdl_event(t_sdl_app* ctx)
 
 int translate_keycode(SDL_Scancode scancode, t_camera_key *key)
 {
-	if (scancode == SDL_SCANCODE_W)
-		*key = KEY_FORWARD;
-	else if (scancode == SDL_SCANCODE_S)
-		*key = KEY_BACKWARD;
-	else if (scancode == SDL_SCANCODE_A)
-		*key = KEY_LEFT;
-	else if (scancode == SDL_SCANCODE_D)
-		*key = KEY_RIGHT;
-	else if (scancode == SDL_SCANCODE_Q)
-		*key = KEY_UPWARD;
-	else if (scancode == SDL_SCANCODE_Z)
-		*key = KEY_DOWNWARD;
-	else
-		return -1;
+	t_camera_key table[SDL_NUM_SCANCODES];
+
+	table[SDL_SCANCODE_W] = KEY_FORWARD;
+	table[SDL_SCANCODE_S] = KEY_BACKWARD;
+	table[SDL_SCANCODE_A] = KEY_LEFT;
+	table[SDL_SCANCODE_D] = KEY_RIGHT;
+	table[SDL_SCANCODE_Q] = KEY_UPWARD;
+	table[SDL_SCANCODE_Z] = KEY_DOWNWARD;
+	table[SDL_SCANCODE_UP] = KEY_UP_ARROW;
+	table[SDL_SCANCODE_DOWN] = KEY_DOWN_ARROW;
+	table[SDL_SCANCODE_LEFT] = KEY_LEFT_ARROW;
+	table[SDL_SCANCODE_RIGHT] = KEY_RIGHT_ARROW;
+
+	*key = table[scancode];
 	return 0;
 }

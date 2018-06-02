@@ -7,11 +7,20 @@ set(CMAKE_C_STANDARD_REQUIRED 90)
 # Set warnings globally
 add_compile_options(-Wall -Wextra)
 
-set(GuiBackend "mlx" CACHE STRING "Backend to use for windowing and events" FORCE)
-set_property(CACHE GuiBackend PROPERTY STRINGS sdl mlx)
+# Backend to use for windowing and events"
+set(GuiBackend "MLX")
+#set(GuiBackend "SDL")
 
-option(USE_ASAN "Enable ASAN (Unix only)" ON)
+option(USE_ASAN "Enable ASAN (Unix only)" OFF)
+
+# On Windows, Force SDL and disable Asan
+if (CMAKE_SYSTEM_NAME MATCHES Windows)
+    set(GuiBackend SDL)
+    set(USE_ASAN OFF)
+endif()
+
 message(STATUS "AddressSanitizer: ${USE_ASAN}")
+message(STATUS "Backend: ${GuiBackend}")
 
 if (USE_ASAN)
     # Set flags for ASAN globally
@@ -24,15 +33,14 @@ add_executable(fdf "")
 include(libft/CMakeLists.txt)
 include(core/CMakeLists.txt)
 
-if (GuiBackend STREQUAL sdl)
+if (GuiBackend STREQUAL SDL)
     include(sdl_gui/CMakeLists.txt)
-elseif(GuiBackend STREQUAL mlx)
+elseif(GuiBackend STREQUAL MLX)
     include(mlx_gui/CMakeLists.txt)
 else()
     message(error "Unrecognized backend name")
 endif()
 
-message(STATUS "Backend: ${GuiBackend}")
 
 target_link_libraries(fdf ft)
 
