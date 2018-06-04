@@ -54,15 +54,15 @@ t_mat3 mat3_mul(t_mat3 lhs, t_mat3 rhs)
 
 t_vec3 mat3_mul_vec3(t_mat3 *m, t_vec3 vec) {
 	t_vec3 result = vec;
-	result.x = (int)(vec.x * m->values[0][0] +
+	result.x = (vec.x * m->values[0][0] +
 					 vec.y * m->values[0][1] +
 					 vec.z * m->values[0][2]);
 
-	result.y = (int)(vec.x * m->values[1][0] +
+	result.y = (vec.x * m->values[1][0] +
 					 vec.y * m->values[1][1] +
 					 vec.z * m->values[1][2]);
 
-	result.z = (int)(vec.x * m->values[2][0] +
+	result.z = (vec.x * m->values[2][0] +
 					 vec.y * m->values[2][1] +
 					 vec.z * m->values[2][2]);
 
