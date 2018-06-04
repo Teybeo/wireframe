@@ -15,7 +15,7 @@
 
 # include <limits.h>
 
-# define BUFF_SIZE (1)
+# define BUFF_SIZE (4096)
 
 # define GNL_OK (1)
 # define GNL_ENDED (0)
