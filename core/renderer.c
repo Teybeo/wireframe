@@ -51,12 +51,21 @@ void renderer_draw(t_renderer renderer)
 		a.z *= 0.05f;
 		b.z *= 0.05f;
 
-		a = mat3_mul_vec3(&renderer.camera.rotation, a);
-		b = mat3_mul_vec3(&renderer.camera.rotation, b);
+//		a = mat3_mul_vec3(&renderer.camera.rotation, a);
+//		b = mat3_mul_vec3(&renderer.camera.rotation, b);
 
-		a = vec3_sub(a, renderer.camera.pos);
-		b = vec3_sub(b, renderer.camera.pos);
+		mat3_mul_vec3X(&renderer.camera.rotation, &a);
+		mat3_mul_vec3X(&renderer.camera.rotation, &b);
 
+//		a = vec3_sub(a, renderer.camera.pos);
+//		b = vec3_sub(b, renderer.camera.pos);
+//
+//		vec3_subX(&a, renderer.camera.pos);
+//		vec3_subX(&b, renderer.camera.pos);
+//
+		vec3_subXX(&a, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
+		vec3_subXX(&b, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
+//
 		// Eye to Clip
 		float a_w = -a.z;
 		float b_w = -b.z;

@@ -21,6 +21,20 @@ t_vec3	vec3_sub(t_vec3 a, t_vec3 b)
 	return (res);
 }
 
+void	vec3_subX(t_vec3 *a, t_vec3 b)
+{
+	a->x -= b.x;
+	a->y -= b.y;
+	a->z -= b.z;
+}
+
+void	vec3_subXX(t_vec3 *a, float x, float y, float z)
+{
+	a->x -= x;
+	a->y -= y;
+	a->z -= z;
+}
+
 float		clamp(float a, float min, float max)
 {
 	if (a > max)

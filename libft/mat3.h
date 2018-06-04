@@ -15,5 +15,6 @@ void	mat3_set_y_rotation(t_mat3 *m, float angle);
 void	mat3_set_x_rotation(t_mat3 *m, float angle);
 t_vec3	mat3_mul_vec3(t_mat3 *m, t_vec3 vec);
 void	mat3_set_identity(t_mat3 *m);
+void mat3_mul_vec3X(t_mat3 *m, t_vec3 *vec);
 
 #endif

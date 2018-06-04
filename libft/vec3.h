@@ -30,5 +30,7 @@ t_vec3	vec3_max_2D(t_vec3 a, t_vec3 b);
 t_vec3	vec3_min_2D(t_vec3 a, t_vec3 b);
 t_vec3	vec3_mul_scalar(t_vec3 vec, float scalar);
 t_vec2i	vec3_round2D(t_vec3 vec);
+void	vec3_subX(t_vec3 *a, t_vec3 b);
+void	vec3_subXX(t_vec3 *a, float x, float y, float z);
 
 #endif
