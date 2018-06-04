@@ -70,8 +70,38 @@ void renderer_draw(t_renderer renderer)
 
 //		if (a.x == -100 && b.x == 0)
 //			fflush(stdout);
+		float near = 0.1f;
+		float far = 100.f;
+		float ratio = 1.f / (renderer.size.x / renderer.size.y);
+		float angle = 130;
+		// Distance from a projection screen of unit width
+		float distance = 1.f / tanf((angle / 2) * M_PI/180);
+
+		// Eye to Clip
+		float a_w = -a.z;
+		float b_w = -b.z;
+		a.x *= distance * ratio;
+		a.y *= distance;
+		b.x *= distance * ratio;
+		b.y *= distance;
+		a.z = a.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
+		b.z = a.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
+
+//		if (a.z > -1)
+//			printf("Hmm\n");
+		// Clip to NDC
+		a = vec3_mul_scalar(a, 1 / a_w);
+		b = vec3_mul_scalar(b, 1 / b_w);
+
+		// NDC to Window
+		a.x = a.x * renderer.size.x + (renderer.size.x / 2.f);
+		a.y = a.y * renderer.size.y + (renderer.size.y / 2.f);
+		b.x = b.x * renderer.size.x + (renderer.size.x / 2.f);
+		b.y = b.y * renderer.size.y + (renderer.size.y / 2.f);
+
 		t_vec2i a_i = vec3_round2D(a);
 		t_vec2i b_i = vec3_round2D(b);
+
 
 		if (clip_line(&a_i, &b_i, renderer.size))
 			draw_line(renderer, a_i, b_i);
@@ -206,9 +236,7 @@ void renderer_update(t_renderer *renderer)
 	elapsed_time += duration;
 	if (elapsed_time >= 500)
 	{
-		printf("Camera pos: ");
-		vec3_print(renderer->camera.pos);
-		printf("\n");
+		vec3_print("Camera pos: ", renderer->camera.pos);
 		printf("Interval: %fms\n", duration);
 		elapsed_time = 0;
 	}

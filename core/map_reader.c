@@ -14,22 +14,12 @@ void	do_center_map(t_array *segment_array);
 
 t_array	load_fdf(char const *filepath)
 {
-	int		i;
 	t_array	line_array;
 	t_array	segment_array;
 
 	line_array = load_map_lines(filepath);
 	segment_array = parse_map_lines(line_array);
-	i = 0;
-	while (i < segment_array.size)
-	{
-		t_vec3 a, b;
-		a = ((t_segment*)segment_array.data)[i].start;
-		b = ((t_segment*)segment_array.data)[i].end;
-		printf("a: ");vec3_print(a);putchar('\n');
-		printf("b: ");vec3_print(b);putchar('\n');
-		i++;
-	}
+
 	do_center_map(&segment_array);
 	return segment_array;
 }
@@ -134,7 +124,7 @@ t_array	generate_point_array(char *line, int y)
 		{
 			point.z = ft_atoi(&line[i]);
 
-			printf("x: ");vec3_print(point);putchar('\n');
+			vec3_print("x: ", point);
 			array_append(&point_array, &point, 1);
 			point.x++;
 			while (ft_is_space(line[i]) == false && line[i] != '\0')

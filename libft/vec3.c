@@ -75,7 +75,7 @@ t_vec2i	vec3_round2D(t_vec3 vec)
 	return res;
 }
 
-void	vec3_print(t_vec3 vec)
+void	vec3_print(char const* msg, t_vec3 vec)
 {
-	printf("%g, %g, %g", vec.x, vec.y, vec.z);
+	printf("%s %g, %g, %g\n", msg, vec.x, vec.y, vec.z);
 }
