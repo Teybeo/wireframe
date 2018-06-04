@@ -34,26 +34,28 @@ void renderer_draw(t_renderer renderer)
 	segment_ptr = renderer.segment_array.data;
 	i = 0;
 
+	float near = 0.1f;
+	float far = 100.f;
+	float ratio = (renderer.size.y / (float)renderer.size.x);
+	float angle = 130;
+	// Distance from a projection screen of unit width
+	float distance = 1.f / tanf((angle / 2) * M_PI / 180);
+	float z_factor = (-far + near) / (far - near);
+	float z_translation = ((2 * far * near) / (far - near));
+
 	while (i < renderer.segment_array.size)
 	{
 		t_vec3 a = segment_ptr[i].start;
 		t_vec3 b = segment_ptr[i].end;
 
-		a.z *= 0.2f;
-		b.z *= 0.2f;
+		a.z *= 0.05f;
+		b.z *= 0.05f;
 
 		a = mat3_mul_vec3(&renderer.camera.rotation, a);
 		b = mat3_mul_vec3(&renderer.camera.rotation, b);
 
 		a = vec3_sub(a, renderer.camera.pos);
 		b = vec3_sub(b, renderer.camera.pos);
-
-		float near = 0.1f;
-		float far = 100.f;
-		float ratio = (renderer.size.y / (float)renderer.size.x);
-		float angle = 130;
-		// Distance from a projection screen of unit width
-		float distance = 1.f / tanf((angle / 2) * M_PI/180);
 
 		// Eye to Clip
 		float a_w = -a.z;
@@ -62,31 +64,40 @@ void renderer_draw(t_renderer renderer)
 		a.y *= distance;
 		b.x *= distance * ratio;
 		b.y *= distance;
-		a.z = a.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
-		b.z = b.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
+//		a.z = a.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
+//		b.z = b.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
+//
+		a.z *= z_factor;
+		a.z -= z_translation;
+		b.z *= z_factor;
+		b.z -= z_translation;
 
-//		if (a.z > -1)
-//			printf("Hmm\n");
+		// Discard line if one or both outside clipping volume
+		if ((a.x < -a_w || a.x > a_w)
+			||	(a.y < -a_w || a.y > a_w)
+			||	(a.z < -a_w || a.z > a_w)
+			||	(b.x < -b_w || b.x > b_w)
+			||	(b.y < -b_w || b.y > b_w)
+			||	(b.z < -b_w || b.z > b_w)
+				)
+		{
+			i++;
+			continue;
+		}
 		// Clip to NDC
-
-//		vec3_print("a: ", a);
-//		vec3_print("b: ", b);
-//		fflush(stdout);
-
 		a = vec3_mul_scalar(a, 1 / a_w);
 		b = vec3_mul_scalar(b, 1 / b_w);
 
 		// NDC to Window
-		a.x = a.x * renderer.size.x + (renderer.size.x / 2.f);
-		a.y = a.y * renderer.size.y + (renderer.size.y / 2.f);
-		b.x = b.x * renderer.size.x + (renderer.size.x / 2.f);
-		b.y = b.y * renderer.size.y + (renderer.size.y / 2.f);
+		a.x = a.x * renderer.size.x + (renderer.size.x * 0.5f);
+		a.y = a.y * renderer.size.y + (renderer.size.y * 0.5f);
+		b.x = b.x * renderer.size.x + (renderer.size.x * 0.5f);
+		b.y = b.y * renderer.size.y + (renderer.size.y * 0.5f);
 
 		t_vec2i a_i = vec3_round2D(a);
 		t_vec2i b_i = vec3_round2D(b);
 
-//		if (clip_line(&a_i, &b_i, renderer.size))
-		if (clip_line(&a_i, &b_i, renderer.size) && (a_w > 0 && b_w > 0))
+		if (clip_line(&a_i, &b_i, renderer.size))
 			draw_line(renderer, a_i, b_i);
 		i++;
 	}
@@ -119,11 +130,9 @@ void draw_line_x_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i directi
 	while (x != b.x)
 	{
 		int i = ((int)y * renderer.size.x) + x;
-		renderer.pixels[i] += 0x00444444;
+		renderer.pixels[i] += 0x00222222;
 		if (renderer.pixels[i] & 0xFF000000)
 			renderer.pixels[i] = 0x00FFFFFF;
-//		renderer.pixels[i] = (renderer.pixels[i] & 0xFF000000) + 0x10000000;
-//		renderer.pixels[i] = (renderer.pixels[i] & 0x00FFFFFF) * + 0x00FFFFFF;
 		y += coeff * direction.y;
 		x += direction.x;
 	}
@@ -141,7 +150,7 @@ void draw_line_y_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i directi
 	while (y != b.y)
 	{
 		int i = (y * renderer.size.x) + (int)x;
-		renderer.pixels[i] += 0x00444444;
+		renderer.pixels[i] += 0x00222222;
 		if (renderer.pixels[i] & 0xFF000000)
 			renderer.pixels[i] = 0x00FFFFFF;
 		x += coeff * direction.x;

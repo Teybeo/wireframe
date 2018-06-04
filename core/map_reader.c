@@ -124,7 +124,7 @@ t_array	generate_point_array(char *line, int y)
 		{
 			point.z = ft_atoi(&line[i]);
 
-			vec3_print("x: ", point);
+//			vec3_print("x: ", point);
 			array_append(&point_array, &point, 1);
 			point.x++;
 			while (ft_is_space(line[i]) == false && line[i] != '\0')

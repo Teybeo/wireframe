@@ -80,11 +80,30 @@ int callback(void *param)
 //	printf("Interval: %f\n", duration);
 	timestamp = clock();
 
+	mlx_clear_window(ctx->mlx_ptr, ctx->win_ptr);
+
 	renderer_update(&ctx->renderer);
 	renderer_draw(ctx->renderer);
 
 	mlx_put_image_to_window(ctx->mlx_ptr, ctx->win_ptr, ctx->texture, 0, 0);
 	return 0;
+}
+
+void mouse_move(int x, int y, void* param)
+{
+	printf("x: %d, y: %d\n", x, y);
+}
+
+void mouse_press(int x, int y, void* param)
+{
+	printf("PRESS\n");
+	printf("x: %d, y: %d\n", x, y);
+}
+
+void mouse_release(int x, int y, void* param)
+{
+	printf("RELREASE\n");
+	printf("x: %d, y: %d\n", x, y);
 }
 
 void init_mlx(t_mlx_context *ctx, t_array segment_array)
@@ -104,10 +123,15 @@ void init_mlx(t_mlx_context *ctx, t_array segment_array)
 	renderer_init(&ctx->renderer, pixels, segment_array, size);
 
 	mlx_do_key_autorepeatoff(ctx->mlx_ptr);
-	mlx_hook(ctx->win_ptr, 2, 0xFFFFFFFF, keydown_event, ctx);
-	mlx_hook(ctx->win_ptr, 3, 0xFFFFFFFF, keyup_event, ctx);
-	mlx_hook(ctx->win_ptr, 17, 0xFFFFFFFF, quit_event, NULL);
+	mlx_hook(ctx->win_ptr, 2, osef, keydown_event, ctx);
+	mlx_hook(ctx->win_ptr, 3, osef, keyup_event, ctx);
+//	mlx_hook(ctx->win_ptr, 4, osef, mouse_press, ctx);
+//	mlx_hook(ctx->win_ptr, 5, osef, mouse_release, ctx);
+//	mlx_hook(ctx->win_ptr, 6, osef, mouse_move, ctx);
+	mlx_hook(ctx->win_ptr, 17, osef, quit_event, NULL);
 	mlx_expose_hook(ctx->win_ptr, expose_callback, ctx);
 	mlx_loop_hook(ctx->mlx_ptr, callback, ctx);
+//	mlx_mouse_hook(ctx->win_ptr, mouse_move, ctx);
 	mlx_loop(ctx->mlx_ptr);
 }
+
