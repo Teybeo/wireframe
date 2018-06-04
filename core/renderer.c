@@ -39,40 +39,18 @@ void renderer_draw(t_renderer renderer)
 		t_vec3 a = segment_ptr[i].start;
 		t_vec3 b = segment_ptr[i].end;
 
-		a = vec3_mul_scalar(a, 5);
-		b = vec3_mul_scalar(b, 5);
-//		a.x *= 100;
-//		a.y *= 100;
-//		b.x *= 100;
-//		b.y *= 100;
-//		a.z *= 0.1f;
-//		b.z *= 0.1f;
-
+		a.z *= 0.2f;
+		b.z *= 0.2f;
 
 		a = mat3_mul_vec3(&renderer.camera.rotation, a);
 		b = mat3_mul_vec3(&renderer.camera.rotation, b);
 
-		a = vec3_add(a, renderer.camera.pos);
-		b = vec3_add(b, renderer.camera.pos);
+		a = vec3_sub(a, renderer.camera.pos);
+		b = vec3_sub(b, renderer.camera.pos);
 
-//		a.x /= a.z;
-//		a.y /= a.z;
-//		b.x /= b.z;
-//		b.y /= b.z;
-//		a.z = 1;
-//		b.z = 1;
-
-//		a = vec3_clamp2D(a, renderer.size);
-//		b = vec3_clamp2D(b, renderer.size);
-//		vec3_print(a);putchar('\n');
-//		vec3_print(b);puts("\n");
-//		fflush(stdout);
-
-//		if (a.x == -100 && b.x == 0)
-//			fflush(stdout);
 		float near = 0.1f;
 		float far = 100.f;
-		float ratio = 1.f / (renderer.size.x / renderer.size.y);
+		float ratio = (renderer.size.y / (float)renderer.size.x);
 		float angle = 130;
 		// Distance from a projection screen of unit width
 		float distance = 1.f / tanf((angle / 2) * M_PI/180);
@@ -85,11 +63,16 @@ void renderer_draw(t_renderer renderer)
 		b.x *= distance * ratio;
 		b.y *= distance;
 		a.z = a.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
-		b.z = a.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
+		b.z = b.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
 
 //		if (a.z > -1)
 //			printf("Hmm\n");
 		// Clip to NDC
+
+//		vec3_print("a: ", a);
+//		vec3_print("b: ", b);
+//		fflush(stdout);
+
 		a = vec3_mul_scalar(a, 1 / a_w);
 		b = vec3_mul_scalar(b, 1 / b_w);
 
@@ -102,8 +85,8 @@ void renderer_draw(t_renderer renderer)
 		t_vec2i a_i = vec3_round2D(a);
 		t_vec2i b_i = vec3_round2D(b);
 
-
-		if (clip_line(&a_i, &b_i, renderer.size))
+//		if (clip_line(&a_i, &b_i, renderer.size))
+		if (clip_line(&a_i, &b_i, renderer.size) && (a_w > 0 && b_w > 0))
 			draw_line(renderer, a_i, b_i);
 		i++;
 	}
@@ -136,7 +119,11 @@ void draw_line_x_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i directi
 	while (x != b.x)
 	{
 		int i = ((int)y * renderer.size.x) + x;
+		renderer.pixels[i] += 0x00444444;
+		if (renderer.pixels[i] & 0xFF000000)
 			renderer.pixels[i] = 0x00FFFFFF;
+//		renderer.pixels[i] = (renderer.pixels[i] & 0xFF000000) + 0x10000000;
+//		renderer.pixels[i] = (renderer.pixels[i] & 0x00FFFFFF) * + 0x00FFFFFF;
 		y += coeff * direction.y;
 		x += direction.x;
 	}
@@ -154,6 +141,8 @@ void draw_line_y_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i directi
 	while (y != b.y)
 	{
 		int i = (y * renderer.size.x) + (int)x;
+		renderer.pixels[i] += 0x00444444;
+		if (renderer.pixels[i] & 0xFF000000)
 			renderer.pixels[i] = 0x00FFFFFF;
 		x += coeff * direction.x;
 		y += direction.y;
