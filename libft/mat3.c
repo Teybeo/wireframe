@@ -11,10 +11,10 @@ void mat3_set_rotation(float x_angle, float y_angle, t_mat3 *m)
 	mat3_set_identity(&x_rotation);
 	mat3_set_identity(&y_rotation);
 
-	mat3_set_x_rotation(&x_rotation, x_angle);
-	mat3_set_y_rotation(&y_rotation, y_angle);
+	mat3_set_x_rotation(&x_rotation, DEG_TO_RAD(x_angle));
+	mat3_set_y_rotation(&y_rotation, DEG_TO_RAD(y_angle));
 
-	*m = mat3_mul(y_rotation, x_rotation);
+	*m = mat3_mul(x_rotation, y_rotation);
 }
 
 void mat3_set_y_rotation(t_mat3 *m, float angle) {
@@ -90,4 +90,13 @@ void mat3_set_identity(t_mat3 *m)
 	m->values[0][0] = 1;
 	m->values[1][1] = 1;
 	m->values[2][2] = 1;
+}
+
+#include <stdio.h>
+void mat3_print(char const *msg, t_mat3 *m)
+{
+	printf("%s\n", msg);
+	printf("%10.7g, %10.7g, %10.7g\n", m->values[0][0], m->values[0][1], m->values[0][2]);
+	printf("%10.7g, %10.7g, %10.7g\n", m->values[1][0], m->values[1][1], m->values[1][2]);
+	printf("%10.7g, %10.7g, %10.7g\n", m->values[2][0], m->values[2][1], m->values[2][2]);
 }

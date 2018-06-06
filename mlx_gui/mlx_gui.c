@@ -10,7 +10,7 @@ int translate_keycode(int keycode, t_camera_key *pKey);
 int key_event(int keycode, int state, void *param)
 {
 	t_mlx_context* ctx;
-	printf("key: %d\n", keycode);
+//	printf("key: %d\n", keycode);
 	ctx = param;
 	t_camera_key key;
 	if (translate_keycode(keycode, &key) == 0)

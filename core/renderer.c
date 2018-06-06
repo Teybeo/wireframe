@@ -51,20 +51,17 @@ void renderer_draw(t_renderer renderer)
 		a.z *= 0.05f;
 		b.z *= 0.05f;
 
-//		a = mat3_mul_vec3(&renderer.camera.rotation, a);
-//		b = mat3_mul_vec3(&renderer.camera.rotation, b);
+		vec3_subXX(&a, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
+		vec3_subXX(&b, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
+
+		a.y += 100;
+		b.y += 100;
+
+//		a.z += -100;
+//		b.z += -100;
 
 		mat3_mul_vec3X(&renderer.camera.rotation, &a);
 		mat3_mul_vec3X(&renderer.camera.rotation, &b);
-
-//		a = vec3_sub(a, renderer.camera.pos);
-//		b = vec3_sub(b, renderer.camera.pos);
-//
-//		vec3_subX(&a, renderer.camera.pos);
-//		vec3_subX(&b, renderer.camera.pos);
-//
-		vec3_subXX(&a, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
-		vec3_subXX(&b, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
 //
 		// Eye to Clip
 		float a_w = -a.z;
@@ -73,15 +70,13 @@ void renderer_draw(t_renderer renderer)
 		a.y *= distance;
 		b.x *= distance * ratio;
 		b.y *= distance;
-//		a.z = a.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
-//		b.z = b.z * (-far + near) / (far - near) - ((2 * far * near) / (far - near));
-//
+
 		a.z *= z_factor;
 		a.z -= z_translation;
 		b.z *= z_factor;
 		b.z -= z_translation;
 
-		// Discard line if one or both outside clipping volume
+		// Discard line if one or both points outside clipping volume
 		if ((a.x < -a_w || a.x > a_w)
 			||	(a.y < -a_w || a.y > a_w)
 			||	(a.z < -a_w || a.z > a_w)
@@ -195,8 +190,6 @@ void renderer_draw0(t_renderer renderer) {
 //	usleep(100000);
 }
 
-#define DEG_TO_RAD(X) (((X) / 180.f) * 3.14159f)
-
 void renderer_draw1(t_renderer renderer) {
 
 	t_vec3 center = {200, 200, 0};
@@ -241,10 +234,10 @@ void renderer_update(t_renderer *renderer)
 	float duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
 	duration *= 1000;
 	elapsed_time += duration;
-	if (elapsed_time >= 500)
+	if (elapsed_time >= 20)
 	{
 		vec3_print("Camera pos: ", renderer->camera.pos);
-		printf("Interval: %fms\n", duration);
+//		printf("Interval: %fms\n", duration);
 		elapsed_time = 0;
 	}
 	timestamp = clock();

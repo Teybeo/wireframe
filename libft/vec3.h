@@ -1,6 +1,8 @@
 #ifndef VEC3_H
 #define VEC3_H
 
+#define DEG_TO_RAD(X) (((X) / 180.f) * 3.14159f)
+
 struct s_vec3
 {
 	float x;

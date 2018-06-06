@@ -25,7 +25,7 @@ void sdl_init(t_sdl_app *ctx, t_array segment_array)
 //	SDL_SetHintWithPriority(SDL_HINT_RENDER_VSYNC, "1", SDL_HINT_OVERRIDE);
 
 	ctx->sdl_renderer = SDL_CreateRenderer(ctx->window, -1,
-										    SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+										    SDL_RENDERER_ACCELERATED);
 	SDL_RendererInfo info;
 	SDL_GetRendererInfo(ctx->sdl_renderer, &info);
 	printf("Renderer: %s\n", info.name);
@@ -86,7 +86,7 @@ void sdl_update(t_sdl_app *context)
 	static clock_t timestamp = 0;
 	float duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
 	duration *= 1000;
-	printf("Interval: %f ms\n", duration);
+//	printf("Interval: %f ms\n", duration);
 
 	renderer_update(&context->renderer);
 
