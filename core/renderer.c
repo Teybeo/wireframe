@@ -94,9 +94,9 @@ void renderer_draw(t_renderer renderer)
 
 		// NDC to Window
 		a.x = a.x * renderer.size.x + (renderer.size.x * 0.5f);
-		a.y = a.y * renderer.size.y + (renderer.size.y * 0.5f);
+		a.y = -a.y * renderer.size.y + (renderer.size.y * 0.5f);
 		b.x = b.x * renderer.size.x + (renderer.size.x * 0.5f);
-		b.y = b.y * renderer.size.y + (renderer.size.y * 0.5f);
+		b.y = -b.y * renderer.size.y + (renderer.size.y * 0.5f);
 
 		t_vec2i a_i = vec3_round2D(a);
 		t_vec2i b_i = vec3_round2D(b);
