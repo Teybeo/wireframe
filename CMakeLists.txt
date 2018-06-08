@@ -9,8 +9,8 @@ add_compile_options(-Wall -Wextra)
 set(CMAKE_C_FLAGS_DEBUG  "-g3")
 
 # Backend to use for windowing and events"
-#set(GuiBackend "MLX")
-set(GuiBackend "SDL")
+set(GuiBackend "MLX")
+#set(GuiBackend "SDL")
 
 option(USE_ASAN "Enable ASAN (Unix only)" OFF)
 

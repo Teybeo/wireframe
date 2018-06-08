@@ -14,6 +14,7 @@
 #define MLX_KEY_DOWN 125
 #define MLX_KEY_LEFT 123
 #define MLX_KEY_RIGHT 124
+#define MLX_KEY_MAX 256
 
 struct s_mlx_context
 {

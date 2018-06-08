@@ -5,7 +5,7 @@
 #include <zconf.h>
 #include <time.h>
 
-int translate_keycode(int keycode, t_camera_key *pKey);
+int translate_keycode(int keycode, t_camera_key *key);
 
 int key_event(int keycode, int state, void *param)
 {
@@ -29,28 +29,21 @@ int keyup_event(int keycode, void *param)
 
 int translate_keycode(int keycode, t_camera_key *key)
 {
-	if (keycode == MLX_KEY_W)
-		*key = KEY_FORWARD;
-	else if (keycode == MLX_KEY_S)
-		*key = KEY_BACKWARD;
-	else if (keycode == MLX_KEY_A)
-		*key = KEY_LEFT;
-	else if (keycode == MLX_KEY_D)
-		*key = KEY_RIGHT;
-	else if (keycode == MLX_KEY_Q)
-		*key = KEY_UPWARD;
-	else if (keycode == MLX_KEY_Z)
-		*key = KEY_DOWNWARD;
-	else if (keycode == MLX_KEY_LEFT)
-		*key = KEY_LEFT_ARROW;
-	else if (keycode == MLX_KEY_RIGHT)
-		*key = KEY_RIGHT_ARROW;
-	else if (keycode == MLX_KEY_UP)
-		*key = KEY_UP_ARROW;
-	else if (keycode == MLX_KEY_DOWN)
-		*key = KEY_DOWN_ARROW;
-	else
+	t_camera_key table[MLX_KEY_MAX];
+
+	table[MLX_KEY_W] = KEY_FORWARD;
+	table[MLX_KEY_S] = KEY_BACKWARD;
+	table[MLX_KEY_A] = KEY_LEFT;
+	table[MLX_KEY_D] = KEY_RIGHT;
+	table[MLX_KEY_Q] = KEY_UPWARD;
+	table[MLX_KEY_Z] = KEY_DOWNWARD;
+	table[MLX_KEY_UP] = KEY_UP_ARROW;
+	table[MLX_KEY_DOWN] = KEY_DOWN_ARROW;
+	table[MLX_KEY_LEFT] = KEY_LEFT_ARROW;
+	table[MLX_KEY_RIGHT] = KEY_RIGHT_ARROW;
+	if (keycode >= MLX_KEY_MAX)
 		return -1;
+	*key = table[keycode];
 	return 0;
 }
 
