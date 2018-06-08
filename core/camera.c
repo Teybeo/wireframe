@@ -6,7 +6,7 @@
 void init_camera(t_camera *camera)
 {
 	ft_memzero(camera, 1, sizeof(t_camera));
-	camera->pos = (t_vec3){0, 0, 50};
+	camera->pos = (t_vec3){0, 0, 0};
 	camera->x_angle = 0;
 	camera->y_angle = 0;
 }
@@ -45,46 +45,27 @@ void camera_update(t_camera *camera)
 	t_vec3 strafe;
 
 	if (camera->right_arrow)
-		camera->y_angle -= 1;
+		camera->y_angle -= 0.05;
 	if (camera->left_arrow)
-		camera->y_angle += 1;
+		camera->y_angle += 0.05;
 	if (camera->up_arrow)
-		camera->x_angle -= 1;
+		camera->x_angle += 0.05;
 	if (camera->down_arrow)
-		camera->x_angle += 1;
+		camera->x_angle -= 0.05;
 
-	t_mat3 test;
-	mat3_set_rotation(-camera->x_angle, -camera->y_angle, &test);
 	mat3_set_rotation(camera->x_angle, camera->y_angle, &camera->rotation);
 
-	delta = (t_vec3){};
-	forward = (t_vec3){0, 0, -1};
-	upward = (t_vec3){0, -1, 0};
-	strafe = (t_vec3){1, 0, 0};
-	printf("\n");
-	mat3_print("test matrix", &test);
+	forward.x =  sinf(-camera->y_angle) * cosf(-camera->x_angle);
+	forward.y = -sinf(-camera->x_angle);
+	forward.z = -cosf(-camera->y_angle) * cosf(-camera->x_angle);
 
-	mat3_mul_vec3X(&test, &forward);
-	mat3_mul_vec3X(&test, &strafe);
-	mat3_mul_vec3X(&test, &upward);
-
-	vec3_print("forward: ", forward);
-	vec3_print("upward: ", upward);
-	vec3_print("strafe: ", strafe);
-
-	t_vec3 f, s, u;
-
-	forward.x =  sinf(DEG_TO_RAD(-camera->y_angle)) * cosf(DEG_TO_RAD(-camera->x_angle));
-	forward.y = -sinf(DEG_TO_RAD(-camera->x_angle));
-	forward.z = -cosf(DEG_TO_RAD(-camera->y_angle)) * cosf(DEG_TO_RAD(-camera->x_angle));
-
-	strafe.x = cosf(DEG_TO_RAD(-camera->y_angle));
+	strafe.x = cosf(-camera->y_angle);
 	strafe.y = 0;
-	strafe.z = sinf(DEG_TO_RAD(-camera->y_angle));
+	strafe.z = sinf(-camera->y_angle);
 
-	vec3_print("f: ", f);
-	vec3_print("u: ", u);
-	vec3_print("s: ", s);
+	upward = vec3_cross(strafe, forward);
+
+	delta = (t_vec3){};
 
 	if (camera->move_forward)
 		delta = vec3_add(delta, forward);

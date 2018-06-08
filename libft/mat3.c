@@ -11,8 +11,8 @@ void mat3_set_rotation(float x_angle, float y_angle, t_mat3 *m)
 	mat3_set_identity(&x_rotation);
 	mat3_set_identity(&y_rotation);
 
-	mat3_set_x_rotation(&x_rotation, DEG_TO_RAD(x_angle));
-	mat3_set_y_rotation(&y_rotation, DEG_TO_RAD(y_angle));
+	mat3_set_x_rotation(&x_rotation, x_angle);
+	mat3_set_y_rotation(&y_rotation, y_angle);
 
 	*m = mat3_mul(x_rotation, y_rotation);
 }
