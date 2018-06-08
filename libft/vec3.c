@@ -66,7 +66,7 @@ t_vec3 vec3_min_2D(t_vec3 a, t_vec3 b)
 {
 	t_vec3 res;
 	res.x = fminf(a.x, b.x);
-	res.y = fminf(a.y, b.y);
+	res.y = 0;
 	res.z = fminf(a.z, b.z);
 	return res;
 }
@@ -75,7 +75,7 @@ t_vec3 vec3_max_2D(t_vec3 a, t_vec3 b)
 {
 	t_vec3 res;
 	res.x = fmaxf(a.x, b.x);
-	res.y = fmaxf(a.y, b.y);
+	res.y = 0;
 	res.z = fmaxf(a.z, b.z);
 	return res;
 }

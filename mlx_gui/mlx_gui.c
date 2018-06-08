@@ -5,16 +5,23 @@
 #include <zconf.h>
 #include <time.h>
 
-int translate_keycode(int keycode, t_camera_key *key);
+t_camera_key get_camera_key(int keycode);
+t_renderer_key get_renderer_key(int keycode);
 
 int key_event(int keycode, int state, void *param)
 {
 	t_mlx_context* ctx;
-//	printf("key: %d\n", keycode);
+	t_camera_key camera_key;
+	t_renderer_key renderer_key;
+
+	printf("key: %d\n", keycode);
 	ctx = param;
-	t_camera_key key;
-	if (translate_keycode(keycode, &key) == 0)
-		camera_key_event(&ctx->renderer.camera, key, state);
+	camera_key = get_camera_key(keycode);
+	if (camera_key != KEY_UNKNOWN)
+		camera_key_event(&ctx->renderer.camera, camera_key, state);
+	renderer_key = get_renderer_key(keycode);
+	if (renderer_key != KEY_RUNKNOWN && state == 0)
+		renderer_event(&ctx->renderer, renderer_key);
 	return 0;
 }
 
@@ -27,7 +34,7 @@ int keyup_event(int keycode, void *param)
 	return key_event(keycode, 0, param);
 }
 
-int translate_keycode(int keycode, t_camera_key *key)
+t_camera_key get_camera_key(int keycode)
 {
 	t_camera_key table[MLX_KEY_MAX];
 
@@ -42,9 +49,21 @@ int translate_keycode(int keycode, t_camera_key *key)
 	table[MLX_KEY_LEFT] = KEY_LEFT_ARROW;
 	table[MLX_KEY_RIGHT] = KEY_RIGHT_ARROW;
 	if (keycode >= MLX_KEY_MAX)
-		return -1;
-	*key = table[keycode];
-	return 0;
+		return KEY_UNKNOWN;
+	return table[keycode];
+}
+
+t_renderer_key get_renderer_key(int keycode)
+{
+	if (keycode == MLX_KEY_PLUS)
+		return KEY_SCALE_UP;
+	if (keycode == MLX_KEY_MINUS)
+		return KEY_SCALE_DOWN;
+	if (keycode == MLX_KEY_MULTIPLY)
+		return KEY_FOV_UP;
+	if (keycode == MLX_KEY_DIVIDE)
+		return KEY_FOV_DOWN;
+	return KEY_RUNKNOWN;
 }
 
 int quit_event()

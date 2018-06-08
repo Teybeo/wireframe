@@ -14,6 +14,10 @@
 #define MLX_KEY_DOWN 125
 #define MLX_KEY_LEFT 123
 #define MLX_KEY_RIGHT 124
+#define MLX_KEY_PLUS 69
+#define MLX_KEY_MINUS 78
+#define MLX_KEY_MULTIPLY 67
+#define MLX_KEY_DIVIDE 75
 #define MLX_KEY_MAX 256
 
 struct s_mlx_context

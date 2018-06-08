@@ -6,6 +6,7 @@
 #include "map_reader.h"
 
 enum e_camera_key {
+	KEY_UNKNOWN,
 	KEY_FORWARD,
 	KEY_BACKWARD,
 	KEY_RIGHT,

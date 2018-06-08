@@ -21,6 +21,8 @@ void renderer_init(t_renderer *renderer, void* pixels, t_array array, t_vec2i si
 	renderer->segment_array = array;
 	renderer->size = size;
 	renderer->pixels = pixels;
+	renderer->scale_factor = 1;
+	renderer->fov_angle = 90;
 	init_camera(&renderer->camera);
 }
 
@@ -39,7 +41,7 @@ void renderer_draw(t_renderer renderer)
 	float ratio = (renderer.size.y / (float)renderer.size.x);
 	float angle = 130;
 	// Distance from a projection screen of unit width
-	float distance = 1.f / tanf((angle / 2) * M_PI / 180);
+	float distance = 1.f / tanf((renderer.fov_angle / 2) * M_PI_F / 180);
 	float z_factor = (-far + near) / (far - near);
 	float z_translation = ((2 * far * near) / (far - near));
 
@@ -48,21 +50,15 @@ void renderer_draw(t_renderer renderer)
 		t_vec3 a = segment_ptr[i].start;
 		t_vec3 b = segment_ptr[i].end;
 
-		a.y *= 0.05f;
-		b.y *= 0.05f;
+		a.y *= renderer.scale_factor;
+		b.y *= renderer.scale_factor;
 
 		vec3_subXX(&a, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
 		vec3_subXX(&b, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
 
-//		a.y += 100;
-//		b.y += 100;
-
-//		a.z += -100;
-//		b.z += -100;
-
 		mat3_mul_vec3X(&renderer.camera.rotation, &a);
 		mat3_mul_vec3X(&renderer.camera.rotation, &b);
-//
+
 		// Eye to Clip
 		float a_w = -a.z;
 		float b_w = -b.z;
@@ -107,61 +103,6 @@ void renderer_draw(t_renderer renderer)
 	}
 }
 
-void draw_line(t_renderer renderer, t_vec2i a, t_vec2i b)
-{
-	t_vec2i increment;
-
-//	printf("(%i, %i) to (%i, %i)\n", a.x, a.y, b.x, b.y);
-	t_vec2i ab = (t_vec2i){b.x - a.x, b.y - a.y};
-
-	increment.x = (ab.x > 0) ? 1 : -1;
-	increment.y = (ab.y > 0) ? 1 : -1;
-	if (abs(ab.x) > abs(ab.y))
-		draw_line_x_axis(renderer, a, b, increment);
-	else
-		draw_line_y_axis(renderer, a, b, increment);
-}
-
-void draw_line_x_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i direction)
-{
-	t_vec2i ab = (t_vec2i){b.x - a.x, b.y - a.y};
-
-	if (ab.x == 0)
-		return;
-	float coeff = fabsf((float)ab.y / ab.x);
-	float y = a.y;
-	int x = a.x;
-	while (x != b.x)
-	{
-		int i = ((int)y * renderer.size.x) + x;
-		renderer.pixels[i] += 0x00222222;
-		if (renderer.pixels[i] & 0xFF000000)
-			renderer.pixels[i] = 0x00FFFFFF;
-		y += coeff * direction.y;
-		x += direction.x;
-	}
-}
-
-void draw_line_y_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i direction)
-{
-	t_vec2i ab = (t_vec2i){b.x - a.x, b.y - a.y};
-
-	if (ab.y == 0)
-		return;
-	float coeff = fabsf((float)ab.x / ab.y);
-	float x = a.x;
-	int y = a.y;
-	while (y != b.y)
-	{
-		int i = (y * renderer.size.x) + (int)x;
-		renderer.pixels[i] += 0x00222222;
-		if (renderer.pixels[i] & 0xFF000000)
-			renderer.pixels[i] = 0x00FFFFFF;
-		x += coeff * direction.x;
-		y += direction.y;
-	}
-}
-
 
 void renderer_draw0(t_renderer renderer) {
 
@@ -178,8 +119,8 @@ void renderer_draw0(t_renderer renderer) {
 //	printf("step_count: %d\n", step_count);
 //	step_count;
 	float angle;
-	float step = (2 * M_PI) / step_count;
-	for (angle = 0; angle < (2 * M_PI); angle += step)
+	float step = (2 * M_PI_F) / step_count;
+	for (angle = 0; angle < (2 * M_PI_F); angle += step)
 	{
 		b.x = a.x + cos(angle) * 400;
 		b.y = a.x + sin(angle) * 400;
@@ -220,9 +161,16 @@ void renderer_draw1(t_renderer renderer) {
 }
 
 
-void renderer_event(t_renderer *renderer)
+void renderer_event(t_renderer *renderer, t_renderer_key key)
 {
-	renderer++;
+	if (key == KEY_SCALE_UP)
+		renderer->scale_factor *= 2;
+	if (key == KEY_SCALE_DOWN)
+		renderer->scale_factor *= 0.5f;
+	if (key == KEY_FOV_UP)
+		renderer->fov_angle += 5;
+	if (key == KEY_FOV_DOWN)
+		renderer->fov_angle -= 5;
 }
 
 void renderer_update(t_renderer *renderer)
