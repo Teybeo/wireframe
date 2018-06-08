@@ -48,14 +48,14 @@ void renderer_draw(t_renderer renderer)
 		t_vec3 a = segment_ptr[i].start;
 		t_vec3 b = segment_ptr[i].end;
 
-		a.z *= 0.05f;
-		b.z *= 0.05f;
+//		a.y *= 0.05f;
+//		b.y *= 0.05f;
 
 		vec3_subXX(&a, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
 		vec3_subXX(&b, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
 
-		a.y += 100;
-		b.y += 100;
+//		a.y += 100;
+//		b.y += 100;
 
 //		a.z += -100;
 //		b.z += -100;

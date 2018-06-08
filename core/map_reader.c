@@ -116,13 +116,13 @@ t_array	generate_point_array(char *line, int y)
 
 	i = 0;
 	point.x = 0;
-	point.y = y;
+	point.z = y;
 	point_array = array_create(sizeof(t_vec3), 16);
 	while (line[i] != '\0')
 	{
 		if (ft_is_space(line[i]) == false)
 		{
-			point.z = ft_atoi(&line[i]);
+			point.y = ft_atoi(&line[i]);
 
 //			vec3_print("x: ", point);
 			array_append(&point_array, &point, 1);
