@@ -15,7 +15,7 @@ enum e_renderer_key {
 	KEY_SCALE_DOWN,
 	KEY_FOV_UP,
 	KEY_FOV_DOWN,
-	KEY_RCOUNT,
+	KEY_RCOUNT
 };
 typedef enum e_renderer_key t_renderer_key;
 
@@ -35,4 +35,4 @@ void renderer_update(t_renderer *renderer);
 void renderer_draw(t_renderer renderer);
 
 
-#endif //WIREFRAME_RENDERER_H
+#endif

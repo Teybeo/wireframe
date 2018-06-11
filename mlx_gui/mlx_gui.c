@@ -84,10 +84,11 @@ int expose_callback(void *param)
 int callback(void *param)
 {
 	t_mlx_context *ctx;
-	ctx = param;
+	static clock_t timestamp;
+	float duration;
 
-	static clock_t timestamp = 0;
-	float duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
+	ctx = param;
+	duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
 	duration *= 1000;
 //	printf("Interval: %f\n", duration);
 	timestamp = clock();
@@ -100,7 +101,7 @@ int callback(void *param)
 	mlx_put_image_to_window(ctx->mlx_ptr, ctx->win_ptr, ctx->texture, 0, 0);
 	return 0;
 }
-
+/*
 void mouse_move(int x, int y, void* param)
 {
 	printf("x: %d, y: %d\n", x, y);
@@ -117,7 +118,7 @@ void mouse_release(int x, int y, void* param)
 	printf("RELREASE\n");
 	printf("x: %d, y: %d\n", x, y);
 }
-
+*/
 void init_mlx(t_mlx_context *ctx, t_array segment_array)
 {
 	t_vec2i size;

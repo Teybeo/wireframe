@@ -72,16 +72,16 @@ t_vec3 mat3_mul_vec3(t_mat3 *m, t_vec3 vec) {
 void mat3_mul_vec3X(t_mat3 *m, t_vec3 *vec) {
 	t_vec3 tmp = *vec;
 	vec->x = (tmp.x * m->values[0][0] +
-					 tmp.y * m->values[0][1] +
-					 tmp.z * m->values[0][2]);
+			  tmp.y * m->values[0][1] +
+			  tmp.z * m->values[0][2]);
 
 	vec->y = (tmp.x * m->values[1][0] +
-					 tmp.y * m->values[1][1] +
-					 tmp.z * m->values[1][2]);
+			  tmp.y * m->values[1][1] +
+			  tmp.z * m->values[1][2]);
 
 	vec->z = (tmp.x * m->values[2][0] +
-					 tmp.y * m->values[2][1] +
-					 tmp.z * m->values[2][2]);
+			  tmp.y * m->values[2][1] +
+			  tmp.z * m->values[2][2]);
 }
 
 void mat3_set_identity(t_mat3 *m)

@@ -17,7 +17,7 @@ enum e_camera_key {
 	KEY_DOWN_ARROW,
 	KEY_LEFT_ARROW,
 	KEY_RIGHT_ARROW,
-	KEY_COUNT,
+	KEY_COUNT
 };
 typedef enum e_camera_key t_camera_key;
 

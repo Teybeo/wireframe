@@ -1,12 +1,17 @@
 cmake_minimum_required(VERSION 3.9)
 project(wireframe C)
 
-set(CMAKE_C_STANDARD_REQUIRED 90)
-#set(CMAKE_VERBOSE_MAKEFILE 1)
+set(CMAKE_C_STANDARD 90)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_VERBOSE_MAKEFILE 1)
 
 # Set warnings globally
-add_compile_options(-Wall -Wextra)
+add_compile_options(-Wall -Wextra -pedantic -Wno-comment -Rpass=inline -g3)
+add_compile_options(-flto)
+
 set(CMAKE_C_FLAGS_DEBUG  "-g3")
+set(CMAKE_C_FLAGS_RELEASE "-g3 -flto")
 
 # Backend to use for windowing and events"
 set(GuiBackend "MLX")

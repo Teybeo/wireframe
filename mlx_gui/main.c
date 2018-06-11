@@ -3,6 +3,16 @@
 #include <map_reader.h>
 #include "mlx_gui.h"
 
+#if   __STDC_VERSION__ >= 201112L
+	#define __C_STD__ "11"
+#elif __STDC_VERSION__ >= 199901L
+	#define __C_STD__ "99"
+#else
+	#define __C_STD__ "90"
+#endif
+
+#pragma message(__C_STD__)
+
 int	main(int argc, char **argv)
 {
 	t_array segment_array;

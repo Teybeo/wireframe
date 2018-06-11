@@ -184,8 +184,8 @@ void renderer_update(t_renderer *renderer)
 	elapsed_time += duration;
 	if (elapsed_time >= 20)
 	{
-		vec3_print("Camera pos: ", renderer->camera.pos);
-//		printf("Interval: %fms\n", duration);
+//		vec3_print("Camera pos: ", renderer->camera.pos);
+		printf("Frametime: %f ms, %f fps\n", duration, 1000 / duration);
 		elapsed_time = 0;
 	}
 	timestamp = clock();
