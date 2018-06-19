@@ -41,8 +41,8 @@ void camera_key_event(t_camera *camera, t_camera_key key, int state)
 		camera->mode = (t_camera_mode)!camera->mode;
 	if (key == KEY_CAMERA_RESET && state == 0)
 	{
-		camera->pos = (t_vec3){0, 0, 0};
-		camera->x_angle = 0;
+		camera->pos = (t_vec3){0, 200, 1200};
+		camera->x_angle = -0.3f;
 		camera->y_angle = 0;
 	}
 }

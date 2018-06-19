@@ -22,7 +22,7 @@ void renderer_init(t_renderer *renderer, void* pixels, t_array array, t_vec2i si
 	renderer->segment_array = array;
 	renderer->size = size;
 	renderer->pixels = pixels;
-	renderer->scale_factor = 1;
+	renderer->scale_factor = 0.25f;
 	renderer->fov_angle = 90;
 	init_camera(&renderer->camera);
 }
@@ -66,6 +66,11 @@ void renderer_draw(t_renderer renderer)
 		mat4_mul(&model_view, &rotation);
 	}
 
+	t_vec3 vec_translation = renderer.camera.pos;
+
+	if (renderer.camera.mode == CAMERA_FREEFLY)
+		mat3_mul_vec3X(&renderer.camera.rotation, &vec_translation);
+
 	while (i < renderer.segment_array.size)
 	{
 		t_vec3 a = segment_ptr[i].start;
@@ -74,21 +79,11 @@ void renderer_draw(t_renderer renderer)
 		a.y *= renderer.scale_factor;
 		b.y *= renderer.scale_factor;
 
-		if (renderer.camera.mode == CAMERA_FREEFLY)
-		{
-			vec3_subXX(&a, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
-			vec3_subXX(&b, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
-			mat3_mul_vec3X(&renderer.camera.rotation, &a);
-			mat3_mul_vec3X(&renderer.camera.rotation, &b);
-		}
-		else
-		{
-			mat3_mul_vec3X(&renderer.camera.rotation, &a);
-			mat3_mul_vec3X(&renderer.camera.rotation, &b);
-			vec3_subXX(&a, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
-			vec3_subXX(&b, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
-		}
-
+//		mat3_mul_vec3X(&renderer.camera.rotation, &a);
+//		mat3_mul_vec3X(&renderer.camera.rotation, &b);
+//		vec3_subXX(&a, vec_translation.x, vec_translation.y, vec_translation.z);
+//		vec3_subXX(&b, vec_translation.x, vec_translation.y, vec_translation.z);
+//
 //		mat4_mul_vec(&model_view, &a);
 //		mat4_mul_vec(&model_view, &b);
 
