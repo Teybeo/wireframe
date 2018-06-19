@@ -8,7 +8,8 @@ set(CMAKE_VERBOSE_MAKEFILE 1)
 
 # Set warnings globally
 add_compile_options(-Wall -Wextra -pedantic -Wno-comment -Rpass=inline -g3)
-add_compile_options(-flto)
+# lto prevents gdb to stop on breakpoints
+#add_compile_options(-flto)
 
 set(CMAKE_C_FLAGS_DEBUG  "-g3")
 set(CMAKE_C_FLAGS_RELEASE "-g3 -flto")
@@ -54,3 +55,8 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_LIST_DIR})
 
 install(TARGETS fdf
         DESTINATION bin)
+
+#TODO: Switching between perspective/orthographic projections
+#TODO: Related to ^, refactor the model_view and projection transforms into a single mat4 mult for perf
+#TODO: Control rotation from mouse movements + hide/show mouse key
+#TODO: COLORS

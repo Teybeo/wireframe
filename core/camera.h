@@ -17,15 +17,25 @@ enum e_camera_key {
 	KEY_DOWN_ARROW,
 	KEY_LEFT_ARROW,
 	KEY_RIGHT_ARROW,
+	KEY_CAMERA_MODE_TOGGLE,
+	KEY_CAMERA_RESET,
 	KEY_COUNT
 };
 typedef enum e_camera_key t_camera_key;
+
+enum e_camera_mode
+{
+	CAMERA_FREEFLY,
+	CAMERA_ORBIT
+};
+typedef enum e_camera_mode t_camera_mode;
 
 struct s_camera {
 	t_vec3 pos;
 	t_mat3 rotation;
 	float y_angle;
 	float x_angle;
+	t_camera_mode mode;
 	bool move_forward;
 	bool move_backward;
 	bool strafe_right;

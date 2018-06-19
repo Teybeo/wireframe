@@ -9,6 +9,7 @@ void init_camera(t_camera *camera)
 	camera->pos = (t_vec3){0, 0, 0};
 	camera->x_angle = 0;
 	camera->y_angle = 0;
+	camera->mode = CAMERA_FREEFLY;
 }
 
 void camera_key_event(t_camera *camera, t_camera_key key, int state)
@@ -35,6 +36,15 @@ void camera_key_event(t_camera *camera, t_camera_key key, int state)
 		camera->right_arrow = (bool)state;
 	if (key == KEY_LEFT_ARROW)
 		camera->left_arrow = (bool)state;
+
+	if (key == KEY_CAMERA_MODE_TOGGLE && state == 0)
+		camera->mode = (t_camera_mode)!camera->mode;
+	if (key == KEY_CAMERA_RESET && state == 0)
+	{
+		camera->pos = (t_vec3){0, 0, 0};
+		camera->x_angle = 0;
+		camera->y_angle = 0;
+	}
 }
 
 void camera_update(t_camera *camera)
@@ -55,16 +65,22 @@ void camera_update(t_camera *camera)
 
 	mat3_set_rotation(camera->x_angle, camera->y_angle, &camera->rotation);
 
-	forward.x =  sinf(-camera->y_angle) * cosf(-camera->x_angle);
-	forward.y = -sinf(-camera->x_angle);
-	forward.z = -cosf(-camera->y_angle) * cosf(-camera->x_angle);
+	if (camera->mode == CAMERA_FREEFLY) {
+		forward.x =  sinf(-camera->y_angle) * cosf(-camera->x_angle);
+		forward.y = -sinf(-camera->x_angle);
+		forward.z = -cosf(-camera->y_angle) * cosf(-camera->x_angle);
 
-	strafe.x = cosf(-camera->y_angle);
-	strafe.y = 0;
-	strafe.z = sinf(-camera->y_angle);
+		strafe.x = cosf(-camera->y_angle);
+		strafe.y = 0;
+		strafe.z = sinf(-camera->y_angle);
 
-	upward = vec3_cross(strafe, forward);
-
+		upward = vec3_cross(strafe, forward);
+	}
+	else {
+		forward = (t_vec3){0, 0, -1};
+		upward = (t_vec3){0, 1, 0};
+		strafe = (t_vec3){1, 0, 0};
+	}
 	delta = (t_vec3){};
 
 	if (camera->move_forward)

@@ -10,6 +10,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <mat4.h>
 
 void draw_line(t_renderer renderer, t_vec2i a, t_vec2i b);
 void draw_line_y_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i direction);
@@ -45,6 +46,26 @@ void renderer_draw(t_renderer renderer)
 	float z_factor = (-far + near) / (far - near);
 	float z_translation = ((2 * far * near) / (far - near));
 
+	t_mat4 model_view;
+	t_mat4 rotation;
+	t_mat4 translation;
+
+	mat4_identity(&translation);
+	mat4_translate_by(&translation, renderer.camera.pos);
+
+	init_with_mat3(&rotation, renderer.camera.rotation);
+
+	if (renderer.camera.mode == CAMERA_FREEFLY)
+	{
+		model_view = rotation;
+		mat4_mul(&model_view, &translation);
+	}
+	else
+	{
+		model_view = translation;
+		mat4_mul(&model_view, &rotation);
+	}
+
 	while (i < renderer.segment_array.size)
 	{
 		t_vec3 a = segment_ptr[i].start;
@@ -53,11 +74,23 @@ void renderer_draw(t_renderer renderer)
 		a.y *= renderer.scale_factor;
 		b.y *= renderer.scale_factor;
 
-		vec3_subXX(&a, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
-		vec3_subXX(&b, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
+		if (renderer.camera.mode == CAMERA_FREEFLY)
+		{
+			vec3_subXX(&a, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
+			vec3_subXX(&b, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
+			mat3_mul_vec3X(&renderer.camera.rotation, &a);
+			mat3_mul_vec3X(&renderer.camera.rotation, &b);
+		}
+		else
+		{
+			mat3_mul_vec3X(&renderer.camera.rotation, &a);
+			mat3_mul_vec3X(&renderer.camera.rotation, &b);
+			vec3_subXX(&a, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
+			vec3_subXX(&b, renderer.camera.pos.x, renderer.camera.pos.y, renderer.camera.pos.z);
+		}
 
-		mat3_mul_vec3X(&renderer.camera.rotation, &a);
-		mat3_mul_vec3X(&renderer.camera.rotation, &b);
+//		mat4_mul_vec(&model_view, &a);
+//		mat4_mul_vec(&model_view, &b);
 
 		// Eye to Clip
 		float a_w = -a.z;
