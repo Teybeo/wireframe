@@ -35,9 +35,9 @@ void	init_with_mat3(t_mat4 *mat4, t_mat3 mat3)
 
 void	mat4_translate_by(t_mat4 *mat4, t_vec3 vec)
 {
-	mat4->values[0][3] += -vec.x;
-	mat4->values[1][3] += -vec.y;
-	mat4->values[2][3] += -vec.z;
+	mat4->values[0][3] -= vec.x;
+	mat4->values[1][3] -= vec.y;
+	mat4->values[2][3] -= vec.z;
 }
 
 void	mat4_mul_vec(t_mat4 *mat, t_vec3 *vec)
@@ -72,4 +72,26 @@ void	mat4_mul(t_mat4 *a, t_mat4 *b)
 		}
 	}
 	*a = res;
+}
+
+t_mat4 mat4_mul2(t_mat4 lhs, t_mat4 rhs)
+{
+	t_mat4 res;
+	int i;
+	int j;
+
+	i = -1;
+	while (++i < 4)
+	{
+		j = -1;
+		while (++j < 4)
+		{
+			res.values[i][j] =
+					lhs.values[i][0] * rhs.values[0][j] +
+					lhs.values[i][1] * rhs.values[1][j] +
+					lhs.values[i][2] * rhs.values[2][j] +
+					lhs.values[i][3] * rhs.values[3][j];
+		}
+	}
+	return res;
 }

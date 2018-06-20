@@ -3,6 +3,10 @@
 #include "vec3.h"
 #include "libft.h"
 
+void mat3_set_x_rotation2(t_mat3 *m, float angle);
+void mat3_set_y_rotation2(t_mat3 *m, float angle);
+t_mat3	mat3_mul2(t_mat3 a, t_mat3 b);
+
 void mat3_set_rotation(float x_angle, float y_angle, t_mat3 *m)
 {
 	t_mat3 x_rotation;
@@ -17,6 +21,21 @@ void mat3_set_rotation(float x_angle, float y_angle, t_mat3 *m)
 	*m = mat3_mul(x_rotation, y_rotation);
 }
 
+void mat3_set_rotation2(float x_angle, float y_angle, t_mat3 *m)
+{
+	t_mat3 x_rotation;
+	t_mat3 y_rotation;
+
+	mat3_set_identity(&x_rotation);
+	mat3_set_identity(&y_rotation);
+
+	mat3_set_x_rotation2(&x_rotation, x_angle);
+	mat3_set_y_rotation2(&y_rotation, y_angle);
+
+	*m = mat3_mul2(y_rotation, x_rotation);
+//	*m = mat3_mul2(x_rotation, y_rotation);
+}
+
 void mat3_set_y_rotation(t_mat3 *m, float angle) {
 	m->values[0][0] =  cosf(angle);
 	m->values[2][0] =  sinf(angle);
@@ -28,6 +47,20 @@ void mat3_set_x_rotation(t_mat3 *m, float angle) {
 	m->values[1][1] =  cosf(angle);
 	m->values[2][1] = -sinf(angle);
 	m->values[1][2] =  sinf(angle);
+	m->values[2][2] =  cosf(angle);
+}
+
+void mat3_set_y_rotation2(t_mat3 *m, float angle) {
+	m->values[0][0] =  cosf(angle);
+	m->values[0][2] =  sinf(angle);
+	m->values[2][0] = -sinf(angle);
+	m->values[2][2] =  cosf(angle);
+}
+
+void mat3_set_x_rotation2(t_mat3 *m, float angle) {
+	m->values[1][1] =  cosf(angle);
+	m->values[1][2] = -sinf(angle);
+	m->values[2][1] =  sinf(angle);
 	m->values[2][2] =  cosf(angle);
 }
 
@@ -48,6 +81,24 @@ t_mat3 mat3_mul(t_mat3 lhs, t_mat3 rhs)
 				lhs.values[i][1] * rhs.values[1][j] +
 				lhs.values[i][2] * rhs.values[2][j];
 		}
+	}
+	return res;
+}
+
+t_mat3	mat3_mul2(t_mat3 a, t_mat3 b)
+{
+	t_mat3 res;
+	t_vec3 column;
+	int i;
+
+	i = -1;
+	while (++i < 3)
+	{
+		column = (t_vec3){b.values[0][i], b.values[1][i], b.values[2][i]};
+		mat3_mul_vec3X(&a, &column);
+		res.values[0][i] = column.x;
+		res.values[1][i] = column.y;
+		res.values[2][i] = column.z;
 	}
 	return res;
 }

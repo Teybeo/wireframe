@@ -1,5 +1,6 @@
 #include <libft.h>
 #include <math.h>
+#include <stdlib.h>
 #include "camera.h"
 #include "stdio.h"
 
@@ -41,8 +42,8 @@ void camera_key_event(t_camera *camera, t_camera_key key, int state)
 		camera->mode = (t_camera_mode)!camera->mode;
 	if (key == KEY_CAMERA_RESET && state == 0)
 	{
-		camera->pos = (t_vec3){0, 200, 1200};
-		camera->x_angle = -0.3f;
+		camera->pos = (t_vec3){0, 0, 0};
+		camera->x_angle = 0;
 		camera->y_angle = 0;
 	}
 }
@@ -50,7 +51,7 @@ void camera_key_event(t_camera *camera, t_camera_key key, int state)
 void camera_update(t_camera *camera)
 {
 	t_vec3 delta;
-	t_vec3 forward;
+	t_vec3 backward;
 	t_vec3 upward;
 	t_vec3 strafe;
 
@@ -64,29 +65,53 @@ void camera_update(t_camera *camera)
 		camera->x_angle -= 0.05;
 
 	mat3_set_rotation(camera->x_angle, camera->y_angle, &camera->rotation);
+	t_mat3 temp;
+	mat3_set_rotation2(camera->x_angle, camera->y_angle, &temp);
 
 	if (camera->mode == CAMERA_FREEFLY) {
-		forward.x =  sinf(-camera->y_angle) * cosf(-camera->x_angle);
-		forward.y = -sinf(-camera->x_angle);
-		forward.z = -cosf(-camera->y_angle) * cosf(-camera->x_angle);
+		if (0)
+		{
+			backward.x =  sinf(camera->y_angle) * cosf(camera->x_angle);
+			backward.y = -sinf(camera->x_angle);
+			backward.z = cosf(camera->y_angle) * cosf(camera->x_angle);
 
-		strafe.x = cosf(-camera->y_angle);
-		strafe.y = 0;
-		strafe.z = sinf(-camera->y_angle);
+			strafe.x = cosf(camera->y_angle);
+			strafe.y = 0;
+			strafe.z = sinf(-camera->y_angle);
 
-		upward = vec3_cross(strafe, forward);
+			upward.x = sinf(camera->x_angle) * sinf(camera->y_angle);
+			upward.y = cosf(camera->x_angle);
+			upward.z = sinf(camera->x_angle) * cosf(camera->y_angle);
+	//		upward = vec3_cross(strafe, backward);
+		}
+		else
+		{
+			strafe.x = temp.values[0][0];
+			strafe.y = temp.values[1][0];
+			strafe.z = temp.values[2][0];
+
+			upward.x = temp.values[0][1];
+			upward.y = temp.values[1][1];
+			upward.z = temp.values[2][1];
+
+			backward.x = temp.values[0][2];
+			backward.y = temp.values[1][2];
+			backward.z = temp.values[2][2];
+		}
 	}
 	else {
-		forward = (t_vec3){0, 0, -1};
+		backward = (t_vec3){0, 0, 1};
 		upward = (t_vec3){0, 1, 0};
 		strafe = (t_vec3){1, 0, 0};
 	}
 	delta = (t_vec3){};
+	system("clear");
+	vec3_print("backward", backward);
 
 	if (camera->move_forward)
-		delta = vec3_add(delta, forward);
+		delta = vec3_sub(delta, backward);
 	if (camera->move_backward)
-		delta = vec3_sub(delta, forward);
+		delta = vec3_add(delta, backward);
 	if (camera->strafe_right)
 		delta = vec3_add(delta, strafe);
 	if (camera->strafe_left)
@@ -96,5 +121,10 @@ void camera_update(t_camera *camera)
 	if (camera->move_downward)
 		delta = vec3_sub(delta, upward);
 
+	vec3_print("delta", delta);
+	write(1, "\n", 1);
+
 	camera->pos = vec3_add(camera->pos, delta);
+	vec3_print("pos", camera->pos);
+	write(1, "\n", 1);
 }

@@ -58,12 +58,14 @@ void renderer_draw(t_renderer renderer)
 	if (renderer.camera.mode == CAMERA_FREEFLY)
 	{
 		model_view = rotation;
-		mat4_mul(&model_view, &translation);
+//		mat4_mul(&model_view, &translation);
+		model_view = mat4_mul2(model_view, translation);
 	}
 	else
 	{
 		model_view = translation;
-		mat4_mul(&model_view, &rotation);
+//		mat4_mul(&model_view, &rotation);
+		model_view = mat4_mul2(model_view, rotation);
 	}
 
 	t_vec3 vec_translation = renderer.camera.pos;
@@ -84,8 +86,8 @@ void renderer_draw(t_renderer renderer)
 //		vec3_subXX(&a, vec_translation.x, vec_translation.y, vec_translation.z);
 //		vec3_subXX(&b, vec_translation.x, vec_translation.y, vec_translation.z);
 //
-//		mat4_mul_vec(&model_view, &a);
-//		mat4_mul_vec(&model_view, &b);
+		mat4_mul_vec(&model_view, &a);
+		mat4_mul_vec(&model_view, &b);
 
 		// Eye to Clip
 		float a_w = -a.z;
@@ -213,7 +215,7 @@ void renderer_update(t_renderer *renderer)
 	if (elapsed_time >= 20)
 	{
 //		vec3_print("Camera pos: ", renderer->camera.pos);
-		printf("Frametime: %f ms, %f fps\n", duration, 1000 / duration);
+//		printf("Frametime: %f ms, %f fps\n", duration, 1000 / duration);
 		elapsed_time = 0;
 	}
 	timestamp = clock();
