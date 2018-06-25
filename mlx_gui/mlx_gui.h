@@ -12,6 +12,7 @@
 #define MLX_KEY_Z 6
 #define MLX_KEY_C 8
 #define MLX_KEY_R 15
+#define MLX_KEY_ESC 53
 #define MLX_KEY_UP 126
 #define MLX_KEY_DOWN 125
 #define MLX_KEY_LEFT 123
@@ -29,6 +30,7 @@ struct s_mlx_context
 	void		*texture;
 	t_renderer	renderer;
 	t_array		segment_array;
+	bool		is_mouse_captured;
 };
 typedef struct s_mlx_context t_mlx_context;
 
