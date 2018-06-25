@@ -6,8 +6,8 @@
 #include <map_reader.h>
 #include <time.h>
 
-int translate_keycode(SDL_Scancode scancode, t_camera_key *key)
-;
+t_camera_key get_camera_key(SDL_Scancode scancode);
+t_renderer_key get_renderer_key(SDL_Scancode scancode);
 
 void sdl_init(t_sdl_app *ctx, t_array segment_array)
 {
@@ -96,23 +96,26 @@ void sdl_update(t_sdl_app *context)
 void sdl_event(t_sdl_app* ctx)
 {
 	SDL_Event event;
-	t_camera_key key;
+	t_camera_key camera_key;
+	t_renderer_key renderer_key;
 
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
 			ctx->is_running = 0;
-		renderer_event(&ctx->renderer);
-		if (event.type == SDL_KEYDOWN)
-			if (translate_keycode(event.key.keysym.scancode, &key) == 0)
-				camera_key_event(&ctx->renderer.camera, key, 1);
-		if (event.type == SDL_KEYUP)
-			if (translate_keycode(event.key.keysym.scancode, &key) == 0)
-				camera_key_event(&ctx->renderer.camera, key, 0);
+
+		if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
+		{
+			camera_key = get_camera_key(event.key.keysym.scancode);
+			renderer_key = get_renderer_key(event.key.keysym.scancode);
+			camera_key_event(&ctx->renderer.camera, camera_key, event.type == SDL_KEYDOWN);
+			if (event.type == SDL_KEYDOWN)
+				renderer_event(&ctx->renderer, renderer_key);
+		}
 	}
 }
 
-int translate_keycode(SDL_Scancode scancode, t_camera_key *key)
+t_camera_key get_camera_key(SDL_Scancode scancode)
 {
 	t_camera_key table[SDL_NUM_SCANCODES];
 
@@ -126,7 +129,21 @@ int translate_keycode(SDL_Scancode scancode, t_camera_key *key)
 	table[SDL_SCANCODE_DOWN] = KEY_DOWN_ARROW;
 	table[SDL_SCANCODE_LEFT] = KEY_LEFT_ARROW;
 	table[SDL_SCANCODE_RIGHT] = KEY_RIGHT_ARROW;
+	table[SDL_SCANCODE_C] = KEY_CAMERA_MODE_TOGGLE;
+	table[SDL_SCANCODE_R] = KEY_CAMERA_RESET;
 
-	*key = table[scancode];
-	return 0;
+	return table[scancode];
+}
+
+t_renderer_key get_renderer_key(SDL_Scancode scancode)
+{
+	if (scancode == SDL_SCANCODE_KP_PLUS)
+		return KEY_SCALE_UP;
+	if (scancode == SDL_SCANCODE_KP_MINUS)
+		return KEY_SCALE_DOWN;
+	if (scancode == SDL_SCANCODE_KP_MULTIPLY)
+		return KEY_FOV_UP;
+	if (scancode == SDL_SCANCODE_KP_DIVIDE)
+		return KEY_FOV_DOWN;
+	return KEY_RUNKNOWN;
 }
