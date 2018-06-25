@@ -13,6 +13,7 @@ void sdl_init(t_sdl_app *ctx, t_array segment_array)
 {
 	ctx->texture_size.x = 1600;
 	ctx->texture_size.y = 900;
+	ctx->is_mouse_captured = false;
 
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -22,10 +23,12 @@ void sdl_init(t_sdl_app *ctx, t_array segment_array)
 							  ctx->texture_size.x, ctx->texture_size.y,
 							  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
-//	SDL_SetHintWithPriority(SDL_HINT_RENDER_VSYNC, "1", SDL_HINT_OVERRIDE);
+	SDL_SetHintWithPriority(SDL_HINT_RENDER_VSYNC, "1", SDL_HINT_OVERRIDE);
 
 	ctx->sdl_renderer = SDL_CreateRenderer(ctx->window, -1,
-										    SDL_RENDERER_ACCELERATED);
+										    SDL_RENDERER_ACCELERATED
+//										    | SDL_RENDERER_PRESENTVSYNC
+	);
 	SDL_RendererInfo info;
 	SDL_GetRendererInfo(ctx->sdl_renderer, &info);
 	printf("Renderer: %s\n", info.name);
@@ -45,7 +48,7 @@ void sdl_init(t_sdl_app *ctx, t_array segment_array)
 
 void sdl_run(t_sdl_app *context)
 {
-	context->is_running = 1;
+	context->is_running = true;
 	while (context->is_running) {
 		sdl_event(context);
 		sdl_update(context);
@@ -102,15 +105,27 @@ void sdl_event(t_sdl_app* ctx)
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
-			ctx->is_running = 0;
+			ctx->is_running = false;
 
-		if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
+		if (event.type == SDL_KEYDOWN)
 		{
 			camera_key = get_camera_key(event.key.keysym.scancode);
+			camera_key_event(&ctx->renderer.camera, camera_key, 1);
+			renderer_event(&ctx->renderer, renderer_key);
 			renderer_key = get_renderer_key(event.key.keysym.scancode);
-			camera_key_event(&ctx->renderer.camera, camera_key, event.type == SDL_KEYDOWN);
-			if (event.type == SDL_KEYDOWN)
-				renderer_event(&ctx->renderer, renderer_key);
+			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+				ctx->is_mouse_captured = !ctx->is_mouse_captured;
+			SDL_SetRelativeMouseMode(ctx->is_mouse_captured);
+		}
+		if (event.type == SDL_KEYUP)
+		{
+			camera_key = get_camera_key(event.key.keysym.scancode);
+			camera_key_event(&ctx->renderer.camera, camera_key, 0);
+		}
+		if (event.type == SDL_MOUSEMOTION)
+		{
+			if (ctx->is_mouse_captured)
+				camera_mouse_event(&ctx->renderer.camera, event.motion.xrel, event.motion.yrel);
 		}
 	}
 }

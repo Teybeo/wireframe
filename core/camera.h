@@ -52,6 +52,7 @@ typedef struct s_camera t_camera;
 
 void	init_camera(t_camera *camera);
 void	camera_key_event(t_camera *camera, t_camera_key key, int state);
+void	camera_mouse_event(t_camera *camera, int x, int y);
 void	camera_update(t_camera *camera);
 
 #endif
