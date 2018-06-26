@@ -10,18 +10,19 @@
 #include <math.h>
 #include <stdio.h>
 
-void	do_center_map(t_array *segment_array);
+void	do_center_map(t_map *map);
+void compute_boundingbox(t_map *map);
 
-t_array	load_fdf(char const *filepath)
+t_map	load_fdf(char const *filepath)
 {
+	t_map	map;
 	t_array	line_array;
-	t_array	segment_array;
 
 	line_array = load_map_lines(filepath);
-	segment_array = parse_map_lines(line_array);
-
-	do_center_map(&segment_array);
-	return segment_array;
+	map.segment_array = parse_map_lines(line_array);
+	compute_boundingbox(&map);
+	do_center_map(&map);
+	return map;
 }
 
 t_array	parse_map_lines(t_array line_array)
@@ -136,7 +137,7 @@ t_array	generate_point_array(char *line, int y)
 	return (point_array);
 }
 
-t_vec3 get_center(t_array *segment_array)
+void compute_boundingbox(t_map *map)
 {
 	t_vec3		max;
 	t_vec3		min;
@@ -145,10 +146,10 @@ t_vec3 get_center(t_array *segment_array)
 	min = (t_vec3){INT_MAX, INT_MAX, INT_MAX};
 	max = (t_vec3){INT_MIN, INT_MIN, INT_MIN};
 
-	seg_ptr = segment_array->data;
+	seg_ptr = map->segment_array.data;
 	int i;
 	i = 0;
-	while (i < segment_array->size)
+	while (i < map->segment_array.size)
 	{
 		min = vec3_min_2D(min, seg_ptr[i].start);
 		min = vec3_min_2D(min, seg_ptr[i].end);
@@ -157,19 +158,20 @@ t_vec3 get_center(t_array *segment_array)
 		max = vec3_max_2D(max, seg_ptr[i].end);
 		i++;
 	}
-	return vec3_mul_scalar(vec3_sub(max, min), 0.5);
+	map->min = min;
+	map->max = max;
 }
 
-void	do_center_map(t_array *segment_array)
+void	do_center_map(t_map *map)
 {
 	t_vec3 center;
 	t_segment	*seg_ptr;
 
-	center = get_center(segment_array);
-	seg_ptr = segment_array->data;
+	center = vec3_mul_scalar(vec3_sub(map->max, map->min), 0.5);
+	seg_ptr = map->segment_array.data;
 	int i;
 	i = 0;
-	while (i < segment_array->size)
+	while (i < map->segment_array.size)
 	{
 		seg_ptr[i].start = vec3_sub(seg_ptr[i].start, center);
 		seg_ptr[i].end = vec3_sub(seg_ptr[i].end, center);

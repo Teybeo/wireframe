@@ -4,7 +4,7 @@ project(wireframe C)
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_VERBOSE_MAKEFILE 1)
+#set(CMAKE_VERBOSE_MAKEFILE 1)
 
 # Set warnings globally
 add_compile_options(-Wall -Wextra -pedantic -Wno-comment -Rpass=inline -g3)
@@ -58,5 +58,4 @@ install(TARGETS fdf
 
 #TODO: Switching between perspective/orthographic projections
 #TODO: Related to ^, refactor the model_view and projection transforms into a single mat4 mult for perf
-#TODO: Control rotation from mouse movements + hide/show mouse key
 #TODO: COLORS

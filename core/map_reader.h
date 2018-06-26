@@ -4,7 +4,15 @@
 #include <array.h>
 #include "vec3.h"
 
-t_array load_fdf(char const *filepath);
+struct s_map
+{
+	t_array segment_array;
+	t_vec3	min;
+	t_vec3	max;
+};
+typedef struct s_map t_map;
+
+t_map load_fdf(char const *filepath);
 
 t_array	generate_point_array(char *line, int y);
 t_array	load_map_lines(char const *filepath);

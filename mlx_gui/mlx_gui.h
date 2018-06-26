@@ -29,11 +29,10 @@ struct s_mlx_context
 	void		*win_ptr;
 	void		*texture;
 	t_renderer	renderer;
-	t_array		segment_array;
 	bool		is_mouse_captured;
 };
 typedef struct s_mlx_context t_mlx_context;
 
-void init_mlx(t_mlx_context *ctx, t_array segment_array);
+void init_mlx(t_mlx_context *ctx, t_map map);
 
 #endif

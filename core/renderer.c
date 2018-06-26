@@ -3,6 +3,7 @@
 #include "libft.h"
 #include "map_reader.h"
 #include "line_clipping.h"
+#include "line_drawing.h"
 
 #include <stdio.h>
 #include <vec3.h>
@@ -12,14 +13,10 @@
 #include <string.h>
 #include <mat4.h>
 
-void draw_line(t_renderer renderer, t_vec2i a, t_vec2i b);
-void draw_line_y_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i direction);
-void draw_line_x_axis(t_renderer renderer, t_vec2i a, t_vec2i b, t_vec2i direction);
-
-void renderer_init(t_renderer *renderer, void* pixels, t_array array, t_vec2i size)
+void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
 {
 	ft_putendl("Core awaken");
-	renderer->segment_array = array;
+	renderer->map = map;
 	renderer->size = size;
 	renderer->pixels = pixels;
 	renderer->scale_factor = 0.25f;
@@ -34,7 +31,7 @@ void renderer_draw(t_renderer renderer)
 
 	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y, sizeof(uint32_t));
 
-	segment_ptr = renderer.segment_array.data;
+	segment_ptr = renderer.map.segment_array.data;
 	i = 0;
 
 	float near = 0.1f;
@@ -73,14 +70,18 @@ void renderer_draw(t_renderer renderer)
 	if (renderer.camera.mode == CAMERA_FREEFLY)
 		mat3_mul_vec3X(&renderer.camera.rotation, &vec_translation);
 
-	while (i < renderer.segment_array.size)
+	while (i < renderer.map.segment_array.size)
 	{
 		t_vec3 a = segment_ptr[i].start;
 		t_vec3 b = segment_ptr[i].end;
 
+		t_vec3i aa;
+		t_vec3i bb;
+		aa.z = (a.y - renderer.map.min.y) / renderer.map.max.y;
+		bb.z = a.y;
+
 		a.y *= renderer.scale_factor;
 		b.y *= renderer.scale_factor;
-
 //		mat3_mul_vec3X(&renderer.camera.rotation, &a);
 //		mat3_mul_vec3X(&renderer.camera.rotation, &b);
 //		vec3_subXX(&a, vec_translation.x, vec_translation.y, vec_translation.z);
@@ -127,12 +128,20 @@ void renderer_draw(t_renderer renderer)
 		t_vec2i a_i = vec3_round2D(a);
 		t_vec2i b_i = vec3_round2D(b);
 
+
 		if (clip_line(&a_i, &b_i, renderer.size))
-			draw_line(renderer, a_i, b_i);
+		{
+//			draw_line(renderer, a_i, b_i);
+			aa.x = a_i.x;
+			aa.y = a_i.y;
+			bb.x = b_i.x;
+			bb.y = b_i.y;
+			draw_line(renderer, aa, bb);
+
+		}
 		i++;
 	}
 }
-
 
 void renderer_draw0(t_renderer renderer) {
 
@@ -156,7 +165,7 @@ void renderer_draw0(t_renderer renderer) {
 		b.y = a.x + sin(angle) * 400;
 		a_i = vec3_round2D(a);
 		b_i = vec3_round2D(b);
-		draw_line(renderer, a_i, b_i);
+//		draw_line(renderer, a_i, b_i);
 	}
 //	usleep(100000);
 }
@@ -180,7 +189,7 @@ void renderer_draw1(t_renderer renderer) {
 //		draw_line(renderer, center, a);
 		t_vec2i a_i = vec3_round2D(a);
 		t_vec2i center_i = vec3_round2D(center);
-		draw_line(renderer, a_i, center_i);
+//		draw_line(renderer, a_i, center_i);
 	}
 	if (angle > 360)
 		angle = 0;

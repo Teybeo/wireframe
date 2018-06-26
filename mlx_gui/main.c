@@ -15,7 +15,7 @@
 
 int	main(int argc, char **argv)
 {
-	t_array segment_array;
+	t_map map;
 	t_mlx_context ctx;
 
 	if (argc != 2)
@@ -23,7 +23,7 @@ int	main(int argc, char **argv)
 		ft_putendl("usage:\t./fdf file");
 		return (0);
 	}
-	segment_array = load_fdf(argv[1]);
-	init_mlx(&ctx, segment_array);
+	map = load_fdf(argv[1]);
+	init_mlx(&ctx, map);
 	return (0);
 }

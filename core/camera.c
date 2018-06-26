@@ -15,7 +15,7 @@ void init_camera(t_camera *camera)
 
 void camera_key_event(t_camera *camera, t_camera_key key, int state)
 {
-	printf("Received key: %d, state: %d\n", key, state);
+//	printf("Received key: %d, state: %d\n", key, state);
 
 	if (key == KEY_FORWARD)
 		camera->move_forward = (bool)state;

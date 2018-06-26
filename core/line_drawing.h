@@ -4,6 +4,6 @@
 #include "vec3.h"
 #include "renderer.h"
 
-void draw_line(t_renderer renderer, t_vec2i a, t_vec2i b);
+void draw_line(t_renderer renderer, t_vec3i a, t_vec3i b);
 
 #endif

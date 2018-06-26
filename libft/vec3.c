@@ -90,6 +90,15 @@ t_vec3	vec3_mul_scalar(t_vec3 vec, float scalar)
 	return res;
 }
 
+t_vec3i	vec3_round(t_vec3 vec)
+{
+	t_vec3i res;
+	res.x = (int)roundf(vec.x);
+	res.y = (int)roundf(vec.y);
+	res.z = (int)roundf(vec.z);
+	return res;
+}
+
 t_vec2i	vec3_round2D(t_vec3 vec)
 {
 	t_vec2i res;

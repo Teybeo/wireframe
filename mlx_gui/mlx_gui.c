@@ -108,7 +108,7 @@ void mouse_release(int x, int y, void* param)
 	printf("x: %d, y: %d\n", x, y);
 }
 */
-void init_mlx(t_mlx_context *ctx, t_array segment_array)
+void init_mlx(t_mlx_context *ctx, t_map map)
 {
 	t_vec2i size;
 	void* pixels;
@@ -122,7 +122,7 @@ void init_mlx(t_mlx_context *ctx, t_array segment_array)
 	ctx->texture = mlx_new_image(ctx->mlx_ptr, size.x, size.y);
 	pixels = mlx_get_data_addr(ctx->texture, &osef, &osef, &osef);
 
-	renderer_init(&ctx->renderer, pixels, segment_array, size);
+	renderer_init(&ctx->renderer, pixels, map, size);
 
 	mlx_do_key_autorepeatoff(ctx->mlx_ptr);
 	mlx_hook(ctx->win_ptr, 2, osef, keydown_event, ctx);
