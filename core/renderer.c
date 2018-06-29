@@ -21,7 +21,34 @@ void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
 	renderer->pixels = pixels;
 	renderer->scale_factor = 0.25f;
 	renderer->fov_angle = 90;
+	renderer->gradient[0].treshold = 0;
+	renderer->gradient[1].treshold = 0.01;
+	renderer->gradient[2].treshold = 0.5;
+	renderer->gradient[3].treshold = 0.1;
+	renderer->gradient[4].treshold = 0.8;
+	renderer->gradient[0].color = 0x000000FF;
+	renderer->gradient[1].color = 0x00FF0000;
+	renderer->gradient[2].color = 0x0000FF00;
+	renderer->gradient[3].color = 0x00008800;
+	renderer->gradient[4].color = 0x00FFFFFF;
 	init_camera(&renderer->camera);
+}
+
+int get_color_from_height(t_renderer renderer, float height)
+{
+	int i;
+
+	height = (height - renderer.map.min.y) / (renderer.map.max.y - renderer.map.min.y);
+	i = 0;
+	while (i < GRADIENT_COUNT)
+	{
+		if (height < renderer.gradient[i].treshold)
+			break;
+		i++;
+	}
+	i--;
+//	printf("height: %6g = %d\n", height, renderer.gradient[i].color);
+	return renderer.gradient[i].color;
 }
 
 void renderer_draw(t_renderer renderer)
@@ -77,8 +104,8 @@ void renderer_draw(t_renderer renderer)
 
 		t_vec3i aa;
 		t_vec3i bb;
-		aa.z = (a.y - renderer.map.min.y) / renderer.map.max.y;
-		bb.z = a.y;
+		aa.z = get_color_from_height(renderer, a.y);
+		bb.z = get_color_from_height(renderer, b.y);
 
 		a.y *= renderer.scale_factor;
 		b.y *= renderer.scale_factor;
@@ -148,13 +175,15 @@ void renderer_draw0(t_renderer renderer) {
 	t_vec3 a = {500, 500, 0};
 	t_vec3 b = {801, 800, 0};
 
-	t_vec2i a_i;
-	t_vec2i b_i;
+	t_vec3i a_i;
+	t_vec3i b_i;
+
 
 	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y, sizeof(uint32_t));
 
 	static int step_count = 8;
-	step_count = ((cos(clock() / 1000000.f) * 0.5) + 0.5f) * 1000;
+//	step_count = ((cos(clock() / 1000000.f) * 0.5) + 0.5f) * 1000;
+	step_count = 10000;
 //	printf("step_count: %d\n", step_count);
 //	step_count;
 	float angle;
@@ -163,9 +192,11 @@ void renderer_draw0(t_renderer renderer) {
 	{
 		b.x = a.x + cos(angle) * 400;
 		b.y = a.x + sin(angle) * 400;
-		a_i = vec3_round2D(a);
-		b_i = vec3_round2D(b);
-//		draw_line(renderer, a_i, b_i);
+		a_i = vec3_round(a);
+		b_i = vec3_round(b);
+		a_i.z = 0x00FF0000;
+		b_i.z = 0x000000FF;
+		draw_line(renderer, a_i, b_i);
 	}
 //	usleep(100000);
 }

@@ -70,7 +70,8 @@ int callback(void *param)
 	mlx_clear_window(ctx->mlx_ptr, ctx->win_ptr);
 
 	renderer_update(&ctx->renderer);
-	renderer_draw(ctx->renderer);
+//	renderer_draw(ctx->renderer);
+	renderer_draw0(ctx->renderer);
 
 	mlx_put_image_to_window(ctx->mlx_ptr, ctx->win_ptr, ctx->texture, 0, 0);
 	return 0;

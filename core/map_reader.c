@@ -168,6 +168,7 @@ void	do_center_map(t_map *map)
 	t_segment	*seg_ptr;
 
 	center = vec3_mul_scalar(vec3_sub(map->max, map->min), 0.5);
+	center.y = 0;
 	seg_ptr = map->segment_array.data;
 	int i;
 	i = 0;

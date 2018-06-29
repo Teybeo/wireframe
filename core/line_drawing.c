@@ -5,7 +5,12 @@
 
 void draw_line_x_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i direction);
 void draw_line_y_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i direction);
-
+void swap(int *a, int *b)
+{
+	int tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
 void draw_line(t_renderer renderer, t_vec3i a, t_vec3i b)
 {
 	t_vec2i increment;
@@ -15,6 +20,12 @@ void draw_line(t_renderer renderer, t_vec3i a, t_vec3i b)
 
 	increment.x = (ab.x > 0) ? 1 : -1;
 	increment.y = (ab.y > 0) ? 1 : -1;
+
+	if (ab.x < 0 && abs(ab.x) > abs(ab.y))
+		swap(&a.z, &b.z);
+	if (ab.y < 0 && abs(ab.x) < abs(ab.y))
+		swap(&a.z, &b.z);
+
 	if (abs(ab.x) > abs(ab.y))
 		draw_line_x_axis(renderer, a, b, increment);
 	else
@@ -23,31 +34,43 @@ void draw_line(t_renderer renderer, t_vec3i a, t_vec3i b)
 
 void draw_line_x_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i direction)
 {
-	int color_a = 0x00FF0000;
-	int color_b = 0x00FFFF00;
 	t_vec2i ab;
 	float coeff;
 	float y;
 	int x;
-	float color_scaling;
+	float red_inc;
+	float green_inc;
+	float blue_inc;
 
-	color_scaling = a.z;
+	float red;
+	float green;
+	float blue;
 	ab = (t_vec2i){b.x - a.x, b.y - a.y};
 	if (ab.x == 0)
 		return;
 	coeff = fabsf((float)ab.y / ab.x);
 	y = a.y;
 	x = a.x;
+	red_inc = (RED(b.z) - RED(a.z)) / (float)ab.x;
+	green_inc = (GREEN(b.z) - GREEN(a.z)) / (float)ab.x;
+	blue_inc = (BLUE(b.z) - BLUE(a.z)) / (float)ab.x;
+	red = RED(a.z);
+	green = GREEN(a.z);
+	blue = BLUE(a.z);
 	while (x != b.x)
 	{
 		int i = ((int)y * renderer.size.x) + x;
-		int color = color_scaling * color_b + (1 - color_scaling) * color_a;
-		renderer.pixels[i] += color;
-		if (renderer.pixels[i] & 0xFF000000)
-			renderer.pixels[i] = 0x00FFFFFF;
+		renderer.pixels[i] = (uint8_t)red * R_SHIFT
+							 + (uint8_t)green * G_SHIFT
+							 + (uint8_t)blue * B_SHIFT;
+//		if (renderer.pixels[i] & 0xFF000000)
+//			renderer.pixels[i] = 0x00FFFFFF;
 		y += coeff * direction.y;
 		x += direction.x;
-		color_scaling += (1.f / ab.x);
+		red += red_inc;
+		green += green_inc;
+		blue += blue_inc;
+//		printf("0x%08x\n", color);
 	}
 }
 
@@ -57,20 +80,37 @@ void draw_line_y_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i directi
 	float coeff;
 	float x;
 	int y;
+	float red_inc;
+	float green_inc;
+	float blue_inc;
 
+	float red;
+	float green;
+	float blue;
 	ab = (t_vec2i){b.x - a.x, b.y - a.y};
 	if (ab.y == 0)
 		return;
 	coeff = fabsf((float)ab.x / ab.y);
 	x = a.x;
 	y = a.y;
+	red_inc = (RED(b.z) - RED(a.z)) / (float)ab.y;
+	green_inc = (GREEN(b.z) - GREEN(a.z)) / (float)ab.y;
+	blue_inc = (BLUE(b.z) - BLUE(a.z)) / (float)ab.y;
+	red = RED(a.z);
+	green = GREEN(a.z);
+	blue = BLUE(a.z);
 	while (y != b.y)
 	{
 		int i = (y * renderer.size.x) + (int)x;
-		renderer.pixels[i] += 0x00222222;
-		if (renderer.pixels[i] & 0xFF000000)
-			renderer.pixels[i] = 0x00FFFFFF;
+		renderer.pixels[i] = (uint8_t)red * R_SHIFT
+							 + (uint8_t)green * G_SHIFT
+							 + (uint8_t)blue * B_SHIFT;
+//		if (renderer.pixels[i] & 0xFF000000)
+//			renderer.pixels[i] = 0x00FFFFFF;
 		x += coeff * direction.x;
 		y += direction.y;
+		red += red_inc;
+		green += green_inc;
+		blue += blue_inc;
 	}
 }
