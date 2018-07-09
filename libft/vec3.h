@@ -3,6 +3,18 @@
 
 #define DEG_TO_RAD(X) (((X) / 180.f) * 3.14159f)
 
+#define R_MASK (0x00FF0000)
+#define G_MASK (0x0000FF00)
+#define B_MASK (0x000000FF)
+
+#define R_SHIFT (16)
+#define G_SHIFT (8)
+#define B_SHIFT (0)
+
+#define RED(x) ((x & R_MASK) >> R_SHIFT)
+#define GREEN(x) ((x & G_MASK) >> G_SHIFT)
+#define BLUE(x) ((x & B_MASK) >> B_SHIFT)
+
 struct s_vec3
 {
 	float x;
@@ -41,6 +53,7 @@ t_vec3	vec3_min_2D(t_vec3 a, t_vec3 b);
 t_vec3	vec3_mul_scalar(t_vec3 vec, float scalar);
 t_vec3i	vec3_round(t_vec3 vec);
 t_vec2i	vec3_round2D(t_vec3 vec);
+__attribute__((always_inline)) int color_mix(float factor, int a, int b);
 void	vec3_subX(t_vec3 *a, t_vec3 b);
 void	vec3_subXX(t_vec3 *a, float x, float y, float z);
 void	vec3_print(char const *msg, t_vec3 vec);

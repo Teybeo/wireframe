@@ -107,6 +107,19 @@ t_vec2i	vec3_round2D(t_vec3 vec)
 	return res;
 }
 
+int color_mix(float factor, int a, int b)
+{
+	unsigned char red;
+	unsigned char green;
+	unsigned char blue;
+
+	red = (1 - factor) * RED(a) + factor * RED(b);
+	green = (1 - factor) * GREEN(a) + factor * GREEN(b);
+	blue = (1 - factor) * BLUE(a) + factor * BLUE(b);
+
+	return (red << R_SHIFT) + (green << G_SHIFT) + (blue << B_SHIFT);
+}
+
 void	vec3_print(char const* msg, t_vec3 vec)
 {
 	printf("%s %g, %g, %g\n", msg, vec.x, vec.y, vec.z);

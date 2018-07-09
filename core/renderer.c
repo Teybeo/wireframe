@@ -23,20 +23,25 @@ void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
 	renderer->fov_angle = 90;
 	renderer->gradient[0].treshold = 0;
 	renderer->gradient[1].treshold = 0.01;
-	renderer->gradient[2].treshold = 0.5;
-	renderer->gradient[3].treshold = 0.1;
-	renderer->gradient[4].treshold = 0.8;
+	renderer->gradient[2].treshold = 0.2;
+	renderer->gradient[3].treshold = 0.5;
+	renderer->gradient[4].treshold = 0.6;
+	renderer->gradient[5].treshold = 1;
 	renderer->gradient[0].color = 0x000000FF;
-	renderer->gradient[1].color = 0x00FF0000;
-	renderer->gradient[2].color = 0x0000FF00;
-	renderer->gradient[3].color = 0x00008800;
+	renderer->gradient[1].color = 0x00007700;
+	renderer->gradient[2].color = 0x00FFFF88;
+	renderer->gradient[3].color = 0x00880000;
 	renderer->gradient[4].color = 0x00FFFFFF;
+	renderer->gradient[5].color = 0x00FFFFFF;
 	init_camera(&renderer->camera);
 }
 
 int get_color_from_height(t_renderer renderer, float height)
 {
 	int i;
+	float min;
+	float max;
+	float factor;
 
 	height = (height - renderer.map.min.y) / (renderer.map.max.y - renderer.map.min.y);
 	i = 0;
@@ -48,7 +53,11 @@ int get_color_from_height(t_renderer renderer, float height)
 	}
 	i--;
 //	printf("height: %6g = %d\n", height, renderer.gradient[i].color);
-	return renderer.gradient[i].color;
+//	return renderer.gradient[i].color;
+	min = renderer.gradient[i].treshold;
+	max = renderer.gradient[i + 1].treshold;
+	factor = (height - min) / (max - min);
+	return color_mix(factor, renderer.gradient[i].color, renderer.gradient[i + 1].color);
 }
 
 void renderer_draw(t_renderer renderer)
@@ -255,7 +264,7 @@ void renderer_update(t_renderer *renderer)
 	if (elapsed_time >= 20)
 	{
 //		vec3_print("Camera pos: ", renderer->camera.pos);
-//		printf("Frametime: %f ms, %f fps\n", duration, 1000 / duration);
+		printf("Frametime: %f ms, %f fps\n", duration, 1000 / duration);
 		elapsed_time = 0;
 	}
 	timestamp = clock();

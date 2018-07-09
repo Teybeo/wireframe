@@ -12,7 +12,7 @@ add_compile_options(-Wall -Wextra -pedantic -Wno-comment -Rpass=inline -g3)
 #add_compile_options(-flto)
 
 set(CMAKE_C_FLAGS_DEBUG  "-g3")
-set(CMAKE_C_FLAGS_RELEASE "-g3 -flto")
+set(CMAKE_C_FLAGS_RELEASE "-g3 -flto -march=native")
 
 # Backend to use for windowing and events"
 set(GuiBackend "MLX")

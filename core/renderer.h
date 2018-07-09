@@ -9,7 +9,7 @@
 
 #define M_PI_F ((float)M_PI)
 
-#define GRADIENT_COUNT 5
+#define GRADIENT_COUNT 6
 
 enum e_renderer_key {
 	KEY_RUNKNOWN,
