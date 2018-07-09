@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
 
 void draw_line_x_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction);
 void draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction);
@@ -11,22 +12,39 @@ void swap(int *a, int *b)
 	*a = *b;
 	*b = tmp;
 }
+int check(t_renderer *renderer, int color)
+{
+	int found = false;
+	int res;
+	for (int i = 0; i < GRADIENT_COUNT; ++i) {
+		if (renderer->gradient[i].color == color)
+			return 0;
+	}
+	return color;
+}
 void draw_line(t_renderer *renderer, t_vec3i a, t_vec3i b)
 {
 	t_vec2i increment;
 
+	printf("gradient: [%d -> %d]\n", a.z, b.z);
+	int ca = check(renderer, a.z);
+	int cb = check(renderer, b.z);
+	if (ca != 0)
+		printf("WAT: %d\n", ca);
+	if (cb != 0)
+		printf("WAT: %d\n", cb);
 //	printf("(%i, %i) to (%i, %i)\n", a.x, a.y, b.x, b.y);
 	t_vec2i ab = (t_vec2i){b.x - a.x, b.y - a.y};
 
 	increment.x = (ab.x > 0) ? 1 : -1;
 	increment.y = (ab.y > 0) ? 1 : -1;
 
-	if (ab.x < 0 && abs(ab.x) > abs(ab.y))
+	if (ab.x < 0 && abs(ab.x) >= abs(ab.y))
 		swap(&a.z, &b.z);
-	if (ab.y < 0 && abs(ab.x) < abs(ab.y))
+	if (ab.y < 0 && abs(ab.x) <= abs(ab.y))
 		swap(&a.z, &b.z);
 
-	if (abs(ab.x) > abs(ab.y))
+	if (abs(ab.x) >= abs(ab.y))
 		draw_line_x_axis(renderer, a, b, increment);
 	else
 		draw_line_y_axis(renderer, a, b, increment);

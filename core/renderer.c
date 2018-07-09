@@ -28,11 +28,17 @@ void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
 	renderer->gradient[4].treshold = 0.6;
 	renderer->gradient[5].treshold = 1;
 	renderer->gradient[0].color = 0x000000FF;
-	renderer->gradient[1].color = 0x00007700;
+	renderer->gradient[1].color = 0x00008800;
 	renderer->gradient[2].color = 0x00FFFF88;
 	renderer->gradient[3].color = 0x00880000;
 	renderer->gradient[4].color = 0x00FFFFFF;
 	renderer->gradient[5].color = 0x00FFFFFF;
+//	renderer->gradient[0].color = 0;
+//	renderer->gradient[1].color = 1;
+//	renderer->gradient[2].color = 2;
+//	renderer->gradient[3].color = 3;
+//	renderer->gradient[4].color = 4;
+//	renderer->gradient[5].color = 5;
 	init_camera(&renderer->camera);
 }
 
@@ -51,9 +57,10 @@ int get_color_from_height(t_renderer *renderer, float height)
 			break;
 		i++;
 	}
+	i = fminf(i, GRADIENT_COUNT - 1);
 	i--;
-//	printf("height: %6g = %d\n", height, renderer->gradient[i].color);
-//	return renderer->gradient[i].color;
+//	printf("height: %6g = [%d -> %d]\n", height, i, i + 1);
+	return renderer->gradient[i].color;
 	min = renderer->gradient[i].treshold;
 	max = renderer->gradient[i + 1].treshold;
 	factor = (height - min) / (max - min);
@@ -172,7 +179,6 @@ void renderer_draw(t_renderer renderer)
 			bb.x = b_i.x;
 			bb.y = b_i.y;
 			draw_line(&renderer, aa, bb);
-
 		}
 		i++;
 	}
