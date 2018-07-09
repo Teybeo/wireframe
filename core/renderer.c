@@ -36,28 +36,28 @@ void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
 	init_camera(&renderer->camera);
 }
 
-int get_color_from_height(t_renderer renderer, float height)
+int get_color_from_height(t_renderer *renderer, float height)
 {
 	int i;
 	float min;
 	float max;
 	float factor;
 
-	height = (height - renderer.map.min.y) / (renderer.map.max.y - renderer.map.min.y);
+	height = (height - renderer->map.min.y) / (renderer->map.max.y - renderer->map.min.y);
 	i = 0;
 	while (i < GRADIENT_COUNT)
 	{
-		if (height < renderer.gradient[i].treshold)
+		if (height < renderer->gradient[i].treshold)
 			break;
 		i++;
 	}
 	i--;
-//	printf("height: %6g = %d\n", height, renderer.gradient[i].color);
-//	return renderer.gradient[i].color;
-	min = renderer.gradient[i].treshold;
-	max = renderer.gradient[i + 1].treshold;
+//	printf("height: %6g = %d\n", height, renderer->gradient[i].color);
+//	return renderer->gradient[i].color;
+	min = renderer->gradient[i].treshold;
+	max = renderer->gradient[i + 1].treshold;
 	factor = (height - min) / (max - min);
-	return color_mix(factor, renderer.gradient[i].color, renderer.gradient[i + 1].color);
+	return color_mix(factor, renderer->gradient[i].color, renderer->gradient[i + 1].color);
 }
 
 void renderer_draw(t_renderer renderer)
@@ -73,7 +73,6 @@ void renderer_draw(t_renderer renderer)
 	float near = 0.1f;
 	float far = 100.f;
 	float ratio = (renderer.size.y / (float)renderer.size.x);
-	float angle = 130;
 	// Distance from a projection screen of unit width
 	float distance = 1.f / tanf((renderer.fov_angle / 2) * M_PI_F / 180);
 	float z_factor = (-far + near) / (far - near);
@@ -113,8 +112,8 @@ void renderer_draw(t_renderer renderer)
 
 		t_vec3i aa;
 		t_vec3i bb;
-		aa.z = get_color_from_height(renderer, a.y);
-		bb.z = get_color_from_height(renderer, b.y);
+		aa.z = get_color_from_height(&renderer, a.y);
+		bb.z = get_color_from_height(&renderer, b.y);
 
 		a.y *= renderer.scale_factor;
 		b.y *= renderer.scale_factor;
@@ -152,8 +151,8 @@ void renderer_draw(t_renderer renderer)
 			continue;
 		}
 		// Clip to NDC
-		a = vec3_mul_scalar(a, 1 / a_w);
-		b = vec3_mul_scalar(b, 1 / b_w);
+		vec3_mul_scalar_this(&a, 1 / a_w);
+		vec3_mul_scalar_this(&b, 1 / b_w);
 
 		// NDC to Window
 		a.x = a.x * renderer.size.x + (renderer.size.x * 0.5f);
@@ -172,7 +171,7 @@ void renderer_draw(t_renderer renderer)
 			aa.y = a_i.y;
 			bb.x = b_i.x;
 			bb.y = b_i.y;
-			draw_line(renderer, aa, bb);
+			draw_line(&renderer, aa, bb);
 
 		}
 		i++;
@@ -205,7 +204,7 @@ void renderer_draw0(t_renderer renderer) {
 		b_i = vec3_round(b);
 		a_i.z = 0x00FF0000;
 		b_i.z = 0x000000FF;
-		draw_line(renderer, a_i, b_i);
+		draw_line(&renderer, a_i, b_i);
 	}
 //	usleep(100000);
 }

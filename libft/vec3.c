@@ -21,7 +21,7 @@ t_vec3	vec3_sub(t_vec3 a, t_vec3 b)
 	return (res);
 }
 
-void	vec3_subX(t_vec3 *a, t_vec3 b)
+void	vec3_sub_this(t_vec3 *a, t_vec3 b)
 {
 	a->x -= b.x;
 	a->y -= b.y;
@@ -78,6 +78,13 @@ t_vec3 vec3_max_2D(t_vec3 a, t_vec3 b)
 	res.y = fmaxf(a.y, b.y);
 	res.z = fmaxf(a.z, b.z);
 	return res;
+}
+
+void	vec3_mul_scalar_this(t_vec3 *vec, float scalar)
+{
+	vec->x *= scalar;
+	vec->y *= scalar;
+	vec->z *= scalar;
 }
 
 t_vec3	vec3_mul_scalar(t_vec3 vec, float scalar)

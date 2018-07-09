@@ -18,7 +18,8 @@ set(CMAKE_C_FLAGS_RELEASE "-g3 -flto -march=native")
 set(GuiBackend "MLX")
 #set(GuiBackend "SDL")
 
-option(USE_ASAN "Enable ASAN (Unix only)" OFF)
+# AdressSanitizer (linux/mac only)
+set(USE_ASAN OFF)
 
 # On Windows, Force SDL and disable Asan
 if (CMAKE_SYSTEM_NAME MATCHES Windows)

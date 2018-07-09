@@ -53,8 +53,9 @@ t_vec3	vec3_min_2D(t_vec3 a, t_vec3 b);
 t_vec3	vec3_mul_scalar(t_vec3 vec, float scalar);
 t_vec3i	vec3_round(t_vec3 vec);
 t_vec2i	vec3_round2D(t_vec3 vec);
-__attribute__((always_inline)) int color_mix(float factor, int a, int b);
-void	vec3_subX(t_vec3 *a, t_vec3 b);
+int color_mix(float factor, int a, int b);
+void	vec3_mul_scalar_this(t_vec3 *vec, float scalar);
+void	vec3_sub_this(t_vec3 *a, t_vec3 b);
 void	vec3_subXX(t_vec3 *a, float x, float y, float z);
 void	vec3_print(char const *msg, t_vec3 vec);
 

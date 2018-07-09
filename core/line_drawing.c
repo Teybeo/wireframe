@@ -3,15 +3,15 @@
 #include <stdlib.h>
 #include <math.h>
 
-void draw_line_x_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i direction);
-void draw_line_y_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i direction);
+void draw_line_x_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction);
+void draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction);
 void swap(int *a, int *b)
 {
 	int tmp = *a;
 	*a = *b;
 	*b = tmp;
 }
-void draw_line(t_renderer renderer, t_vec3i a, t_vec3i b)
+void draw_line(t_renderer *renderer, t_vec3i a, t_vec3i b)
 {
 	t_vec2i increment;
 
@@ -32,7 +32,7 @@ void draw_line(t_renderer renderer, t_vec3i a, t_vec3i b)
 		draw_line_y_axis(renderer, a, b, increment);
 }
 
-void draw_line_x_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i direction)
+void draw_line_x_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction)
 {
 	t_vec2i ab;
 	float coeff;
@@ -59,8 +59,8 @@ void draw_line_x_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i directi
 	blue = BLUE(a.z);
 	while (x != b.x)
 	{
-		int i = ((int)y * renderer.size.x) + x;
-		renderer.pixels[i] = ((uint8_t)red << R_SHIFT)
+		int i = ((int)y * renderer->size.x) + x;
+		renderer->pixels[i] = ((uint8_t)red << R_SHIFT)
 							 + ((uint8_t)green << G_SHIFT)
 							 + ((uint8_t)blue << B_SHIFT);
 //		if (renderer.pixels[i] & 0xFF000000)
@@ -74,7 +74,7 @@ void draw_line_x_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i directi
 	}
 }
 
-void draw_line_y_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i direction)
+void draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction)
 {
 	t_vec2i ab;
 	float coeff;
@@ -101,8 +101,8 @@ void draw_line_y_axis(t_renderer renderer, t_vec3i a, t_vec3i b, t_vec2i directi
 	blue = BLUE(a.z);
 	while (y != b.y)
 	{
-		int i = (y * renderer.size.x) + (int)x;
-		renderer.pixels[i] = ((uint8_t)red << R_SHIFT)
+		int i = (y * renderer->size.x) + (int)x;
+		renderer->pixels[i] = ((uint8_t)red << R_SHIFT)
 							 + ((uint8_t)green << G_SHIFT)
 							 + ((uint8_t)blue << B_SHIFT);
 //		if (renderer.pixels[i] & 0xFF000000)
