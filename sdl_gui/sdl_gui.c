@@ -9,7 +9,7 @@
 t_camera_key get_camera_key(SDL_Scancode scancode);
 t_renderer_key get_renderer_key(SDL_Scancode scancode);
 
-void sdl_init(t_sdl_app *ctx, t_array segment_array)
+void sdl_init(t_sdl_app *ctx, t_map map)
 {
 	ctx->texture_size.x = 1600;
 	ctx->texture_size.y = 900;
@@ -43,7 +43,7 @@ void sdl_init(t_sdl_app *ctx, t_array segment_array)
 
 	ctx->pixels = malloc(sizeof(uint32_t) * ctx->texture_size.x * ctx->texture_size.y);
 
-	renderer_init(&ctx->renderer, ctx->pixels, segment_array, ctx->texture_size);
+	renderer_init(&ctx->renderer, ctx->pixels, map, ctx->texture_size);
 }
 
 void sdl_run(t_sdl_app *context)
@@ -111,8 +111,8 @@ void sdl_event(t_sdl_app* ctx)
 		{
 			camera_key = get_camera_key(event.key.keysym.scancode);
 			camera_key_event(&ctx->renderer.camera, camera_key, 1);
-			renderer_event(&ctx->renderer, renderer_key);
 			renderer_key = get_renderer_key(event.key.keysym.scancode);
+			renderer_event(&ctx->renderer, renderer_key);
 			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 				ctx->is_mouse_captured = !ctx->is_mouse_captured;
 			SDL_SetRelativeMouseMode(ctx->is_mouse_captured);

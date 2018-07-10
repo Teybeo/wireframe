@@ -4,7 +4,7 @@
 
 int	main(int argc, char **argv)
 {
-	t_array segment_array;
+	t_map map;
 	t_sdl_app context;
 
 	if (argc != 2)
@@ -12,8 +12,8 @@ int	main(int argc, char **argv)
 		ft_putendl("usage:\t./fdf file");
 		return (0);
 	}
-	segment_array = load_fdf(argv[1]);
-	sdl_init(&context, segment_array);
+	map = load_fdf(argv[1]);
+	sdl_init(&context, map);
 	sdl_run(&context);
 	return (0);
 }

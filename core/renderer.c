@@ -60,7 +60,7 @@ int get_color_from_height(t_renderer *renderer, float height)
 	i = fminf(i, GRADIENT_COUNT - 1);
 	i--;
 //	printf("height: %6g = [%d -> %d]\n", height, i, i + 1);
-	return renderer->gradient[i].color;
+//	return renderer->gradient[i].color;
 	min = renderer->gradient[i].treshold;
 	max = renderer->gradient[i + 1].treshold;
 	factor = (height - min) / (max - min);

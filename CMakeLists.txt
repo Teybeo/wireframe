@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.9)
 project(wireframe C)
 
-set(CMAKE_C_STANDARD 90)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS OFF)
+#set(CMAKE_C_STANDARD 90)
+#set(CMAKE_C_STANDARD_REQUIRED ON)
+#set(CMAKE_C_EXTENSIONS OFF)
 #set(CMAKE_VERBOSE_MAKEFILE 1)
 
 # Set warnings globally
-add_compile_options(-Wall -Wextra -pedantic -Wno-comment -Rpass=inline -g3)
+add_compile_options(-Wall -Wextra -g3)
 # lto prevents gdb to stop on breakpoints
 #add_compile_options(-flto)
 

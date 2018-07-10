@@ -12,16 +12,7 @@ void swap(int *a, int *b)
 	*a = *b;
 	*b = tmp;
 }
-int check(t_renderer *renderer, int color)
-{
-	int found = false;
-	int res;
-	for (int i = 0; i < GRADIENT_COUNT; ++i) {
-		if (renderer->gradient[i].color == color)
-			return 0;
-	}
-	return color;
-}
+
 void draw_line(t_renderer *renderer, t_vec3i a, t_vec3i b)
 {
 	t_vec2i increment;

@@ -19,7 +19,7 @@ struct s_sdl_app {
 };
 typedef struct s_sdl_app t_sdl_app;
 
-void	sdl_init(t_sdl_app *ctx, t_array array);
+void	sdl_init(t_sdl_app *ctx, t_map map);
 void	sdl_run(t_sdl_app *app);
 void	sdl_event(t_sdl_app *ctx);
 void	sdl_update(t_sdl_app *context);
