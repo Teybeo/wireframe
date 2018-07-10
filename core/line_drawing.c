@@ -26,23 +26,11 @@ void draw_line(t_renderer *renderer, t_vec3i a, t_vec3i b)
 {
 	t_vec2i increment;
 
-	printf("gradient: [%d -> %d]\n", a.z, b.z);
-	int ca = check(renderer, a.z);
-	int cb = check(renderer, b.z);
-	if (ca != 0)
-		printf("WAT: %d\n", ca);
-	if (cb != 0)
-		printf("WAT: %d\n", cb);
 //	printf("(%i, %i) to (%i, %i)\n", a.x, a.y, b.x, b.y);
 	t_vec2i ab = (t_vec2i){b.x - a.x, b.y - a.y};
 
 	increment.x = (ab.x > 0) ? 1 : -1;
 	increment.y = (ab.y > 0) ? 1 : -1;
-
-	if (ab.x < 0 && abs(ab.x) >= abs(ab.y))
-		swap(&a.z, &b.z);
-	if (ab.y < 0 && abs(ab.x) <= abs(ab.y))
-		swap(&a.z, &b.z);
 
 	if (abs(ab.x) >= abs(ab.y))
 		draw_line_x_axis(renderer, a, b, increment);
@@ -85,9 +73,9 @@ void draw_line_x_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direct
 //			renderer.pixels[i] = 0x00FFFFFF;
 		y += coeff * direction.y;
 		x += direction.x;
-		red += red_inc;
-		green += green_inc;
-		blue += blue_inc;
+		red += direction.x * red_inc;
+		green += direction.x * green_inc;
+		blue += direction.x * blue_inc;
 //		printf("0x%08x\n", color);
 	}
 }
@@ -127,9 +115,9 @@ void draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direct
 //			renderer.pixels[i] = 0x00FFFFFF;
 		x += coeff * direction.x;
 		y += direction.y;
-		red += red_inc;
-		green += green_inc;
-		blue += blue_inc;
+		red += direction.y * red_inc;
+		green += direction.y * green_inc;
+		blue += direction.y * blue_inc;
 	}
 }
 

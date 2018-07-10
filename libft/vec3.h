@@ -7,9 +7,9 @@
 #define G_MASK (0x0000FF00)
 #define B_MASK (0x000000FF)
 
-#define R_SHIFT (16)
-#define G_SHIFT (8)
-#define B_SHIFT (0)
+#define R_SHIFT (16u)
+#define G_SHIFT (8u)
+#define B_SHIFT (0u)
 
 #define RED(x) ((x & R_MASK) >> R_SHIFT)
 #define GREEN(x) ((x & G_MASK) >> G_SHIFT)
