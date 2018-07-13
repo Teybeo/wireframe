@@ -39,11 +39,13 @@ void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
 //	renderer->gradient[3].color = 3;
 //	renderer->gradient[4].color = 4;
 //	renderer->gradient[5].color = 5;
+	renderer->depth_buffer = malloc(sizeof(float) * size.x * size.y);
 	init_camera(&renderer->camera);
 }
 
 int get_color_from_height(t_renderer *renderer, float height)
 {
+//	return 0x00FFFFFF;
 	int i;
 	float min;
 	float max;
@@ -73,6 +75,7 @@ void renderer_draw(t_renderer renderer)
 	int i;
 
 	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y, sizeof(uint32_t));
+	ft_memzero(renderer.depth_buffer, renderer.size.x * renderer.size.y, sizeof(float));
 
 	segment_ptr = renderer.map.segment_array.data;
 	i = 0;
@@ -178,7 +181,7 @@ void renderer_draw(t_renderer renderer)
 			aa.y = a_i.y;
 			bb.x = b_i.x;
 			bb.y = b_i.y;
-			draw_line(&renderer, aa, bb);
+			draw_line(&renderer, aa, bb, -a_w, -b_w);
 		}
 		i++;
 	}
@@ -210,7 +213,7 @@ void renderer_draw0(t_renderer renderer) {
 		b_i = vec3_round(b);
 		a_i.z = 0x00FF0000;
 		b_i.z = 0x000000FF;
-		draw_line(&renderer, a_i, b_i);
+		draw_line(&renderer, a_i, b_i, 0, 0);
 	}
 //	usleep(100000);
 }
@@ -232,8 +235,8 @@ void renderer_draw1(t_renderer renderer) {
 		a = vec3_add(a, center);
 		b = vec3_sub(center, a);
 //		draw_line(renderer, center, a);
-		t_vec2i a_i = vec3_round2D(a);
-		t_vec2i center_i = vec3_round2D(center);
+//		t_vec2i a_i = vec3_round2D(a);
+//		t_vec2i center_i = vec3_round2D(center);
 //		draw_line(renderer, a_i, center_i);
 	}
 	if (angle > 360)
@@ -269,7 +272,7 @@ void renderer_update(t_renderer *renderer)
 	if (elapsed_time >= 20)
 	{
 //		vec3_print("Camera pos: ", renderer->camera.pos);
-		printf("Frametime: %f ms, %f fps\n", duration, 1000 / duration);
+		printf("Frametime: %.0f ms, %.2f fps\n", duration, 1000 / duration);
 		elapsed_time = 0;
 	}
 	timestamp = clock();

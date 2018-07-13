@@ -31,6 +31,7 @@ typedef struct grad_step grad_step;
 struct s_renderer {
 	t_map		map;
 	uint32_t	*pixels;
+	float		*depth_buffer;
 	t_vec2i		size;
 	t_camera	camera;
 	float		scale_factor;
