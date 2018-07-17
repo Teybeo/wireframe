@@ -3,11 +3,10 @@
 
 #include "map_reader.h"
 #include "camera.h"
+#include "mat4.h"
 
 #include <array.h>
 #include <stdint.h>
-
-#define M_PI_F ((float)M_PI)
 
 #define GRADIENT_COUNT 6
 
@@ -34,15 +33,16 @@ struct s_renderer {
 	float		*depth_buffer;
 	t_vec2i		size;
 	t_camera	camera;
+	grad_step	gradient[GRADIENT_COUNT];
+	t_mat4		projection;
 	float		scale_factor;
 	float		fov_angle;
-	grad_step	gradient[GRADIENT_COUNT];
 };
 typedef struct s_renderer t_renderer;
 
 void renderer_init(t_renderer *renderer, void *pixels, t_map map, t_vec2i size);
 void renderer_event(t_renderer* renderer, t_renderer_key key);
-void renderer_update(t_renderer *renderer);
+void renderer_update(t_renderer *r);
 void renderer_draw(t_renderer renderer);
 void renderer_draw0(t_renderer renderer);
 

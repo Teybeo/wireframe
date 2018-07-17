@@ -40,6 +40,7 @@ void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
 //	renderer->gradient[4].color = 4;
 //	renderer->gradient[5].color = 5;
 	renderer->depth_buffer = malloc(sizeof(float) * size.x * size.y);
+	init_projection(&renderer->projection, 0.1, 100, size.x / size.y, renderer->fov_angle);
 	init_camera(&renderer->camera);
 }
 
@@ -80,17 +81,10 @@ void renderer_draw(t_renderer renderer)
 	segment_ptr = renderer.map.segment_array.data;
 	i = 0;
 
-	float near = 0.1f;
-	float far = 100.f;
-	float ratio = (renderer.size.y / (float)renderer.size.x);
-	// Distance from a projection screen of unit width
-	float distance = 1.f / tanf((renderer.fov_angle / 2) * M_PI_F / 180);
-	float z_factor = (-far + near) / (far - near);
-	float z_translation = ((2 * far * near) / (far - near));
-
 	t_mat4 model_view;
 	t_mat4 rotation;
 	t_mat4 translation;
+	t_mat4 model_clip;
 
 	mat4_identity(&translation);
 	mat4_translate_by(&translation, renderer.camera.pos);
@@ -98,27 +92,21 @@ void renderer_draw(t_renderer renderer)
 	init_with_mat3(&rotation, renderer.camera.rotation);
 
 	if (renderer.camera.mode == CAMERA_FREEFLY)
-	{
-		model_view = rotation;
-//		mat4_mul(&model_view, &translation);
-		model_view = mat4_mul2(model_view, translation);
-	}
+		mat4_mul_ptr(&model_view, &rotation, &translation);
 	else
-	{
-		model_view = translation;
-//		mat4_mul(&model_view, &rotation);
-		model_view = mat4_mul2(model_view, rotation);
-	}
+		mat4_mul_ptr(&model_view, &translation, &rotation);
 
 	t_vec3 vec_translation = renderer.camera.pos;
 
 	if (renderer.camera.mode == CAMERA_FREEFLY)
 		mat3_mul_vec3X(&renderer.camera.rotation, &vec_translation);
 
+	mat4_mul_ptr(&model_clip, &renderer.projection, &model_view);
+
 	while (i < renderer.map.segment_array.size)
 	{
-		t_vec3 a = segment_ptr[i].start;
-		t_vec3 b = segment_ptr[i].end;
+		t_vec4 a = vec4(segment_ptr[i].start);
+		t_vec4 b = vec4(segment_ptr[i].end);
 
 		t_vec3i aa;
 		t_vec3i bb;
@@ -127,42 +115,26 @@ void renderer_draw(t_renderer renderer)
 
 		a.y *= renderer.scale_factor;
 		b.y *= renderer.scale_factor;
-//		mat3_mul_vec3X(&renderer.camera.rotation, &a);
-//		mat3_mul_vec3X(&renderer.camera.rotation, &b);
-//		vec3_subXX(&a, vec_translation.x, vec_translation.y, vec_translation.z);
-//		vec3_subXX(&b, vec_translation.x, vec_translation.y, vec_translation.z);
-//
-		mat4_mul_vec(&model_view, &a);
-		mat4_mul_vec(&model_view, &b);
 
-		// Eye to Clip
-		float a_w = -a.z;
-		float b_w = -b.z;
-		a.x *= distance * ratio;
-		a.y *= distance;
-		b.x *= distance * ratio;
-		b.y *= distance;
-
-		a.z *= z_factor;
-		a.z -= z_translation;
-		b.z *= z_factor;
-		b.z -= z_translation;
-
+		// Model to View to Clip
+		mat4_mul_vec(&model_clip, &a);
+		mat4_mul_vec(&model_clip, &b);
 		// Discard line if one or both points outside clipping volume
-		if ((a.x < -a_w || a.x > a_w)
-			||	(a.y < -a_w || a.y > a_w)
-			||	(a.z < -a_w || a.z > a_w)
-			||	(b.x < -b_w || b.x > b_w)
-			||	(b.y < -b_w || b.y > b_w)
-			||	(b.z < -b_w || b.z > b_w)
-				)
+		if ((a.x < -a.w || a.x > a.w)
+			||	(a.y < -a.w || a.y > a.w)
+			||	(a.z < -a.w || a.z > a.w)
+			||	(b.x < -b.w || b.x > b.w)
+			||	(b.y < -b.w || b.y > b.w)
+			||	(b.z < -b.w || b.z > b.w)
+			)
 		{
 			i++;
 			continue;
 		}
 		// Clip to NDC
-		vec3_mul_scalar_this(&a, 1 / a_w);
-		vec3_mul_scalar_this(&b, 1 / b_w);
+		// (We keep w untouched for depth usage)
+		vec4_mul_scalar_this(&a, 1 / a.w);
+		vec4_mul_scalar_this(&b, 1 / b.w);
 
 		// NDC to Window
 		a.x = a.x * renderer.size.x + (renderer.size.x * 0.5f);
@@ -170,9 +142,8 @@ void renderer_draw(t_renderer renderer)
 		b.x = b.x * renderer.size.x + (renderer.size.x * 0.5f);
 		b.y = -b.y * renderer.size.y + (renderer.size.y * 0.5f);
 
-		t_vec2i a_i = vec3_round2D(a);
-		t_vec2i b_i = vec3_round2D(b);
-
+		t_vec2i a_i = vec4_round2D(a);
+		t_vec2i b_i = vec4_round2D(b);
 
 		if (clip_line(&a_i, &b_i, renderer.size))
 		{
@@ -181,7 +152,7 @@ void renderer_draw(t_renderer renderer)
 			aa.y = a_i.y;
 			bb.x = b_i.x;
 			bb.y = b_i.y;
-			draw_line(&renderer, aa, bb, -a_w, -b_w);
+			draw_line(&renderer, aa, bb, -a.w, -b.w);
 		}
 		i++;
 	}
@@ -260,9 +231,10 @@ void renderer_event(t_renderer *renderer, t_renderer_key key)
 		renderer->fov_angle -= 5;
 }
 
-void renderer_update(t_renderer *renderer)
+void renderer_update(t_renderer *r)
 {
-	camera_update(&renderer->camera);
+	camera_update(&r->camera);
+	init_projection(&r->projection, 0.1, 100, (float)r->size.y / r->size.x, r->fov_angle);
 
 	static clock_t timestamp = 0;
 	static float elapsed_time = 0;
@@ -271,7 +243,7 @@ void renderer_update(t_renderer *renderer)
 	elapsed_time += duration;
 	if (elapsed_time >= 20)
 	{
-//		vec3_print("Camera pos: ", renderer->camera.pos);
+//		vec3_print("Camera pos: ", r->camera.pos);
 		printf("Frametime: %.0f ms, %.2f fps\n", duration, 1000 / duration);
 		elapsed_time = 0;
 	}

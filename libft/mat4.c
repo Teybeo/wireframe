@@ -1,3 +1,4 @@
+#include <math.h>
 #include "mat4.h"
 #include "libft.h"
 
@@ -40,41 +41,73 @@ void	mat4_translate_by(t_mat4 *mat4, t_vec3 vec)
 	mat4->values[2][3] -= vec.z;
 }
 
-void	mat4_mul_vec(t_mat4 *mat, t_vec3 *vec)
+void	mat4_mul_vec(t_mat4 *mat, t_vec4 *vec)
 {
-	t_vec3 temp = *vec;
+	t_vec4 temp = *vec;
 	vec->x = temp.x * mat->values[0][0] +
 			temp.y * mat->values[0][1] +
 			temp.z * mat->values[0][2] +
-			1 * mat->values[0][3];
+			temp.w * mat->values[0][3];
 
 	vec->y = temp.x * mat->values[1][0] +
 			temp.y * mat->values[1][1] +
 			temp.z * mat->values[1][2] +
-			1 * mat->values[1][3];
+			temp.w * mat->values[1][3];
 
 	vec->z = temp.x * mat->values[2][0] +
 			temp.y * mat->values[2][1] +
 			temp.z * mat->values[2][2] +
-			1 * mat->values[2][3];
+			temp.w * mat->values[2][3];
+
+	vec->w = temp.x * mat->values[3][0] +
+			temp.y * mat->values[3][1] +
+			temp.z * mat->values[3][2] +
+			temp.w * mat->values[3][3];
 }
 
-void	mat4_mul(t_mat4 *a, t_mat4 *b)
+void mat4_mul_ptr(t_mat4 *this, t_mat4 const *lhs, t_mat4 const *rhs)
 {
-	t_mat4 res;
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			res.values[i][j] =
-					a->values[i][0] * b->values[0][j] +
-					a->values[i][1] * b->values[1][j] +
-					a->values[i][2] * b->values[2][j] +
-					a->values[i][3] * b->values[3][j];
+	int i;
+	int j;
+
+	i = -1;
+	while (++i < 4)
+	{
+		j = -1;
+		while (++j < 4)
+		{
+			this->values[i][j] =
+					lhs->values[i][0] * rhs->values[0][j] +
+					lhs->values[i][1] * rhs->values[1][j] +
+					lhs->values[i][2] * rhs->values[2][j] +
+					lhs->values[i][3] * rhs->values[3][j];
 		}
 	}
-	*a = res;
 }
 
-t_mat4 mat4_mul2(t_mat4 lhs, t_mat4 rhs)
+void mat4_mul_this(t_mat4 *lhs, t_mat4 const *rhs)
+{
+	t_mat4 res;
+	int i;
+	int j;
+
+	i = -1;
+	while (++i < 4)
+	{
+		j = -1;
+		while (++j < 4)
+		{
+			res.values[i][j] =
+					lhs->values[i][0] * rhs->values[0][j] +
+					lhs->values[i][1] * rhs->values[1][j] +
+					lhs->values[i][2] * rhs->values[2][j] +
+					lhs->values[i][3] * rhs->values[3][j];
+		}
+	}
+	*lhs = res;
+}
+
+t_mat4 mat4_mul(t_mat4 lhs, t_mat4 rhs)
 {
 	t_mat4 res;
 	int i;
@@ -94,4 +127,20 @@ t_mat4 mat4_mul2(t_mat4 lhs, t_mat4 rhs)
 		}
 	}
 	return res;
+}
+
+void init_projection(t_mat4 *m, float near, float far, float aspect_ratio, float fov_angle)
+{
+	// Distance from a projection screen of unit width
+	float distance = 1.f / tanf((fov_angle / 2) * M_PI_F / 180);
+	float z_factor = (-far + near) / (far - near);
+	float z_translation = ((2 * far * near) / (far - near));
+
+	mat4_identity(m);
+	m->values[0][0] = distance * aspect_ratio;
+	m->values[1][1] = distance;
+	m->values[2][2] = z_factor;
+	m->values[2][3] = -z_translation;
+	m->values[3][2] = -1;
+	m->values[3][3] = 0;
 }

@@ -65,17 +65,18 @@ void draw_line_x_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direct
 		int i = ((int)y * renderer->size.x) + x;
 		if (renderer->depth_buffer[i] < z || renderer->depth_buffer[i] == 0)
 		{
-			float z_scale = 1 - (fabsf(z) / 200);
+			renderer->depth_buffer[i] = z;
+//			float z_scale = 1 - (fabsf(z) / 200);
+			float z_scale = 1 - (fabsf(z) * 0.005f);
 			z_scale = z_scale < 0 ? 0 : z_scale;
 //			if (z_scale < 0 || z_scale > 1)
 //				printf("z: %g\n", z);
-			renderer->pixels[i] = ((uint8_t) (((red / 255.f) * z_scale) * 255.f) << R_SHIFT)
-								  + ((uint8_t) (((green / 255.f) * z_scale) * 255.f) << G_SHIFT)
-								  + ((uint8_t) (((blue / 255.f) * z_scale) * 255.f) << B_SHIFT);
-//			renderer->pixels[i] = ((uint8_t)red << R_SHIFT)
-//								 + ((uint8_t)green << G_SHIFT)
-//								 + ((uint8_t)blue << B_SHIFT);
-			renderer->depth_buffer[i] = z;
+//			renderer->pixels[i] = ((uint8_t) (((red / 255.f) * z_scale) * 255.f) << R_SHIFT)
+//								  + ((uint8_t) (((green / 255.f) * z_scale) * 255.f) << G_SHIFT)
+//								  + ((uint8_t) (((blue / 255.f) * z_scale) * 255.f) << B_SHIFT);
+			renderer->pixels[i] = ((uint8_t)red << R_SHIFT)
+								 + ((uint8_t)green << G_SHIFT)
+								 + ((uint8_t)blue << B_SHIFT);
 	//		if (renderer.pixels[i] & 0xFF000000)
 	//			renderer.pixels[i] = 0x00FFFFFF;
 		}
@@ -122,17 +123,21 @@ void draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direct
 		int i = (y * renderer->size.x) + (int)x;
 		if (renderer->depth_buffer[i] < z || renderer->depth_buffer[i] == 0)
 		{
+			renderer->depth_buffer[i] = z;
 //			red = ((red / 255.f) * fabsf(z)) * 255.f;
 //			blue = ((blue / 255.f) * fabsf(z)) * 255.f;
 //			green = ((green / 255.f) * fabsf(z)) * 255.f;
-			float z_scale = 1 - (fabsf(z) / 200);
+//			float z_scale = 1 - (fabsf(z) / 200);
+			float z_scale = 1 - (fabsf(z) * 0.005f);
 			z_scale = z_scale < 0 ? 0 : z_scale;
-			if (z_scale < 0 || z_scale > 1)
-				printf("z: %g -> %g\n", z, z_scale);
-			renderer->pixels[i] = ((uint8_t) (((red / 255.f) * z_scale) * 255.f) << R_SHIFT)
-								  + ((uint8_t) (((green / 255.f) * z_scale) * 255.f) << G_SHIFT)
-								  + ((uint8_t) (((blue / 255.f) * z_scale) * 255.f) << B_SHIFT);
-			renderer->depth_buffer[i] = z;
+//			if (z_scale < 0 || z_scale > 1)
+//				printf("z: %g -> %g\n", z, z_scale);
+//			renderer->pixels[i] = ((uint8_t) (((red / 255.f) * z_scale) * 255.f) << R_SHIFT)
+//								  + ((uint8_t) (((green / 255.f) * z_scale) * 255.f) << G_SHIFT)
+//								  + ((uint8_t) (((blue / 255.f) * z_scale) * 255.f) << B_SHIFT);
+			renderer->pixels[i] = ((uint8_t)red << R_SHIFT)
+								  + ((uint8_t)green << G_SHIFT)
+								  + ((uint8_t)blue << B_SHIFT);
 //		if (renderer.pixels[i] & 0xFF000000)
 //			renderer.pixels[i] = 0x00FFFFFF;
 		}

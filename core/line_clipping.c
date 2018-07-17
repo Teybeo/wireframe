@@ -4,6 +4,7 @@
 ** Viewport is implicitly defined as [0, 0] -> [window.x, window.y]
 ** Maybe need to handle arbitrary viewport origin ?
 */
+int clip_line_int(t_vec2i *a, t_vec2i *b, t_vec2i window);
 
 char get_area_code(t_vec2i point, t_vec2i window)
 {

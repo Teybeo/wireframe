@@ -7,7 +7,7 @@ project(wireframe C)
 #set(CMAKE_VERBOSE_MAKEFILE 1)
 
 # Set warnings globally
-add_compile_options(-Wall -Wextra -g3)
+add_compile_options(-Wall -Wextra)
 # lto prevents gdb to stop on breakpoints
 #add_compile_options(-flto)
 

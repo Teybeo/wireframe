@@ -80,7 +80,7 @@ t_vec3 vec3_max_2D(t_vec3 a, t_vec3 b)
 	return res;
 }
 
-void	vec3_mul_scalar_this(t_vec3 *vec, float scalar)
+void	vec4_mul_scalar_this(t_vec4 *vec, float scalar)
 {
 	vec->x *= scalar;
 	vec->y *= scalar;
@@ -106,11 +106,13 @@ t_vec3i	vec3_round(t_vec3 vec)
 	return res;
 }
 
-t_vec2i	vec3_round2D(t_vec3 vec)
+t_vec2i	vec4_round2D(t_vec4 vec)
 {
 	t_vec2i res;
-	res.x = (int)roundf(vec.x);
-	res.y = (int)roundf(vec.y);
+//	res.x = (int)roundf(vec.x);
+//	res.y = (int)roundf(vec.y);
+	res.x = (int)(vec.x + 0.5f);
+	res.y = (int)(vec.y + 0.5f);
 	return res;
 }
 
@@ -130,4 +132,14 @@ int color_mix(float factor, int a, int b)
 void	vec3_print(char const* msg, t_vec3 vec)
 {
 	printf("%s %g, %g, %g\n", msg, vec.x, vec.y, vec.z);
+}
+
+t_vec4 vec4(t_vec3 v)
+{
+	t_vec4 res;
+	res.x = v.x;
+	res.y = v.y;
+	res.z = v.z;
+	res.w = 1;
+	return res;
 }
