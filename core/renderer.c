@@ -96,11 +96,6 @@ void renderer_draw(t_renderer renderer)
 	else
 		mat4_mul_ptr(&model_view, &translation, &rotation);
 
-	t_vec3 vec_translation = renderer.camera.pos;
-
-	if (renderer.camera.mode == CAMERA_FREEFLY)
-		mat3_mul_vec3X(&renderer.camera.rotation, &vec_translation);
-
 	mat4_mul_ptr(&model_clip, &renderer.projection, &model_view);
 
 	while (i < renderer.map.segment_array.size)
@@ -110,8 +105,11 @@ void renderer_draw(t_renderer renderer)
 
 		t_vec3i aa;
 		t_vec3i bb;
-		aa.z = get_color_from_height(&renderer, a.y);
-		bb.z = get_color_from_height(&renderer, b.y);
+		aa.z = segment_ptr[i].start_color;
+		bb.z = segment_ptr[i].end_color;
+
+//		aa.z = get_color_from_height(&renderer, a.y);
+//		bb.z = get_color_from_height(&renderer, b.y);
 
 		a.y *= renderer.scale_factor;
 		b.y *= renderer.scale_factor;
