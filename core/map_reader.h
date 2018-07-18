@@ -1,7 +1,7 @@
 #ifndef MAP_READER_H
 #define MAP_READER_H
 
-#include <array.h>
+#include "array.h"
 #include "vec3.h"
 
 struct s_map

@@ -3,6 +3,7 @@ add_library(core STATIC "")
 target_sources(core
         PRIVATE
             "${CMAKE_CURRENT_LIST_DIR}/map_reader.c"
+            "${CMAKE_CURRENT_LIST_DIR}/map_preprocess.c"
             "${CMAKE_CURRENT_LIST_DIR}/renderer.c"
             "${CMAKE_CURRENT_LIST_DIR}/camera.c"
             "${CMAKE_CURRENT_LIST_DIR}/errors.c"
