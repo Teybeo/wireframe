@@ -19,6 +19,7 @@ enum e_camera_key {
 	KEY_RIGHT_ARROW,
 	KEY_CAMERA_MODE_TOGGLE,
 	KEY_CAMERA_RESET,
+	KEY_CAMERA_PRINT_POS,
 	KEY_COUNT
 };
 typedef enum e_camera_key t_camera_key;

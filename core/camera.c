@@ -46,6 +46,9 @@ void camera_key_event(t_camera *camera, t_camera_key key, int state)
 		camera->x_angle = 0;
 		camera->y_angle = 0;
 	}
+	if (key == KEY_CAMERA_PRINT_POS && state == 0)
+		vec3_print("Camera pos: ", camera->pos);
+
 }
 
 void	camera_mouse_event(t_camera *camera, int x, int y)

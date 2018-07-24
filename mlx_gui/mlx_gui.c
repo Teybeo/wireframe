@@ -155,6 +155,7 @@ t_camera_key get_camera_key(int keycode)
 	table[MLX_KEY_RIGHT] = KEY_RIGHT_ARROW;
 	table[MLX_KEY_C] = KEY_CAMERA_MODE_TOGGLE;
 	table[MLX_KEY_R] = KEY_CAMERA_RESET;
+	table[MLX_KEY_P] = KEY_CAMERA_PRINT_POS;
 	if (keycode >= MLX_KEY_MAX)
 		return KEY_UNKNOWN;
 	return table[keycode];
