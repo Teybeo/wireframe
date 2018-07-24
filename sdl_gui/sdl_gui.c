@@ -146,6 +146,7 @@ t_camera_key get_camera_key(SDL_Scancode scancode)
 	table[SDL_SCANCODE_RIGHT] = KEY_RIGHT_ARROW;
 	table[SDL_SCANCODE_C] = KEY_CAMERA_MODE_TOGGLE;
 	table[SDL_SCANCODE_R] = KEY_CAMERA_RESET;
+	table[SDL_SCANCODE_P] = KEY_CAMERA_PRINT_POS;
 
 	return table[scancode];
 }
