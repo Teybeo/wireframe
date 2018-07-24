@@ -8,8 +8,6 @@
 #include <array.h>
 #include <stdint.h>
 
-#define GRADIENT_COUNT 6
-
 enum e_renderer_key {
 	KEY_RUNKNOWN,
 	KEY_SCALE_UP,
@@ -20,20 +18,12 @@ enum e_renderer_key {
 };
 typedef enum e_renderer_key t_renderer_key;
 
-struct grad_step
-{
-	int		color;
-	float	treshold;
-};
-typedef struct grad_step grad_step;
-
 struct s_renderer {
 	t_map		map;
 	uint32_t	*pixels;
 	float		*depth_buffer;
 	t_vec2i		size;
 	t_camera	camera;
-	grad_step	gradient[GRADIENT_COUNT];
 	t_mat4		projection;
 	float		scale_factor;
 	float		fov_angle;

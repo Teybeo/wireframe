@@ -21,53 +21,9 @@ void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
 	renderer->pixels = pixels;
 	renderer->scale_factor = 0.25f;
 	renderer->fov_angle = 90;
-	renderer->gradient[0].treshold = 0;
-	renderer->gradient[1].treshold = 0.01;
-	renderer->gradient[2].treshold = 0.2;
-	renderer->gradient[3].treshold = 0.5;
-	renderer->gradient[4].treshold = 0.6;
-	renderer->gradient[5].treshold = 1;
-	renderer->gradient[0].color = 0x000000FF;
-	renderer->gradient[1].color = 0x00008800;
-	renderer->gradient[2].color = 0x00FFFF88;
-	renderer->gradient[3].color = 0x00880000;
-	renderer->gradient[4].color = 0x00FFFFFF;
-	renderer->gradient[5].color = 0x00FFFFFF;
-//	renderer->gradient[0].color = 0;
-//	renderer->gradient[1].color = 1;
-//	renderer->gradient[2].color = 2;
-//	renderer->gradient[3].color = 3;
-//	renderer->gradient[4].color = 4;
-//	renderer->gradient[5].color = 5;
 	renderer->depth_buffer = malloc(sizeof(float) * size.x * size.y);
 	init_projection(&renderer->projection, 0.1, 100, size.x / size.y, renderer->fov_angle);
 	init_camera(&renderer->camera);
-}
-
-int get_color_from_height(t_renderer *renderer, float height)
-{
-//	return 0x00FFFFFF;
-	int i;
-	float min;
-	float max;
-	float factor;
-
-	height = (height - renderer->map.min.y) / (renderer->map.max.y - renderer->map.min.y);
-	i = 0;
-	while (i < GRADIENT_COUNT)
-	{
-		if (height < renderer->gradient[i].treshold)
-			break;
-		i++;
-	}
-	i = fminf(i, GRADIENT_COUNT - 1);
-	i--;
-//	printf("height: %6g = [%d -> %d]\n", height, i, i + 1);
-//	return renderer->gradient[i].color;
-	min = renderer->gradient[i].treshold;
-	max = renderer->gradient[i + 1].treshold;
-	factor = (height - min) / (max - min);
-	return color_mix(factor, renderer->gradient[i].color, renderer->gradient[i + 1].color);
 }
 
 void renderer_draw(t_renderer renderer)
@@ -203,6 +159,7 @@ void renderer_draw1(t_renderer renderer) {
 		a.y = sinf(rad) * length;
 		a = vec3_add(a, center);
 		b = vec3_sub(center, a);
+		(void)b;
 //		draw_line(renderer, center, a);
 //		t_vec2i a_i = vec3_round2D(a);
 //		t_vec2i center_i = vec3_round2D(center);
@@ -241,7 +198,6 @@ void renderer_update(t_renderer *r)
 	elapsed_time += duration;
 	if (elapsed_time >= 20)
 	{
-//		vec3_print("Camera pos: ", r->camera.pos);
 		printf("Frametime: %.0f ms, %.2f fps\n", duration, 1000 / duration);
 		elapsed_time = 0;
 	}

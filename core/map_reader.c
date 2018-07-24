@@ -62,7 +62,7 @@ void	add_vertical_segments(t_array *segment_array,
 	count = (int)fminf(point_array.size, prev_point_array.size);
 	while (i < count)
 	{
-		segment = (t_segment){prev_point_ptr[i], 0, point_ptr[i]};
+		segment = (t_segment){prev_point_ptr[i], 0, point_ptr[i], 0};
 		array_append(segment_array, &segment, 1);
 		i++;
 	}
@@ -78,7 +78,7 @@ void	add_horizontal_segments(t_array *segment_array, t_array point_array)
 	i = 0;
 	while ((i + 1) < point_array.size)
 	{
-		segment = (t_segment){point_ptr[i], 0, point_ptr[i + 1]};
+		segment = (t_segment){point_ptr[i], 0, point_ptr[i + 1], 0};
 		array_append(segment_array, &segment, 1);
 		i++;
 	}

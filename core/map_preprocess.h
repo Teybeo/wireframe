@@ -3,6 +3,13 @@
 
 #include "map_reader.h"
 
+#define GRADIENT_COUNT 6
+
+struct grad_step
+{
+	int		color;
+	float	treshold;
+};
 typedef struct grad_step grad_step;
 
 void	do_center_map(t_map *map);
