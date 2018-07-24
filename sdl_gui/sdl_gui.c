@@ -17,13 +17,24 @@ void sdl_init(t_sdl_app *ctx, t_map map)
 
 	SDL_Init(SDL_INIT_VIDEO);
 
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK , SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	int value, major, minor;
+	SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &value);
+	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
+	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
+	printf("context profile: %d\n", value);
+	printf("context version: %d.%d\n", major, minor);
 
 	ctx->window = SDL_CreateWindow("Wireframe",
 							  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 							  ctx->texture_size.x, ctx->texture_size.y,
 							  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
-	SDL_SetHintWithPriority(SDL_HINT_RENDER_VSYNC, "1", SDL_HINT_OVERRIDE);
+//	SDL_SetHintWithPriority(SDL_HINT_RENDER_VSYNC, "1", SDL_HINT_OVERRIDE);
+	SDL_SetHintWithPriority(SDL_HINT_RENDER_DRIVER, "opengl", SDL_HINT_OVERRIDE);
 
 	ctx->sdl_renderer = SDL_CreateRenderer(ctx->window, -1,
 										    SDL_RENDERER_ACCELERATED
@@ -38,10 +49,18 @@ void sdl_init(t_sdl_app *ctx, t_map map)
 
 	ctx->texture = SDL_CreateTexture(ctx->sdl_renderer,
 										 SDL_PIXELFORMAT_ARGB8888,
+//										 SDL_TEXTUREACCESS_TARGET,
 										 SDL_TEXTUREACCESS_STREAMING,
 										 ctx->texture_size.x, ctx->texture_size.y);
+//	ctx->bg_texture = SDL_CreateTexture(ctx->sdl_renderer,
+//										SDL_PIXELFORMAT_ARGB8888,
+//										SDL_TEXTUREACCESS_STATIC,
+//										ctx->texture_size.x, ctx->texture_size.y);
 
 	ctx->pixels = malloc(sizeof(uint32_t) * ctx->texture_size.x * ctx->texture_size.y);
+
+	ctx->bg_texture = malloc(sizeof(uint32_t) * ctx->texture_size.x * ctx->texture_size.y);
+	memset(ctx->bg_texture, 0, sizeof(uint32_t) * ctx->texture_size.x * ctx->texture_size.y);
 
 	renderer_init(&ctx->renderer, ctx->pixels, map, ctx->texture_size);
 }
@@ -61,9 +80,32 @@ void sdl_draw(t_sdl_app *ctx)
 {
 
 #ifndef SDL_RENDER
-	renderer_draw(ctx->renderer);
+	SDL_SetRenderDrawColor(ctx->sdl_renderer, 255, 0, 255, SDL_ALPHA_OPAQUE);
+//	SDL_SetRenderTarget(ctx->sdl_renderer, ctx->texture);
+//	SDL_RenderClear(ctx->sdl_renderer);
+//	SDL_SetRenderTarget(ctx->sdl_renderer, NULL);
+	SDL_RenderClear(ctx->sdl_renderer);
+	void* tex_pixels;
+	int osef;
+	void *tmp = ctx->renderer.pixels;
 
-	SDL_UpdateTexture(ctx->texture, NULL, ctx->pixels, ctx->texture_size.x * sizeof(Uint32));
+//	SDL_LockTexture(ctx->texture, NULL, &tex_pixels, &osef);
+//	memcpy(tex_pixels, ctx->bg_texture, 1600 * 900 * sizeof(Uint32));
+//	SDL_UnlockTexture(ctx->texture);
+//
+//	SDL_UpdateTexture(ctx->texture, NULL, ctx->bg_texture, ctx->texture_size.x * sizeof(Uint32));
+//
+//	SDL_LockTexture(ctx->texture, NULL, &tex_pixels, &osef);
+//	ctx->renderer.pixels = tex_pixels;
+	renderer_draw(ctx->renderer);
+//	SDL_UnlockTexture(ctx->texture);
+//	ctx->renderer.pixels = tmp;
+
+//	puts(SDL_GetError());
+//	SDL_ClearError();
+//	ctx->pixels = tmp;
+
+	SDL_UpdateTexture(ctx->texture, NULL, ctx->renderer.pixels, ctx->texture_size.x * sizeof(Uint32));
 	SDL_RenderCopy(ctx->sdl_renderer, ctx->texture, NULL, NULL);
 #else
 	SDL_SetRenderDrawColor(ctx->sdl_renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
