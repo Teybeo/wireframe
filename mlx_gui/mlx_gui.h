@@ -13,6 +13,7 @@
 #define MLX_KEY_C 8
 #define MLX_KEY_R 15
 #define MLX_KEY_P 35
+#define MLX_KEY_T 17
 #define MLX_KEY_ESC 53
 #define MLX_KEY_UP 126
 #define MLX_KEY_DOWN 125

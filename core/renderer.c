@@ -22,7 +22,8 @@ void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
 	renderer->scale_factor = 0.25f;
 	renderer->fov_angle = 90;
 	renderer->depth_buffer = malloc(sizeof(float) * size.x * size.y);
-	init_projection(&renderer->projection, 0.1, 100, size.x / size.y, renderer->fov_angle);
+	renderer->use_perspective = 0;
+	set_perspective(&renderer->projection, 0.1, 100, size.x / size.y, renderer->fov_angle);
 	init_camera(&renderer->camera);
 }
 
@@ -64,9 +65,6 @@ void renderer_draw(t_renderer renderer)
 		aa.z = segment_ptr[i].start_color;
 		bb.z = segment_ptr[i].end_color;
 
-//		aa.z = get_color_from_height(&renderer, a.y);
-//		bb.z = get_color_from_height(&renderer, b.y);
-
 		a.y *= renderer.scale_factor;
 		b.y *= renderer.scale_factor;
 
@@ -86,7 +84,7 @@ void renderer_draw(t_renderer renderer)
 			continue;
 		}
 		// Clip to NDC
-		// (We keep w untouched for depth usage)
+		// (We keep vertex w untouched for depth tests later)
 		vec4_mul_scalar_this(&a, 1 / a.w);
 		vec4_mul_scalar_this(&b, 1 / b.w);
 
@@ -184,12 +182,18 @@ void renderer_event(t_renderer *renderer, t_renderer_key key)
 		renderer->fov_angle += 5;
 	if (key == KEY_FOV_DOWN)
 		renderer->fov_angle -= 5;
+	if (key == KEY_PROJECTION_TOOGLE)
+		renderer->use_perspective ^= 1;
 }
 
 void renderer_update(t_renderer *r)
 {
 	camera_update(&r->camera);
-	init_projection(&r->projection, 0.1, 100, (float)r->size.y / r->size.x, r->fov_angle);
+	printf("%d\n", r->use_perspective);
+	if (r->use_perspective)
+		set_perspective(&r->projection, 0.1, 100, (float) r->size.y / r->size.x, r->fov_angle);
+	else
+		set_orthographic(&r->projection, r->size.x, r->size.y, -100, 100);
 
 	static clock_t timestamp = 0;
 	static float elapsed_time = 0;

@@ -14,6 +14,7 @@ enum e_renderer_key {
 	KEY_SCALE_DOWN,
 	KEY_FOV_UP,
 	KEY_FOV_DOWN,
+	KEY_PROJECTION_TOOGLE,
 	KEY_RCOUNT
 };
 typedef enum e_renderer_key t_renderer_key;
@@ -27,6 +28,7 @@ struct s_renderer {
 	t_mat4		projection;
 	float		scale_factor;
 	float		fov_angle;
+	char		use_perspective;
 };
 typedef struct s_renderer t_renderer;
 

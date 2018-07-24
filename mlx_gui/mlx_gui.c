@@ -171,5 +171,7 @@ t_renderer_key get_renderer_key(int keycode)
 		return KEY_FOV_UP;
 	if (keycode == MLX_KEY_DIVIDE)
 		return KEY_FOV_DOWN;
+	if (keycode == MLX_KEY_T)
+		return KEY_PROJECTION_TOOGLE;
 	return KEY_RUNKNOWN;
 }
