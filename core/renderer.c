@@ -104,6 +104,7 @@ void renderer_draw(t_renderer renderer)
 			aa.y = a_i.y;
 			bb.x = b_i.x;
 			bb.y = b_i.y;
+//			printf("%g\n", a.z);
 			draw_line(&renderer, aa, bb, -a.w, -b.w);
 		}
 		i++;
@@ -189,11 +190,10 @@ void renderer_event(t_renderer *renderer, t_renderer_key key)
 void renderer_update(t_renderer *r)
 {
 	camera_update(&r->camera);
-	printf("%d\n", r->use_perspective);
 	if (r->use_perspective)
 		set_perspective(&r->projection, 0.1, 100, (float) r->size.y / r->size.x, r->fov_angle);
 	else
-		set_orthographic(&r->projection, r->size.x, r->size.y, -100, 100);
+		set_orthographic(&r->projection, r->size.x, r->size.y, -1000, 1000);
 
 	static clock_t timestamp = 0;
 	static float elapsed_time = 0;

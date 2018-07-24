@@ -152,18 +152,18 @@ void	set_orthographic(t_mat4 *m, float width, float height, float zNear, float z
 	float top = (height / 2);
 	float bottom = -(height / 2);
 	mat4_identity(m);
-	m->values[0][0]  =  2 / (right - left);
-	m->values[1][1]  =  2 / (top - bottom);
-	m->values[2][2]  = -2 / (zFar - zNear);
-	m->values[0][3]  = - (right + left) / (right - left);
-	m->values[1][3]  = - (top + bottom) / (top - bottom);
+	m->values[0][0] =  2 / (right - left);
+	m->values[1][1] =  2 / (top - bottom);
+	m->values[2][2] = -2 / (zFar - zNear);
+	m->values[0][3] = - (right + left) / (right - left);
+	m->values[1][3] = - (top + bottom) / (top - bottom);
 	m->values[2][3] = - (zFar + zNear) / (zFar - zNear);
 }
 #else
 void	set_orthographic(t_mat4 *m, float width, float height, float zNear, float zFar)
 {
 	float right = (width / 2);
-	float top = (-height / 2);
+	float top = (height / 2);
 	mat4_identity(m);
 	m->values[0][0]  =  1 / right;
 	m->values[1][1]  =  1 / top;

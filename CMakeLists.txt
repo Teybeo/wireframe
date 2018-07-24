@@ -59,4 +59,4 @@ install(TARGETS fdf
 
 #TODO: Switching between perspective/orthographic projections
 #TODO: Related to ^, refactor the model_view and projection transforms into a single mat4 mult for perf
-#TODO: COLORS
+
