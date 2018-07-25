@@ -8,7 +8,8 @@ project(wireframe C)
 
 # Set warnings globally
 add_compile_options(-Wall -Wextra)
-# lto prevents gdb to stop on breakpoints
+
+# LTO removes debug symbols so prevents debugging and profiling
 #add_compile_options(-flto)
 
 set(CMAKE_C_FLAGS_DEBUG  "-g3")
@@ -52,11 +53,17 @@ endif()
 
 target_link_libraries(fdf ft)
 
+if (CMAKE_SYSTEM_NAME MATCHES Darwin)
+    # OSX-only generates symbol for debug
+    add_custom_command(TARGET fdf
+        POST_BUILD
+        COMMAND dsymutil fdf
+        )
+endif()
+
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_LIST_DIR})
 
 install(TARGETS fdf
         DESTINATION bin)
 
-#TODO: Switching between perspective/orthographic projections
-#TODO: Related to ^, refactor the model_view and projection transforms into a single mat4 mult for perf
 
