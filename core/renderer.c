@@ -29,8 +29,10 @@ void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
 
 void renderer_draw(t_renderer renderer)
 {
-	t_segment *segment_ptr;
 	int i;
+	t_vec3i aa;
+	t_vec3i bb;
+	t_segment *segment_ptr;
 
 	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y, sizeof(uint32_t));
 	ft_memzero(renderer.depth_buffer, renderer.size.x * renderer.size.y, sizeof(float));
@@ -60,11 +62,6 @@ void renderer_draw(t_renderer renderer)
 		t_vec4 a = vec4(segment_ptr[i].start);
 		t_vec4 b = vec4(segment_ptr[i].end);
 
-		t_vec3i aa;
-		t_vec3i bb;
-		aa.z = segment_ptr[i].start_color;
-		bb.z = segment_ptr[i].end_color;
-
 		a.y *= renderer.scale_factor;
 		b.y *= renderer.scale_factor;
 
@@ -89,9 +86,9 @@ void renderer_draw(t_renderer renderer)
 		vec4_mul_scalar_this(&b, 1 / b.w);
 
 		// NDC to Window
-		a.x = a.x * renderer.size.x + (renderer.size.x * 0.5f);
+		a.x =  a.x * renderer.size.x + (renderer.size.x * 0.5f);
 		a.y = -a.y * renderer.size.y + (renderer.size.y * 0.5f);
-		b.x = b.x * renderer.size.x + (renderer.size.x * 0.5f);
+		b.x =  b.x * renderer.size.x + (renderer.size.x * 0.5f);
 		b.y = -b.y * renderer.size.y + (renderer.size.y * 0.5f);
 
 		t_vec2i a_i = vec4_round2D(a);
@@ -104,7 +101,10 @@ void renderer_draw(t_renderer renderer)
 			aa.y = a_i.y;
 			bb.x = b_i.x;
 			bb.y = b_i.y;
-//			printf("%g\n", a.z);
+			aa.z = segment_ptr[i].start_color;
+			bb.z = segment_ptr[i].end_color;
+			a.w = renderer.use_perspective ? a.w : a.z;
+			b.w = renderer.use_perspective ? b.w : b.z;
 			draw_line(&renderer, aa, bb, -a.w, -b.w);
 		}
 		i++;
