@@ -52,8 +52,8 @@ void	init_gradient(grad_step *gradient)
 {
 	gradient[0].treshold = 0;
 	gradient[1].treshold = 0.01;
-	gradient[2].treshold = 0.2;
-	gradient[3].treshold = 0.5;
+	gradient[2].treshold = 0.1;
+	gradient[3].treshold = 0.4;
 	gradient[4].treshold = 0.6;
 	gradient[5].treshold = 1;
 	gradient[0].color = 0x000000FF;

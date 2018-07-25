@@ -32,7 +32,7 @@ struct s_renderer {
 };
 typedef struct s_renderer t_renderer;
 
-void renderer_init(t_renderer *renderer, void *pixels, t_map map, t_vec2i size);
+void renderer_init(t_renderer *r, void *pixels, t_map map, t_vec2i size);
 void renderer_event(t_renderer* renderer, t_renderer_key key);
 void renderer_update(t_renderer *r);
 void renderer_draw(t_renderer renderer);

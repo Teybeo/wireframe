@@ -36,6 +36,7 @@ struct s_camera {
 	t_mat3 rotation;
 	float y_angle;
 	float x_angle;
+	float speed_factor;
 	t_camera_mode mode;
 	bool move_forward;
 	bool move_backward;
@@ -51,7 +52,7 @@ struct s_camera {
 
 typedef struct s_camera t_camera;
 
-void	init_camera(t_camera *camera);
+void	init_camera(t_camera *camera, float speed_factor);
 void	camera_key_event(t_camera *camera, t_camera_key key, int state);
 void	camera_mouse_event(t_camera *camera, int x, int y);
 void	camera_update(t_camera *camera);

@@ -13,7 +13,8 @@ add_compile_options(-Wall -Wextra)
 #add_compile_options(-flto)
 
 set(CMAKE_C_FLAGS_DEBUG  "-g3")
-set(CMAKE_C_FLAGS_RELEASE "-g3 -O3 -flto -march=native")
+#set(CMAKE_C_FLAGS_RELEASE "-g3 -O3 -flto -march=native")
+set(CMAKE_C_FLAGS_RELEASE "-g3 -O3 -march=native")
 
 # Backend to use for windowing and events"
 set(GuiBackend "MLX")
@@ -53,12 +54,12 @@ endif()
 
 target_link_libraries(fdf ft)
 
-if (CMAKE_SYSTEM_NAME MATCHES Darwin)
-    # OSX-only generates symbol for debug
-    add_custom_command(TARGET fdf
-        POST_BUILD
-        COMMAND dsymutil fdf
-        )
+# OSX-only: generates symbol for debug
+if (CMAKE_SYSTEM_NAME MATCHES Darwin AND NOT USE_ASAN)
+#    add_custom_command(TARGET fdf
+#        POST_BUILD
+#        COMMAND dsymutil fdf
+#        )
 endif()
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_LIST_DIR})

@@ -4,13 +4,14 @@
 #include "camera.h"
 #include "stdio.h"
 
-void init_camera(t_camera *camera)
+void init_camera(t_camera *camera, float speed_factor)
 {
 	ft_memzero(camera, 1, sizeof(t_camera));
 	camera->pos = (t_vec3){0, 0, 0};
 	camera->x_angle = 0;
 	camera->y_angle = 0;
 	camera->mode = CAMERA_FREEFLY;
+	camera->speed_factor = speed_factor;
 }
 
 void camera_key_event(t_camera *camera, t_camera_key key, int state)
@@ -117,8 +118,6 @@ void camera_update(t_camera *camera)
 		strafe = (t_vec3){1, 0, 0};
 	}
 	delta = (t_vec3){};
-//	system("clear");
-//	vec3_print("backward", backward);
 
 	if (camera->move_forward)
 		delta = vec3_sub(delta, backward);
@@ -133,10 +132,6 @@ void camera_update(t_camera *camera)
 	if (camera->move_downward)
 		delta = vec3_sub(delta, upward);
 
-//	vec3_print("delta", delta);
-//	write(1, "\n", 1);
-
+	delta = vec3_mul_scalar(delta, camera->speed_factor);
 	camera->pos = vec3_add(camera->pos, delta);
-//	vec3_print("pos", camera->pos);
-//	write(1, "\n", 1);
 }

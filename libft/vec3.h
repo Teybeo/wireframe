@@ -63,6 +63,7 @@ t_vec3	vec3_cross(t_vec3 a, t_vec3 b);
 t_vec3	vec3_clamp2D(t_vec3 a, t_vec2i limit);
 t_vec3 vec3_max_2D(t_vec3 a, t_vec3 b);
 t_vec3 vec3_min_2D(t_vec3 a, t_vec3 b);
+float vec3_max_axis(t_vec3 a);
 t_vec3	vec3_mul_scalar(t_vec3 vec, float scalar);
 t_vec3i	vec3_round(t_vec3 vec);
 t_vec2i	vec4_round2D(t_vec4 vec);

@@ -80,6 +80,10 @@ t_vec3 vec3_max_2D(t_vec3 a, t_vec3 b)
 	return res;
 }
 
+float vec3_max_axis(t_vec3 a)
+{
+	return fmaxf(a.x, fmaxf(a.y, a.z));
+}
 void	vec4_mul_scalar_this(t_vec4 *vec, float scalar)
 {
 	vec->x *= scalar;

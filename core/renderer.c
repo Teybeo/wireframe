@@ -13,18 +13,21 @@
 #include <string.h>
 #include <mat4.h>
 
-void renderer_init(t_renderer *renderer, void* pixels, t_map map, t_vec2i size)
+void renderer_init(t_renderer *r, void* pixels, t_map map, t_vec2i size)
 {
+	float speed_factor;
+
 	ft_putendl("Core awaken");
-	renderer->map = map;
-	renderer->size = size;
-	renderer->pixels = pixels;
-	renderer->scale_factor = 0.25f;
-	renderer->fov_angle = 90;
-	renderer->depth_buffer = malloc(sizeof(float) * size.x * size.y);
-	renderer->use_perspective = 0;
-	set_perspective(&renderer->projection, 0.1, 100, size.x / size.y, renderer->fov_angle);
-	init_camera(&renderer->camera);
+	r->map = map;
+	r->size = size;
+	r->pixels = pixels;
+	r->scale_factor = 0.25f;
+	r->fov_angle = 90;
+	r->depth_buffer = malloc(sizeof(float) * size.x * size.y);
+	r->use_perspective = 0;
+	set_perspective(&r->projection, 0.1, 100, size.x / size.y, r->fov_angle);
+	speed_factor = vec3_max_axis(vec3_sub(r->map.max, r->map.min)) / 100;
+	init_camera(&r->camera, speed_factor);
 }
 
 void renderer_draw(t_renderer renderer)
