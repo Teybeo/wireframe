@@ -10,21 +10,23 @@
 #include <array.h>
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 t_map	load_fdf(char const *filepath)
 {
 	t_map	map;
 	t_array	line_array;
 
-	line_array = load_map_lines(filepath);
+	line_array = load_text_lines(filepath);
 	map.segment_array = parse_map_lines(line_array);
 	compute_boundingbox(&map);
 	do_center_map(&map);
 	compute_colors(&map);
+	free(line_array.data);
 	return map;
 }
 
-t_array	parse_map_lines(t_array line_array)
+t_array	parse_map_lines(t_array txt_line_array)
 {
 	int		i;
 	t_array	point_array;
@@ -33,16 +35,23 @@ t_array	parse_map_lines(t_array line_array)
 
 	i = 0;
 	segment_array = array_create(sizeof(t_segment), 16);
-	while (i < line_array.size)
+	while (i < txt_line_array.size)
 	{
-		point_array = generate_point_array(((char**)line_array.data)[i], i);
+		point_array = generate_point_array(((char**)txt_line_array.data)[i], i);
 		add_horizontal_segments(&segment_array, point_array);
 		if (i >= 1)
+		{
 			add_vertical_segments(
 					&segment_array, point_array, previous_point_array);
-		i++;
+			free(previous_point_array.data);
+		}
 		previous_point_array = point_array;
+		i++;
 	}
+	free(point_array.data);
+	printf("FINAL: Allocated %.2f KB for segment_array %zu / %i  x %zu B\n",
+		   (segment_array.capacity * segment_array.elem_size) / 1024.f,
+		   segment_array.capacity, segment_array.size, segment_array.elem_size);
 	return (segment_array);
 }
 
@@ -84,7 +93,7 @@ void	add_horizontal_segments(t_array *segment_array, t_array point_array)
 	}
 }
 
-t_array	load_map_lines(char const *filepath)
+t_array	load_text_lines(char const *filepath)
 {
 	int		i;
 	int		fd;
@@ -123,8 +132,6 @@ t_array	generate_point_array(char *line, int y)
 		if (ft_is_space(line[i]) == false)
 		{
 			point.y = ft_atoi(&line[i]);
-
-//			vec3_print("x: ", point);
 			array_append(&point_array, &point, 1);
 			point.x++;
 			while (ft_is_space(line[i]) == false && line[i] != '\0')
@@ -133,5 +140,9 @@ t_array	generate_point_array(char *line, int y)
 		else
 			i++;
 	}
+	free(line);
+	printf("Allocated %.2f KB for point_array %zu / %i x %zu B)\n",
+		   (point_array.capacity * point_array.elem_size) / 1024.f,
+		   point_array.capacity, point_array.size, point_array.elem_size);
 	return (point_array);
 }
