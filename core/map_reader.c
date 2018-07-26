@@ -23,6 +23,9 @@ t_map	load_fdf(char const *filepath)
 	do_center_map(&map);
 	compute_colors(&map);
 	free(line_array.data);
+	print_stats(map.segment_array, "segment_array");
+	shrink_to_fit(&map.segment_array);
+	print_stats(map.segment_array, "segment_array");
 	return map;
 }
 
@@ -49,9 +52,6 @@ t_array	parse_map_lines(t_array txt_line_array)
 		i++;
 	}
 	free(point_array.data);
-	printf("FINAL: Allocated %.2f KB for segment_array %zu / %i  x %zu B\n",
-		   (segment_array.capacity * segment_array.elem_size) / 1024.f,
-		   segment_array.capacity, segment_array.size, segment_array.elem_size);
 	return (segment_array);
 }
 
@@ -141,8 +141,6 @@ t_array	generate_point_array(char *line, int y)
 			i++;
 	}
 	free(line);
-	printf("Allocated %.2f KB for point_array %zu / %i x %zu B)\n",
-		   (point_array.capacity * point_array.elem_size) / 1024.f,
-		   point_array.capacity, point_array.size, point_array.elem_size);
+	print_stats(point_array, "point_array");
 	return (point_array);
 }

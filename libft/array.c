@@ -31,6 +31,22 @@ void	array_append(t_array *vec, void *data, size_t count)
 	vec->size += count;
 }
 
+void	shrink_to_fit(t_array *vec)
+{
+	vec->data = ft_realloc(vec->data,
+						vec->capacity * vec->elem_size,
+						vec->size * vec->elem_size);
+	vec->capacity = (size_t)vec->size;
+}
+
+void	print_stats(t_array arr, char *msg)
+{
+	printf("%s: %.2f KB,  %i / %zu * %zu B\n",
+		   msg,
+		   (arr.capacity * arr.elem_size) / 1024.f,
+		   arr.size, arr.capacity, arr.elem_size);
+}
+
 void	print_data(t_array *vec)
 {
 	int i;
