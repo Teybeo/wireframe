@@ -62,7 +62,7 @@ t_vec3 vec3_clamp2D(t_vec3 a, t_vec2i limit)
 	return res;
 }
 
-t_vec3 vec3_min_2D(t_vec3 a, t_vec3 b)
+t_vec3 vec3_min(t_vec3 a, t_vec3 b)
 {
 	t_vec3 res;
 	res.x = fminf(a.x, b.x);
@@ -71,7 +71,7 @@ t_vec3 vec3_min_2D(t_vec3 a, t_vec3 b)
 	return res;
 }
 
-t_vec3 vec3_max_2D(t_vec3 a, t_vec3 b)
+t_vec3 vec3_max(t_vec3 a, t_vec3 b)
 {
 	t_vec3 res;
 	res.x = fmaxf(a.x, b.x);

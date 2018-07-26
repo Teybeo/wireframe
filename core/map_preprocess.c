@@ -4,26 +4,24 @@
 #include "renderer.h"
 #include <limits.h>
 #include <math.h>
+#include <stdlib.h>
 
 void compute_boundingbox(t_map *map)
 {
-	t_vec3 max;
-	t_vec3 min;
-	t_segment	*seg_ptr;
+	int		i;
+	t_vec3	max;
+	t_vec3	min;
+	t_vec4	*vertex_ptr;
 
 	min = (t_vec3){INT_MAX, INT_MAX, INT_MAX};
 	max = (t_vec3){INT_MIN, INT_MIN, INT_MIN};
 
-	seg_ptr = map->segment_array.data;
-	int i;
+	vertex_ptr = map->vertex_array.data;
 	i = 0;
-	while (i < map->segment_array.size)
+	while (i < map->vertex_array.size)
 	{
-		min = vec3_min_2D(min, seg_ptr[i].start);
-		min = vec3_min_2D(min, seg_ptr[i].end);
-
-		max = vec3_max_2D(max, seg_ptr[i].start);
-		max = vec3_max_2D(max, seg_ptr[i].end);
+		min = vec3_min(min, *(t_vec3 *)(vertex_ptr + i));
+		max = vec3_max(max, *(t_vec3 *)(vertex_ptr + i));
 		i++;
 	}
 	map->min = min;
@@ -32,18 +30,17 @@ void compute_boundingbox(t_map *map)
 
 void	do_center_map(t_map *map)
 {
-	t_vec3 center;
-	t_segment	*seg_ptr;
+	int		i;
+	t_vec3	center;
+	t_vec4	*vertex_ptr;
 
 	center = vec3_mul_scalar(vec3_sub(map->max, map->min), 0.5);
 	center.y = 0;
-	seg_ptr = map->segment_array.data;
-	int i;
+	vertex_ptr = map->vertex_array.data;
 	i = 0;
-	while (i < map->segment_array.size)
+	while (i < map->vertex_array.size)
 	{
-		vec3_sub_this(&seg_ptr[i].start, center);
-		vec3_sub_this(&seg_ptr[i].end, center);
+		vec3_sub_this((t_vec3 *)(vertex_ptr + i), center);
 		i++;
 	}
 }
@@ -66,17 +63,17 @@ void	init_gradient(grad_step *gradient)
 
 void	compute_colors(t_map *map)
 {
-	int i;
-	t_segment *seg_ptr;
+	int		i;
+	t_vec4 *vertex_ptr;
+
 	grad_step gradient[GRADIENT_COUNT];
 	init_gradient(gradient);
 
 	i = 0;
-	seg_ptr = map->segment_array.data;
-	while (i < map->segment_array.size)
+	vertex_ptr = map->vertex_array.data;
+	while (i < map->vertex_array.size)
 	{
-		seg_ptr[i].start_color = get_color_from_height2(map, gradient, seg_ptr[i].start.y);
-		seg_ptr[i].end_color = get_color_from_height2(map, gradient, seg_ptr[i].end.y);
+		vertex_ptr[i].w = get_color_from_height2(map, gradient, vertex_ptr[i].y);
 		i++;
 	}
 }
@@ -106,3 +103,39 @@ int get_color_from_height2(t_map *map, grad_step *gradient, float height)
 	factor = (height - min) / (max - min);
 	return color_mix(factor, gradient[i].color, gradient[i + 1].color);
 }
+
+#include <stdio.h>
+#define vec3_equal(a, b) (a.x == b.x && a.y == b.y && a.z == b.z)
+
+bool contains(t_vec3 vec, t_array array)
+{
+	for (int i = 0; i < array.size; ++i) {
+		if (vec3_equal(vec, ((t_vec3*)array.data)[i]))
+			return true;
+	}
+	return false;
+}
+/*
+void count_duplicated_vertex(t_map map)
+{
+	t_array vertex_array = array_create(sizeof(t_vec3), map.segment_array.size * 2);
+	int duplicate_count = 0;
+
+	t_vec4 *vertex_ptr = map.vertex_array.data;
+	t_vec3 current;
+
+	for (int i = 0; i < map.segment_array.size; ++i)
+	{
+		current = seg_ptr[i].start_idx;
+
+		if (contains(current, vertex_array))
+			duplicate_count++;
+		else
+			array_append(&vertex_array, &current, 1);
+
+	}
+
+	printf("Total vertex count: %i\n", map.segment_array.size * 2);
+	printf("Duplicated vertex count: %i\n", duplicate_count);
+	printf("Unique vertex count: %i\n", vertex_array.size);
+}*/

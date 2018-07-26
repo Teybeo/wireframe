@@ -15,7 +15,8 @@ typedef struct s_array	t_array;
 t_array	array_create(size_t elem_size, size_t count);
 void	array_append(t_array *vec, void *data, size_t count);
 void	shrink_to_fit(t_array *vec);
-void	print_data(t_array *vec);
 void	print_stats(t_array arr, char *msg);
+void	print_seg(t_array *vec);
+void	print_vec4(t_array *vec);
 
 #endif

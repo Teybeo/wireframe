@@ -50,10 +50,8 @@ struct s_vec2i
 typedef struct s_vec2i t_vec2i;
 
 struct s_segment {
-	t_vec3	start;
-	int		start_color;
-	t_vec3	end;
-	int		end_color;
+	int		start_idx;
+	int		end_idx;
 };
 typedef struct s_segment t_segment;
 
@@ -61,8 +59,8 @@ t_vec3	vec3_add(t_vec3 a, t_vec3 b);
 t_vec3	vec3_sub(t_vec3 a, t_vec3 b);
 t_vec3	vec3_cross(t_vec3 a, t_vec3 b);
 t_vec3	vec3_clamp2D(t_vec3 a, t_vec2i limit);
-t_vec3 vec3_max_2D(t_vec3 a, t_vec3 b);
-t_vec3 vec3_min_2D(t_vec3 a, t_vec3 b);
+t_vec3 vec3_max(t_vec3 a, t_vec3 b);
+t_vec3 vec3_min(t_vec3 a, t_vec3 b);
 float vec3_max_axis(t_vec3 a);
 t_vec3	vec3_mul_scalar(t_vec3 vec, float scalar);
 t_vec3i	vec3_round(t_vec3 vec);

@@ -18,7 +18,7 @@ t_map	load_fdf(char const *filepath)
 	t_array	line_array;
 
 	line_array = load_text_lines(filepath);
-	map.segment_array = parse_map_lines(line_array);
+	parse_map_lines(&map, line_array);
 	compute_boundingbox(&map);
 	do_center_map(&map);
 	compute_colors(&map);
@@ -26,69 +26,72 @@ t_map	load_fdf(char const *filepath)
 	print_stats(map.segment_array, "segment_array");
 	shrink_to_fit(&map.segment_array);
 	print_stats(map.segment_array, "segment_array");
+	print_stats(map.vertex_array, "vertex_array");
+	shrink_to_fit(&map.vertex_array);
+	print_stats(map.vertex_array, "vertex_array");
+//	print_seg(&map.segment_array);
+//	print_vec4(&map.vertex_array);
 	return map;
 }
 
-t_array	parse_map_lines(t_array txt_line_array)
+void	parse_map_lines(t_map *map, t_array txt_line_array)
 {
 	int		i;
 	t_array	point_array;
 	t_array	previous_point_array;
-	t_array	segment_array;
 
 	i = 0;
-	segment_array = array_create(sizeof(t_segment), 16);
+	map->segment_array = array_create(sizeof(t_segment), 16);
+	map->vertex_array = array_create(sizeof(t_vec4), 16);
 	while (i < txt_line_array.size)
 	{
 		point_array = generate_point_array(((char**)txt_line_array.data)[i], i);
-		add_horizontal_segments(&segment_array, point_array);
+		add_horizontal_segments(map, point_array);
 		if (i >= 1)
 		{
-			add_vertical_segments(
-					&segment_array, point_array, previous_point_array);
+			add_vertical_segments(map, point_array, previous_point_array);
 			free(previous_point_array.data);
 		}
+		array_append(&map->vertex_array, point_array.data, (size_t)point_array.size);
 		previous_point_array = point_array;
 		i++;
 	}
 	free(point_array.data);
-	return (segment_array);
 }
 
-
-void	add_vertical_segments(t_array *segment_array,
-							  t_array point_array, t_array prev_point_array)
+void	add_horizontal_segments(t_map *map, t_array point_array)
 {
 	int			i;
-	int			count;
+	int			base_index;
 	t_segment	segment;
-	t_vec3		*point_ptr;
-	t_vec3		*prev_point_ptr;
 
-	point_ptr = point_array.data;
-	prev_point_ptr = prev_point_array.data;
+	base_index = map->vertex_array.size;
 	i = 0;
-	count = (int)fminf(point_array.size, prev_point_array.size);
-	while (i < count)
+	while ((i + 1) < point_array.size)
 	{
-		segment = (t_segment){prev_point_ptr[i], 0, point_ptr[i], 0};
-		array_append(segment_array, &segment, 1);
+		segment = (t_segment){base_index + i, base_index + i + 1};
+		array_append(&map->segment_array, &segment, 1);
 		i++;
 	}
 }
 
-void	add_horizontal_segments(t_array *segment_array, t_array point_array)
+void	add_vertical_segments(t_map *map,
+							t_array point_array, t_array prev_point_array)
 {
 	int			i;
+	int			count;
+	int			up_base_index;
+	int			down_base_index;
 	t_segment	segment;
-	t_vec3		*point_ptr;
 
-	point_ptr = point_array.data;
+	up_base_index = map->vertex_array.size - prev_point_array.size;
+	down_base_index = map->vertex_array.size;
 	i = 0;
-	while ((i + 1) < point_array.size)
+	count = (int)fminf(point_array.size, prev_point_array.size);
+	while (i < count)
 	{
-		segment = (t_segment){point_ptr[i], 0, point_ptr[i + 1], 0};
-		array_append(segment_array, &segment, 1);
+		segment = (t_segment){i + up_base_index, i + down_base_index};
+		array_append(&map->segment_array, &segment, 1);
 		i++;
 	}
 }
@@ -105,7 +108,7 @@ t_array	load_text_lines(char const *filepath)
 	if (fd < 0)
 		exit_with_message(ERROR_OPEN_FAILED);
 	status = GNL_OK;
-	line_array = array_create(sizeof(char*), 10);
+	line_array = array_create(sizeof(char*), 512);
 	i = 0;
 	while (status == GNL_OK)
 	{
@@ -120,13 +123,14 @@ t_array	load_text_lines(char const *filepath)
 t_array	generate_point_array(char *line, int y)
 {
 	t_array	point_array;
-	t_vec3	point;
+	t_vec4	point;
 	int		i;
 
 	i = 0;
 	point.x = 0;
 	point.z = y;
-	point_array = array_create(sizeof(t_vec3), 16);
+	point.w = 0;
+	point_array = array_create(sizeof(t_vec4), 512);
 	while (line[i] != '\0')
 	{
 		if (ft_is_space(line[i]) == false)

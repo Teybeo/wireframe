@@ -32,15 +32,17 @@ void renderer_init(t_renderer *r, void* pixels, t_map map, t_vec2i size)
 
 void renderer_draw(t_renderer renderer)
 {
-	int i;
-	t_vec3i aa;
-	t_vec3i bb;
-	t_segment *segment_ptr;
+	int			i;
+	t_vec3i		aa;
+	t_vec3i		bb;
+	t_segment	*segment_ptr;
+	t_vec4		*vertex_ptr;
 
 	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y, sizeof(uint32_t));
 	ft_memzero(renderer.depth_buffer, renderer.size.x * renderer.size.y, sizeof(float));
 
 	segment_ptr = renderer.map.segment_array.data;
+	vertex_ptr = renderer.map.vertex_array.data;
 	i = 0;
 
 	t_mat4 model_view;
@@ -62,8 +64,13 @@ void renderer_draw(t_renderer renderer)
 
 	while (i < renderer.map.segment_array.size)
 	{
-		t_vec4 a = vec4(segment_ptr[i].start);
-		t_vec4 b = vec4(segment_ptr[i].end);
+		t_vec4 a = vertex_ptr[segment_ptr[i].start_idx];
+		t_vec4 b = vertex_ptr[segment_ptr[i].end_idx];
+
+		aa.z = a.w;
+		bb.z = b.w;
+		a.w = 1;
+		b.w = 1;
 
 		a.y *= renderer.scale_factor;
 		b.y *= renderer.scale_factor;
@@ -104,8 +111,6 @@ void renderer_draw(t_renderer renderer)
 			aa.y = a_i.y;
 			bb.x = b_i.x;
 			bb.y = b_i.y;
-			aa.z = segment_ptr[i].start_color;
-			bb.z = segment_ptr[i].end_color;
 			a.w = renderer.use_perspective ? a.w : a.z;
 			b.w = renderer.use_perspective ? b.w : b.z;
 			draw_line(&renderer, aa, bb, -a.w, -b.w);

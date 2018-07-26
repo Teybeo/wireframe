@@ -17,4 +17,5 @@ void	compute_boundingbox(t_map *map);
 void	compute_colors(t_map *map);
 int		get_color_from_height2(t_map *map, grad_step *gradient, float h);
 
+void count_duplicated_vertex(t_map map);
 #endif
