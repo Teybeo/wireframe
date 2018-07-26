@@ -103,39 +103,3 @@ int get_color_from_height2(t_map *map, grad_step *gradient, float height)
 	factor = (height - min) / (max - min);
 	return color_mix(factor, gradient[i].color, gradient[i + 1].color);
 }
-
-#include <stdio.h>
-#define vec3_equal(a, b) (a.x == b.x && a.y == b.y && a.z == b.z)
-
-bool contains(t_vec3 vec, t_array array)
-{
-	for (int i = 0; i < array.size; ++i) {
-		if (vec3_equal(vec, ((t_vec3*)array.data)[i]))
-			return true;
-	}
-	return false;
-}
-/*
-void count_duplicated_vertex(t_map map)
-{
-	t_array vertex_array = array_create(sizeof(t_vec3), map.segment_array.size * 2);
-	int duplicate_count = 0;
-
-	t_vec4 *vertex_ptr = map.vertex_array.data;
-	t_vec3 current;
-
-	for (int i = 0; i < map.segment_array.size; ++i)
-	{
-		current = seg_ptr[i].start_idx;
-
-		if (contains(current, vertex_array))
-			duplicate_count++;
-		else
-			array_append(&vertex_array, &current, 1);
-
-	}
-
-	printf("Total vertex count: %i\n", map.segment_array.size * 2);
-	printf("Duplicated vertex count: %i\n", duplicate_count);
-	printf("Unique vertex count: %i\n", vertex_array.size);
-}*/

@@ -29,8 +29,6 @@ t_map	load_fdf(char const *filepath)
 	print_stats(map.vertex_array, "vertex_array");
 	shrink_to_fit(&map.vertex_array);
 	print_stats(map.vertex_array, "vertex_array");
-//	print_seg(&map.segment_array);
-//	print_vec4(&map.vertex_array);
 	return map;
 }
 
@@ -108,7 +106,7 @@ t_array	load_text_lines(char const *filepath)
 	if (fd < 0)
 		exit_with_message(ERROR_OPEN_FAILED);
 	status = GNL_OK;
-	line_array = array_create(sizeof(char*), 512);
+	line_array = array_create(sizeof(char*), 256);
 	i = 0;
 	while (status == GNL_OK)
 	{
@@ -130,7 +128,7 @@ t_array	generate_point_array(char *line, int y)
 	point.x = 0;
 	point.z = y;
 	point.w = 0;
-	point_array = array_create(sizeof(t_vec4), 512);
+	point_array = array_create(sizeof(t_vec4), 256);
 	while (line[i] != '\0')
 	{
 		if (ft_is_space(line[i]) == false)

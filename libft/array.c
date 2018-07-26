@@ -47,26 +47,3 @@ void	print_stats(t_array arr, char *msg)
 		   (arr.capacity * arr.elem_size) / 1024.f,
 		   arr.size, arr.capacity, arr.elem_size);
 }
-
-void	print_vec4(t_array *vec)
-{
-	int i;
-	t_vec4 *ptr = vec->data;
-
-	i = 0;
-	while (i < vec->size)
-	{
-//		printf("[%d] %p: ", i, ptr + i);
-		printf("%d: %f %f %f\n", i, ptr[i].x, ptr[i].y, ptr[i].z);
-		i++;
-	}
-}
-
-void	print_seg(t_array *vec)
-{
-	t_segment *ptr = vec->data;
-
-	for (int i = 0; i < vec->size; ++i) {
-		printf("%d: %i %i\n ", i, ptr[i].start_idx, ptr[i].end_idx);
-	}
-}
