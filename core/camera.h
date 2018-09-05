@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   camera.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/09/05 14:52:03 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/09/05 14:52:03 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CAMERA_H
-#define CAMERA_H
+# define CAMERA_H
 
-#include <stdbool.h>
-#include <mat3.h>
-#include "map_reader.h"
+# include <stdbool.h>
+# include <mat3.h>
+# include "map_reader.h"
 
-enum e_camera_key {
+enum	e_camera_key {
 	KEY_UNKNOWN,
 	KEY_FORWARD,
 	KEY_BACKWARD,
@@ -22,35 +34,35 @@ enum e_camera_key {
 	KEY_CAMERA_PRINT_POS,
 	KEY_COUNT
 };
-typedef enum e_camera_key t_camera_key;
+typedef enum e_camera_key	t_camera_key;
 
-enum e_camera_mode
+enum	e_camera_mode
 {
 	CAMERA_FREEFLY,
 	CAMERA_ORBIT
 };
-typedef enum e_camera_mode t_camera_mode;
+typedef enum e_camera_mode	t_camera_mode;
 
-struct s_camera {
-	t_vec3 pos;
-	t_mat3 rotation;
-	float y_angle;
-	float x_angle;
-	float speed_factor;
-	t_camera_mode mode;
-	bool move_forward;
-	bool move_backward;
-	bool strafe_right;
-	bool strafe_left;
-	bool move_upward;
-	bool move_downward;
-	bool up_arrow;
-	bool down_arrow;
-	bool left_arrow;
-	bool right_arrow;
+struct	s_camera {
+	t_vec3			pos;
+	t_mat3			rotation;
+	float			y_angle;
+	float			x_angle;
+	float			speed_factor;
+	t_camera_mode	mode;
+	bool			move_forward;
+	bool			move_backward;
+	bool			strafe_right;
+	bool			strafe_left;
+	bool			move_upward;
+	bool			move_downward;
+	bool			up_arrow;
+	bool			down_arrow;
+	bool			left_arrow;
+	bool			right_arrow;
 };
 
-typedef struct s_camera t_camera;
+typedef struct s_camera	t_camera;
 
 void	init_camera(t_camera *camera, float speed_factor);
 void	camera_key_event(t_camera *camera, t_camera_key key, int state);

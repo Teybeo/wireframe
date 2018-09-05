@@ -6,7 +6,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-void compute_boundingbox(t_map *map)
+void	compute_boundingbox(t_map *map)
 {
 	int		i;
 	t_vec3	max;
@@ -15,7 +15,6 @@ void compute_boundingbox(t_map *map)
 
 	min = (t_vec3){INT_MAX, INT_MAX, INT_MAX};
 	max = (t_vec3){INT_MIN, INT_MIN, INT_MIN};
-
 	vertex_ptr = map->vertex_array.data;
 	i = 0;
 	while (i < map->vertex_array.size)
@@ -63,12 +62,11 @@ void	init_gradient(grad_step *gradient)
 
 void	compute_colors(t_map *map)
 {
-	int		i;
-	t_vec4 *vertex_ptr;
+	int			i;
+	t_vec4		*vertex_ptr;
 
-	grad_step gradient[GRADIENT_COUNT];
+	grad_step	gradient[GRADIENT_COUNT];
 	init_gradient(gradient);
-
 	i = 0;
 	vertex_ptr = map->vertex_array.data;
 	while (i < map->vertex_array.size)
@@ -78,20 +76,20 @@ void	compute_colors(t_map *map)
 	}
 }
 
-int get_color_from_height2(t_map *map, grad_step *gradient, float height)
+int		get_color_from_height2(t_map *map, grad_step *gradient, float height)
 {
 //	return 0x00FFFFFF;
-	int i;
-	float min;
-	float max;
-	float factor;
+	int		i;
+	float	min;
+	float	max;
+	float	factor;
 
 	height = (height - map->min.y) / (map->max.y - map->min.y);
 	i = 0;
 	while (i < GRADIENT_COUNT)
 	{
 		if (height < gradient[i].treshold)
-			break;
+			break ;
 		i++;
 	}
 	i = fminf(i, GRADIENT_COUNT - 1);
@@ -101,5 +99,5 @@ int get_color_from_height2(t_map *map, grad_step *gradient, float height)
 	min = gradient[i].treshold;
 	max = gradient[i + 1].treshold;
 	factor = (height - min) / (max - min);
-	return color_mix(factor, gradient[i].color, gradient[i + 1].color);
+	return (color_mix(factor, gradient[i].color, gradient[i + 1].color));
 }

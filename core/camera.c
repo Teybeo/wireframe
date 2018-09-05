@@ -4,7 +4,7 @@
 #include "camera.h"
 #include "stdio.h"
 
-void init_camera(t_camera *camera, float speed_factor)
+void	init_camera(t_camera *camera, float speed_factor)
 {
 	ft_memzero(camera, 1, sizeof(t_camera));
 	camera->pos = (t_vec3){0, 0, 0};
@@ -14,7 +14,7 @@ void init_camera(t_camera *camera, float speed_factor)
 	camera->speed_factor = speed_factor;
 }
 
-void camera_key_event(t_camera *camera, t_camera_key key, int state)
+void	camera_key_event(t_camera *camera, t_camera_key key, int state)
 {
 //	printf("Received key: %d, state: %d\n", key, state);
 
@@ -61,7 +61,7 @@ void	camera_mouse_event(t_camera *camera, int x, int y)
 	camera->x_angle -= y * 0.005f;
 }
 
-void camera_update(t_camera *camera)
+void	camera_update(t_camera *camera)
 {
 	t_vec3 delta;
 	t_vec3 backward;
