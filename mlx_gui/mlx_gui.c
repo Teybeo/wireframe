@@ -8,14 +8,14 @@
 t_camera_key get_camera_key(int keycode);
 t_renderer_key get_renderer_key(int keycode);
 
-int key_event(int keycode, int state, void *param)
+int				key_event(int keycode, int state, void *param)
 {
-	t_mlx_context* ctx;
-	t_camera_key camera_key;
-	t_renderer_key renderer_key;
+	t_mlx_context	*ctx;
+	t_camera_key	camera_key;
+	t_renderer_key	renderer_key;
 
-//	printf("key: %d\n", keycode);
 	ctx = param;
+//	printf("key: %d\n", keycode);
 	camera_key = get_camera_key(keycode);
 	if (camera_key != KEY_UNKNOWN)
 		camera_key_event(&ctx->renderer.camera, camera_key, state);
@@ -27,93 +27,70 @@ int key_event(int keycode, int state, void *param)
 		ctx->is_mouse_captured = !ctx->is_mouse_captured;
 		mlx_set_relative_mouse_mode(ctx->win_ptr, ctx->is_mouse_captured);
 	}
-
-	return 0;
+	return (0);
 }
 
-int keydown_event(int keycode, void *param)
+int				keydown_event(int keycode, void *param)
 {
-	return key_event(keycode, 1, param);
-}
-int keyup_event(int keycode, void *param)
-{
-	return key_event(keycode, 0, param);
+	return (key_event(keycode, 1, param));
 }
 
-int quit_event()
+int				keyup_event(int keycode, void *param)
+{
+	return (key_event(keycode, 0, param));
+}
+
+int				quit_event(void)
 {
 	exit(0);
 }
 
-int expose_callback(void *param)
+int				expose_callback(void *param)
 {
 	t_mlx_context *ctx;
+
 	ctx = param;
 	printf("Expose\n");
-//	mlx_put_image_to_window(ctx->mlx_ptr, ctx->win_ptr, ctx->texture, 0, 0);
-
-	return 0;
+	mlx_put_image_to_window(ctx->mlx_ptr, ctx->win_ptr, ctx->texture, 0, 0);
+	return (0);
 }
 
-int callback(void *param)
+int				callback(void *param)
 {
-	t_mlx_context *ctx;
-	static clock_t timestamp;
-	float duration;
+	t_mlx_context	*ctx;
 
 	ctx = param;
-	duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
-	duration *= 1000;
-//	printf("Interval: %f\n", duration);
-	timestamp = clock();
-
 	mlx_clear_window(ctx->mlx_ptr, ctx->win_ptr);
-
 	renderer_update(&ctx->renderer);
 	renderer_draw(ctx->renderer);
 //	renderer_draw0(ctx->renderer);
-
 	mlx_put_image_to_window(ctx->mlx_ptr, ctx->win_ptr, ctx->texture, 0, 0);
-	return 0;
+	return (0);
 }
 
-int mouse_move(int x, int y, void* param)
+int				mouse_move(int x, int y, void *param)
 {
-	t_mlx_context *ctx;
-	static int old_x;
-	static int old_y;
-	int dx;
-	int dy;
+	t_mlx_context	*ctx;
+	static int		old_x;
+	static int		old_y;
+	int				dx;
+	int				dy;
 
 	ctx = param;
 	dx = x - old_x;
 	dy = y - old_y;
-//	printf("x: %d, y: %d\n", x, y);
-//	printf("dx: %d, dy: %d\n", dx, dy);
 	old_x = x;
 	old_y = y;
 	if (ctx->is_mouse_captured)
 		camera_mouse_event(&ctx->renderer.camera, dx, dy);
-	return 0;
-}
-/*
-void mouse_press(int x, int y, void* param)
-{
-	printf("PRESS\n");
-	printf("x: %d, y: %d\n", x, y);
+	return (0);
 }
 
-void mouse_release(int x, int y, void* param)
-{
-	printf("RELEASE\n");
-	printf("x: %d, y: %d\n", x, y);
-}
-*/
-void init_mlx(t_mlx_context *ctx, t_map map)
+void			init_mlx(t_mlx_context *ctx, t_map map)
 {
 	t_vec2i size;
-	void* pixels;
-	int osef;
+	void	*pixels;
+	int		osef;
 
 	size.x = 1600;
 	size.y = 900;
@@ -128,8 +105,6 @@ void init_mlx(t_mlx_context *ctx, t_map map)
 	mlx_do_key_autorepeatoff(ctx->mlx_ptr);
 	mlx_hook(ctx->win_ptr, 2, osef, keydown_event, ctx);
 	mlx_hook(ctx->win_ptr, 3, osef, keyup_event, ctx);
-//	mlx_hook(ctx->win_ptr, 4, osef, mouse_press, ctx);
-//	mlx_hook(ctx->win_ptr, 5, osef, mouse_release, ctx);
 	mlx_hook(ctx->win_ptr, 6, osef, mouse_move, ctx);
 	mlx_hook(ctx->win_ptr, 17, osef, quit_event, NULL);
 	mlx_expose_hook(ctx->win_ptr, expose_callback, ctx);
@@ -138,8 +113,7 @@ void init_mlx(t_mlx_context *ctx, t_map map)
 	mlx_loop(ctx->mlx_ptr);
 }
 
-
-t_camera_key get_camera_key(int keycode)
+t_camera_key	get_camera_key(int keycode)
 {
 	t_camera_key table[MLX_KEY_MAX];
 
@@ -157,21 +131,21 @@ t_camera_key get_camera_key(int keycode)
 	table[MLX_KEY_R] = KEY_CAMERA_RESET;
 	table[MLX_KEY_P] = KEY_CAMERA_PRINT_POS;
 	if (keycode >= MLX_KEY_MAX)
-		return KEY_UNKNOWN;
-	return table[keycode];
+		return (KEY_UNKNOWN);
+	return (table[keycode]);
 }
 
-t_renderer_key get_renderer_key(int keycode)
+t_renderer_key	get_renderer_key(int keycode)
 {
 	if (keycode == MLX_KEY_PLUS)
-		return KEY_SCALE_UP;
+		return (KEY_SCALE_UP);
 	if (keycode == MLX_KEY_MINUS)
-		return KEY_SCALE_DOWN;
+		return (KEY_SCALE_DOWN);
 	if (keycode == MLX_KEY_MULTIPLY)
-		return KEY_FOV_UP;
+		return (KEY_FOV_UP);
 	if (keycode == MLX_KEY_DIVIDE)
-		return KEY_FOV_DOWN;
+		return (KEY_FOV_DOWN);
 	if (keycode == MLX_KEY_T)
-		return KEY_PROJECTION_TOOGLE;
-	return KEY_RUNKNOWN;
+		return (KEY_PROJECTION_TOOGLE);
+	return (KEY_RUNKNOWN);
 }

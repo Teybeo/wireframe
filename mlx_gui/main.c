@@ -1,22 +1,23 @@
-#include <array.h>
-#include <libft.h>
-#include <map_reader.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/09/05 15:51:11 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/09/05 15:51:13 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft.h"
+#include "map_reader.h"
 #include "mlx_gui.h"
-
-#if   __STDC_VERSION__ >= 201112L
-	#define __C_STD__ "11"
-#elif __STDC_VERSION__ >= 199901L
-	#define __C_STD__ "99"
-#else
-	#define __C_STD__ "90"
-#endif
-
-#pragma message(__C_STD__)
 
 int	main(int argc, char **argv)
 {
-	t_map map;
-	t_mlx_context ctx;
+	t_map			map;
+	t_mlx_context	ctx;
 
 	if (argc != 2)
 	{
