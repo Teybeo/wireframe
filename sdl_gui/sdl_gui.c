@@ -203,5 +203,7 @@ t_renderer_key get_renderer_key(SDL_Scancode scancode)
 		return KEY_FOV_UP;
 	if (scancode == SDL_SCANCODE_KP_DIVIDE)
 		return KEY_FOV_DOWN;
+	if (scancode == SDL_SCANCODE_T)
+		return KEY_PROJECTION_TOOGLE;
 	return KEY_RUNKNOWN;
 }
