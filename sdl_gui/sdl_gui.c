@@ -174,7 +174,7 @@ void sdl_event(t_sdl_app* ctx)
 
 t_camera_key get_camera_key(SDL_Scancode scancode)
 {
-	t_camera_key table[SDL_NUM_SCANCODES];
+	t_camera_key table[SDL_NUM_SCANCODES] = {};
 
 	table[SDL_SCANCODE_W] = KEY_FORWARD;
 	table[SDL_SCANCODE_S] = KEY_BACKWARD;

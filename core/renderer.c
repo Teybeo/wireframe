@@ -210,7 +210,7 @@ void renderer_update(t_renderer *r)
 	elapsed_time += duration;
 	if (elapsed_time >= 20)
 	{
-		printf("Frametime: %.0f ms, %.2f fps\n", duration, 1000 / duration);
+//		printf("Frametime: %.0f ms, %.2f fps\n", duration, 1000 / duration);
 		elapsed_time = 0;
 	}
 	timestamp = clock();
