@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 16:10:42 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/18 19:13:25 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/09/18 19:56:43 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	renderer_init(t_renderer *r, void *pixels, t_map map, t_vec2i size)
 	r->scale_factor = 0.25f;
 	r->fov_angle = 90;
 	r->depth_buffer = malloc(sizeof(float) * size.x * size.y);
-	r->use_perspective = 0;
+	r->use_perspective = 1;
 	set_perspective(&r->projection, 0.1, 100, size.x / size.y, r->fov_angle);
 	speed_factor = vec3_max_axis(vec3_sub(r->map.max, r->map.min)) / 100;
 	init_camera(&r->camera, speed_factor);
@@ -72,7 +72,7 @@ void	renderer_render_segment(t_renderer r, t_segment seg, t_mat4 model_clip)
 		|| (b.z < -b.w || b.z > b.w)
 	)
 		return;
-	
+
 	// Clip to NDC
 	// (We keep vertex w untouched for depth tests later)
 	vec4_mul_scalar_this(&a, 1 / a.w);
@@ -84,16 +84,11 @@ void	renderer_render_segment(t_renderer r, t_segment seg, t_mat4 model_clip)
 	b.x =  b.x * r.size.x + (r.size.x * 0.5f);
 	b.y = -b.y * r.size.y + (r.size.y * 0.5f);
 
-	t_vec2i a_i = vec4_round2D(a);
-	t_vec2i b_i = vec4_round2D(b);
+	vec4_round2D_vec3i(a, &aa);
+	vec4_round2D_vec3i(b, &bb);
 
-	if (clip_line(&a_i, &b_i, r.size))
+	if (clip_line(&aa, &bb, r.size))
 	{
-//			draw_line(r, a_i, b_i);
-		aa.x = a_i.x;
-		aa.y = a_i.y;
-		bb.x = b_i.x;
-		bb.y = b_i.y;
 		a.w = r.use_perspective ? a.w : a.z;
 		b.w = r.use_perspective ? b.w : b.z;
 		draw_line(&r, aa, bb, -a.w, -b.w);

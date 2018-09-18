@@ -120,6 +120,12 @@ t_vec2i	vec4_round2D(t_vec4 vec)
 	return res;
 }
 
+void	vec4_round2D_vec3i(t_vec4 vec, t_vec3i *veci)
+{
+	veci->x = (int)(vec.x + 0.5f);
+	veci->y = (int)(vec.y + 0.5f);
+}
+
 int color_mix(float factor, int a, int b)
 {
 	unsigned char red;

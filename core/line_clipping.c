@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 14:53:45 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/05 14:54:43 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/09/18 20:00:02 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	get_area_code(t_vec2i point, t_vec2i window)
 	return (area_code);
 }
 
-int		clip_line(t_vec2i *a, t_vec2i *b, t_vec2i window)
+int		clip_line_2D(t_vec2i *a, t_vec2i *b, t_vec2i window)
 {
 	char	area_code_a;
 	char	area_code_b;
@@ -77,4 +77,9 @@ int		clip_line(t_vec2i *a, t_vec2i *b, t_vec2i window)
 		}
 		*code_to_clip = get_area_code(*point, window);
 	}
+}
+
+int		clip_line(t_vec3i *a, t_vec3i *b, t_vec2i window)
+{
+	return (clip_line_2D((t_vec2i*)a, (t_vec2i*)b, window));
 }

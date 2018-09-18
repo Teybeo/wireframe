@@ -65,6 +65,7 @@ float vec3_max_axis(t_vec3 a);
 t_vec3	vec3_mul_scalar(t_vec3 vec, float scalar);
 t_vec3i	vec3_round(t_vec3 vec);
 t_vec2i	vec4_round2D(t_vec4 vec);
+void	vec4_round2D_vec3i(t_vec4 vec, t_vec3i *veci);
 t_vec4	vec4(t_vec3 v);
 int color_mix(float factor, int a, int b);
 void	vec4_mul_scalar_this(t_vec4 *vec, float scalar);
