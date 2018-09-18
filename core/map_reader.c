@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map_reader.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/09/18 16:01:17 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/09/18 16:04:36 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "map_reader.h"
 
 #include "errors.h"
@@ -23,13 +35,11 @@ t_map	load_fdf(char const *filepath)
 	do_center_map(&map);
 	compute_colors(&map);
 	free(line_array.data);
-	print_stats(map.segment_array, "segment_array");
 	shrink_to_fit(&map.segment_array);
+	shrink_to_fit(&map.vertex_array);
 	print_stats(map.segment_array, "segment_array");
 	print_stats(map.vertex_array, "vertex_array");
-	shrink_to_fit(&map.vertex_array);
-	print_stats(map.vertex_array, "vertex_array");
-	return map;
+	return (map);
 }
 
 void	parse_map_lines(t_map *map, t_array txt_line_array)
@@ -50,7 +60,8 @@ void	parse_map_lines(t_map *map, t_array txt_line_array)
 			add_vertical_segments(map, point_array, previous_point_array);
 			free(previous_point_array.data);
 		}
-		array_append(&map->vertex_array, point_array.data, (size_t)point_array.size);
+		array_append(&map->vertex_array, point_array.data,
+				(size_t)point_array.size);
 		previous_point_array = point_array;
 		i++;
 	}

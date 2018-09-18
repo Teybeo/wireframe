@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map_preprocess.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/09/18 15:52:40 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/09/18 15:55:48 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "map_preprocess.h"
 
 #include "vec3.h"
@@ -44,7 +56,7 @@ void	do_center_map(t_map *map)
 	}
 }
 
-void	init_gradient(grad_step *gradient)
+void	init_gradient(t_grad_step *gradient)
 {
 	gradient[0].treshold = 0;
 	gradient[1].treshold = 0.01;
@@ -64,21 +76,20 @@ void	compute_colors(t_map *map)
 {
 	int			i;
 	t_vec4		*vertex_ptr;
+	t_grad_step	gradient[GRADIENT_COUNT];
 
-	grad_step	gradient[GRADIENT_COUNT];
 	init_gradient(gradient);
 	i = 0;
 	vertex_ptr = map->vertex_array.data;
 	while (i < map->vertex_array.size)
 	{
-		vertex_ptr[i].w = get_color_from_height2(map, gradient, vertex_ptr[i].y);
+		vertex_ptr[i].w = get_color_from_height(map, gradient, vertex_ptr[i].y);
 		i++;
 	}
 }
 
-int		get_color_from_height2(t_map *map, grad_step *gradient, float height)
+int		get_color_from_height(t_map *map, t_grad_step *gradient, float height)
 {
-//	return 0x00FFFFFF;
 	int		i;
 	float	min;
 	float	max;
@@ -94,8 +105,6 @@ int		get_color_from_height2(t_map *map, grad_step *gradient, float height)
 	}
 	i = fminf(i, GRADIENT_COUNT - 1);
 	i--;
-//	printf("height: %6g = [%d -> %d]\n", height, i, i + 1);
-//	return renderer->gradient[i].color;
 	min = gradient[i].treshold;
 	max = gradient[i + 1].treshold;
 	factor = (height - min) / (max - min);

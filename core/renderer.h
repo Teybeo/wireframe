@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 15:06:39 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/05 15:06:59 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/09/18 16:51:42 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,6 @@ void	renderer_init(t_renderer *r, void *pixels, t_map map, t_vec2i size);
 void	renderer_event(t_renderer *renderer, t_renderer_key key);
 void	renderer_update(t_renderer *r);
 void	renderer_draw(t_renderer renderer);
-void	renderer_draw0(t_renderer renderer);
+void	compute_transform(t_renderer *renderer, t_mat4 *model_clip);
 
 #endif

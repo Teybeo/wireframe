@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   renderer.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/09/18 16:10:42 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/09/18 19:13:25 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "renderer.h"
 
 #include "libft.h"
@@ -13,7 +25,7 @@
 #include <string.h>
 #include <mat4.h>
 
-void renderer_init(t_renderer *r, void* pixels, t_map map, t_vec2i size)
+void	renderer_init(t_renderer *r, void *pixels, t_map map, t_vec2i size)
 {
 	float speed_factor;
 
@@ -30,38 +42,98 @@ void renderer_init(t_renderer *r, void* pixels, t_map map, t_vec2i size)
 	init_camera(&r->camera, speed_factor);
 }
 
-void renderer_draw(t_renderer renderer)
+void	renderer_render_segment(t_renderer r, t_segment seg, t_mat4 model_clip)
 {
-	int			i;
+	t_vec4		a;
+	t_vec4		b;
 	t_vec3i		aa;
 	t_vec3i		bb;
+
+	a = ((t_vec4*)r.map.vertex_array.data)[seg.start_idx];
+	b = ((t_vec4*)r.map.vertex_array.data)[seg.end_idx];
+
+	aa.z = a.w;
+	bb.z = b.w;
+	a.w = 1;
+	b.w = 1;
+
+	a.y *= r.scale_factor;
+	b.y *= r.scale_factor;
+
+	// Model to View to Clip
+	mat4_mul_vec(&model_clip, &a);
+	mat4_mul_vec(&model_clip, &b);
+	// Discard line if one or both points outside clipping volume
+	if ((a.x < -a.w || a.x > a.w)
+		|| (a.y < -a.w || a.y > a.w)
+		|| (a.z < -a.w || a.z > a.w)
+		|| (b.x < -b.w || b.x > b.w)
+		|| (b.y < -b.w || b.y > b.w)
+		|| (b.z < -b.w || b.z > b.w)
+	)
+		return;
+	
+	// Clip to NDC
+	// (We keep vertex w untouched for depth tests later)
+	vec4_mul_scalar_this(&a, 1 / a.w);
+	vec4_mul_scalar_this(&b, 1 / b.w);
+
+	// NDC to Window
+	a.x =  a.x * r.size.x + (r.size.x * 0.5f);
+	a.y = -a.y * r.size.y + (r.size.y * 0.5f);
+	b.x =  b.x * r.size.x + (r.size.x * 0.5f);
+	b.y = -b.y * r.size.y + (r.size.y * 0.5f);
+
+	t_vec2i a_i = vec4_round2D(a);
+	t_vec2i b_i = vec4_round2D(b);
+
+	if (clip_line(&a_i, &b_i, r.size))
+	{
+//			draw_line(r, a_i, b_i);
+		aa.x = a_i.x;
+		aa.y = a_i.y;
+		bb.x = b_i.x;
+		bb.y = b_i.y;
+		a.w = r.use_perspective ? a.w : a.z;
+		b.w = r.use_perspective ? b.w : b.z;
+		draw_line(&r, aa, bb, -a.w, -b.w);
+	}
+}
+
+#if 1
+void	renderer_draw(t_renderer renderer)
+{
+	int			i;
 	t_segment	*segment_ptr;
-	t_vec4		*vertex_ptr;
+	t_mat4		model_clip;
 
 	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y, sizeof(uint32_t));
 	ft_memzero(renderer.depth_buffer, renderer.size.x * renderer.size.y, sizeof(float));
+	segment_ptr = renderer.map.segment_array.data;
+	i = 0;
+	compute_transform(&renderer, &model_clip);
+	while (i < renderer.map.segment_array.size)
+	{
+		renderer_render_segment(renderer, segment_ptr[i], model_clip);
+		i++;
+	}
+}
+#else
+void	renderer_draw(t_renderer renderer)
+{
+	int			i;
+	t_segment	*segment_ptr;
+	t_vec4		*vertex_ptr;
+	t_mat4		model_clip;
+	t_vec3i		aa;
+	t_vec3i		bb;
 
+	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y, sizeof(uint32_t));
+	ft_memzero(renderer.depth_buffer, renderer.size.x * renderer.size.y, sizeof(float));
 	segment_ptr = renderer.map.segment_array.data;
 	vertex_ptr = renderer.map.vertex_array.data;
 	i = 0;
-
-	t_mat4 model_view;
-	t_mat4 rotation;
-	t_mat4 translation;
-	t_mat4 model_clip;
-
-	mat4_identity(&translation);
-	mat4_translate_by(&translation, renderer.camera.pos);
-
-	init_with_mat3(&rotation, renderer.camera.rotation);
-
-	if (renderer.camera.mode == CAMERA_FREEFLY)
-		mat4_mul_ptr(&model_view, &rotation, &translation);
-	else
-		mat4_mul_ptr(&model_view, &translation, &rotation);
-
-	mat4_mul_ptr(&model_clip, &renderer.projection, &model_view);
-
+	compute_transform(&renderer, &model_clip);
 	while (i < renderer.map.segment_array.size)
 	{
 		t_vec4 a = vertex_ptr[segment_ptr[i].start_idx];
@@ -80,11 +152,11 @@ void renderer_draw(t_renderer renderer)
 		mat4_mul_vec(&model_clip, &b);
 		// Discard line if one or both points outside clipping volume
 		if ((a.x < -a.w || a.x > a.w)
-			||	(a.y < -a.w || a.y > a.w)
-			||	(a.z < -a.w || a.z > a.w)
-			||	(b.x < -b.w || b.x > b.w)
-			||	(b.y < -b.w || b.y > b.w)
-			||	(b.z < -b.w || b.z > b.w)
+			|| (a.y < -a.w || a.y > a.w)
+			|| (a.z < -a.w || a.z > a.w)
+			|| (b.x < -b.w || b.x > b.w)
+			|| (b.y < -b.w || b.y > b.w)
+			|| (b.z < -b.w || b.z > b.w)
 			)
 		{
 			i++;
@@ -118,70 +190,25 @@ void renderer_draw(t_renderer renderer)
 		i++;
 	}
 }
+#endif
 
-void renderer_draw0(t_renderer renderer) {
+void	compute_transform(t_renderer *renderer, t_mat4 *model_clip)
+{
+	t_mat4 model_view;
+	t_mat4 rotation;
+	t_mat4 translation;
 
-	t_vec3 a = {500, 500, 0};
-	t_vec3 b = {801, 800, 0};
-
-	t_vec3i a_i;
-	t_vec3i b_i;
-
-
-	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y, sizeof(uint32_t));
-
-	static int step_count = 8;
-//	step_count = ((cos(clock() / 1000000.f) * 0.5) + 0.5f) * 1000;
-	step_count = 10000;
-//	printf("step_count: %d\n", step_count);
-//	step_count;
-	float angle;
-	float step = (2 * M_PI_F) / step_count;
-	for (angle = 0; angle < (2 * M_PI_F); angle += step)
-	{
-		b.x = a.x + cos(angle) * 400;
-		b.y = a.x + sin(angle) * 400;
-		a_i = vec3_round(a);
-		b_i = vec3_round(b);
-		a_i.z = 0x00FF0000;
-		b_i.z = 0x000000FF;
-		draw_line(&renderer, a_i, b_i, 0, 0);
-	}
-//	usleep(100000);
+	mat4_identity(&translation);
+	mat4_translate_by(&translation, renderer->camera.pos);
+	init_with_mat3(&rotation, renderer->camera.rotation);
+	if (renderer->camera.mode == CAMERA_FREEFLY)
+		mat4_mul_ptr(&model_view, &rotation, &translation);
+	else
+		mat4_mul_ptr(&model_view, &translation, &rotation);
+	mat4_mul_ptr(model_clip, &renderer->projection, &model_view);
 }
 
-void renderer_draw1(t_renderer renderer) {
-
-	t_vec3 center = {200, 200, 0};
-	int length = 200;
-	t_vec3 a;
-	t_vec3 b;
-
-	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y, sizeof(uint32_t));
-
-	static float angle = 150;
-	float rad = DEG_TO_RAD(angle);
-	{
-		a.x = cosf(rad) * length;
-		a.y = sinf(rad) * length;
-		a = vec3_add(a, center);
-		b = vec3_sub(center, a);
-		(void)b;
-//		draw_line(renderer, center, a);
-//		t_vec2i a_i = vec3_round2D(a);
-//		t_vec2i center_i = vec3_round2D(center);
-//		draw_line(renderer, a_i, center_i);
-	}
-	if (angle > 360)
-		angle = 0;
-	angle += .5f;
-	printf("Angle: %f\n", angle);
-
-//	usleep(100000);
-}
-
-
-void renderer_event(t_renderer *renderer, t_renderer_key key)
+void	renderer_event(t_renderer *renderer, t_renderer_key key)
 {
 	if (key == KEY_SCALE_UP)
 		renderer->scale_factor *= 2;
@@ -195,22 +222,25 @@ void renderer_event(t_renderer *renderer, t_renderer_key key)
 		renderer->use_perspective ^= 1;
 }
 
-void renderer_update(t_renderer *r)
+void	renderer_update(t_renderer *r)
 {
+	static clock_t	timestamp = 0;
+	static float	elapsed_time = 0;
+	float			duration;
+	float			aspect_ratio;
+
+	aspect_ratio = (float)r->size.y / r->size.x;
 	camera_update(&r->camera);
 	if (r->use_perspective)
-		set_perspective(&r->projection, 0.1, 100, (float) r->size.y / r->size.x, r->fov_angle);
+		set_perspective(&r->projection, 0.1, 100, aspect_ratio, r->fov_angle);
 	else
 		set_orthographic(&r->projection, r->size.x, r->size.y, -1000, 1000);
-
-	static clock_t timestamp = 0;
-	static float elapsed_time = 0;
-	float duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
+	duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
 	duration *= 1000;
 	elapsed_time += duration;
 	if (elapsed_time >= 20)
 	{
-//		printf("Frametime: %.0f ms, %.2f fps\n", duration, 1000 / duration);
+		printf("Frametime: %.0f ms, %.2f fps\n", duration, 1000 / duration);
 		elapsed_time = 0;
 	}
 	timestamp = clock();

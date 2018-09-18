@@ -4,35 +4,27 @@
 #include <math.h>
 #include <stdio.h>
 
-void draw_line_x_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
+void draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
 					  float d, float d1);
 void draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
 					  float d, float d1);
-void swap(int *a, int *b)
-{
-	int tmp = *a;
-	*a = *b;
-	*b = tmp;
-}
 
-void draw_line(t_renderer *renderer, t_vec3i a, t_vec3i b, float a_z, float b_z)
+void	draw_line(t_renderer *rndr, t_vec3i a, t_vec3i b, float a_z, float b_z)
 {
 	t_vec2i increment;
+	t_vec2i ab;
 
-//	printf("(%i, %i) to (%i, %i)\n", a.x, a.y, b.x, b.y);
-//	printf("(%g) to (%g)\n", a_z, b_z);
-	t_vec2i ab = (t_vec2i){b.x - a.x, b.y - a.y};
-
+	ab = (t_vec2i){b.x - a.x, b.y - a.y};
 	increment.x = (ab.x > 0) ? 1 : -1;
 	increment.y = (ab.y > 0) ? 1 : -1;
 
 	if (abs(ab.x) >= abs(ab.y))
-		draw_line_x_axis(renderer, a, b, increment, a_z, b_z);
+		draw_line_x_axis(rndr, a, b, increment, a_z, b_z);
 	else
-		draw_line_y_axis(renderer, a, b, increment, a_z, b_z);
+		draw_line_y_axis(rndr, a, b, increment, a_z, b_z);
 }
 
-void draw_line_x_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
+void	draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
 					  float a_z, float b_z)
 {
 	t_vec2i ab;
@@ -62,24 +54,24 @@ void draw_line_x_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direct
 	float z = a_z;
 	while (x != b.x)
 	{
-		int i = ((int)y * renderer->size.x) + x;
-		if (renderer->depth_buffer[i] < z || renderer->depth_buffer[i] == 0)
+		int i = ((int)y * rndr->size.x) + x;
+		if (rndr->depth_buffer[i] < z || rndr->depth_buffer[i] == 0)
 		{
-			renderer->depth_buffer[i] = z;
+			rndr->depth_buffer[i] = z;
 //			float z_scale = 1 - (fabsf(z) / 200);
 //			float z_scale = 1 - (fabsf(z) * 0.005f);
 //			float z_scale = 1 - fabsf(z);
 //			z_scale = z_scale < 0 ? 0 : z_scale;
 //			if (z_scale < 0 || z_scale > 1)
 //				printf("z: %g\n", z);
-//			renderer->pixels[i] = ((uint8_t) (z_scale * 255.f) << R_SHIFT)
+//			rndr->pixels[i] = ((uint8_t) (z_scale * 255.f) << R_SHIFT)
 //								  + ((uint8_t) (z_scale * 255.f) << G_SHIFT)
 //								  + ((uint8_t) (z_scale * 255.f) << B_SHIFT);
-			renderer->pixels[i] = ((uint8_t)red << R_SHIFT)
+			rndr->pixels[i] = ((uint8_t)red << R_SHIFT)
 								 + ((uint8_t)green << G_SHIFT)
 								 + ((uint8_t)blue << B_SHIFT);
-	//		if (renderer.pixels[i] & 0xFF000000)
-	//			renderer.pixels[i] = 0x00FFFFFF;
+	//		if (rndr.pixels[i] & 0xFF000000)
+	//			rndr.pixels[i] = 0x00FFFFFF;
 		}
 		y += coeff * direction.y;
 		x += direction.x;
@@ -91,7 +83,7 @@ void draw_line_x_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direct
 	}
 }
 
-void draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
+void	draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
 					  float a_z, float b_z)
 {
 	t_vec2i ab;
