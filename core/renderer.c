@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 16:10:42 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/18 19:56:43 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/09/19 19:09:50 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,52 @@ void	renderer_init(t_renderer *r, void *pixels, t_map map, t_vec2i size)
 	speed_factor = vec3_max_axis(vec3_sub(r->map.max, r->map.min)) / 100;
 	init_camera(&r->camera, speed_factor);
 }
-
-void	renderer_render_segment(t_renderer r, t_segment seg, t_mat4 model_clip)
+#if 1
+bool	transform_point(t_renderer r, t_vec4 *ptr, t_vec3i *ptr_i, t_mat4 model_clip)
 {
-	t_vec4		a;
-	t_vec4		b;
+	t_vec4	p;
+
+	p = *ptr;
+	ptr_i->z = p.w;
+	p.w = 1;
+	p.y *= r.scale_factor;
+	mat4_mul_vec(&model_clip, &p);
+	if ((p.x < -p.w || p.x > p.w)
+		|| (p.y < -p.w || p.y > p.w)
+		|| (p.z < -p.w || p.z > p.w))
+		return false;
+	vec4_mul_scalar_this(&p, 1 / p.w);
+	p.x = p.x * r.size.x + (r.size.x * 0.5f);
+	p.y = -p.y * r.size.y + (r.size.y * 0.5f);
+	p.z = r.use_perspective ? p.w : p.z;
+	vec4_round2D_vec3i(p, ptr_i);
+	*ptr = p;
+	return (true);
+}
+
+void	renderer_render_segment(t_renderer r, t_segment segment, t_mat4 model_clip)
+{
+	t_vec4	*vertex_ptr;
+	t_vec4	a;
+	t_vec4	b;
+	t_vec3i	aa;
+	t_vec3i	bb;
+
+	vertex_ptr = r.map.vertex_array.data;
+	a = vertex_ptr[segment.start_idx];
+	b = vertex_ptr[segment.end_idx];
+	if (transform_point(r, &a, &aa, model_clip) == false)
+		return ;
+	if (transform_point(r, &b, &bb, model_clip) == false)
+		return ;
+	if (clip_line(&aa, &bb, r.size))
+		draw_line(&r, aa, bb, -a.z, -b.z);
+}
+#else
+void	renderer_render_segment(t_renderer r, t_vec4 a, t_vec4 b, t_mat4 model_clip)
+{
 	t_vec3i		aa;
 	t_vec3i		bb;
-
-	a = ((t_vec4*)r.map.vertex_array.data)[seg.start_idx];
-	b = ((t_vec4*)r.map.vertex_array.data)[seg.end_idx];
 
 	aa.z = a.w;
 	bb.z = b.w;
@@ -94,22 +130,24 @@ void	renderer_render_segment(t_renderer r, t_segment seg, t_mat4 model_clip)
 		draw_line(&r, aa, bb, -a.w, -b.w);
 	}
 }
+#endif
+
 
 #if 1
-void	renderer_draw(t_renderer renderer)
+void	renderer_draw(t_renderer rndr)
 {
 	int			i;
 	t_segment	*segment_ptr;
 	t_mat4		model_clip;
 
-	ft_memzero(renderer.pixels, renderer.size.x * renderer.size.y, sizeof(uint32_t));
-	ft_memzero(renderer.depth_buffer, renderer.size.x * renderer.size.y, sizeof(float));
-	segment_ptr = renderer.map.segment_array.data;
+	ft_memzero(rndr.pixels, rndr.size.x * rndr.size.y, sizeof(uint32_t));
+	ft_memzero(rndr.depth_buffer, rndr.size.x * rndr.size.y, sizeof(float));
+	segment_ptr = rndr.map.segment_array.data;
+	compute_transform(&rndr, &model_clip);
 	i = 0;
-	compute_transform(&renderer, &model_clip);
-	while (i < renderer.map.segment_array.size)
+	while (i <= rndr.map.segment_array.size)
 	{
-		renderer_render_segment(renderer, segment_ptr[i], model_clip);
+		renderer_render_segment(rndr, segment_ptr[i], model_clip);
 		i++;
 	}
 }
