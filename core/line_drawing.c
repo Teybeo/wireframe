@@ -1,5 +1,7 @@
 #include "line_drawing.h"
 
+#include "rgb.h"
+
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
@@ -20,12 +22,71 @@ void	draw_line(t_renderer *rndr, t_vec3i a, t_vec3i b, float a_z, float b_z)
 
 	if (abs(ab.x) >= abs(ab.y))
 		draw_line_x_axis(rndr, a, b, increment, a_z, b_z);
-	else
-		draw_line_y_axis(rndr, a, b, increment, a_z, b_z);
+//	else
+//		draw_line_y_axis(rndr, a, b, increment, a_z, b_z);
 }
 
+t_rgb	get_color_increment(t_rgb start, t_rgb end, float extent)
+{
+	t_rgb inc;
+
+	inc.r = (end.r - start.r) / extent;
+	inc.g = (end.g - start.g) / extent;
+	inc.b = (end.b - start.b) / extent;
+	return (inc);
+}
+
+#if 1
+
 void	draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
-					  float a_z, float b_z)
+						 float a_z, float b_z)
+{
+	t_vec2i ab;
+	float coeff;
+	float y;
+	int x;
+	t_rgb color_increment;
+	t_rgb color;
+
+	ab = (t_vec2i){b.x - a.x, b.y - a.y};
+	if (ab.x == 0)
+		return;
+	coeff = fabsf((float)ab.y / ab.x);
+	y = a.y;
+	x = a.x;
+	color = rgb_unpack(a.z);
+	color_increment = get_color_increment(color, rgb_unpack(b.z), abs(ab.x));
+	float z_inc = (b_z - a_z) / abs(ab.x);
+	float z = a_z;
+	while (x != b.x)
+	{
+		int i = ((int)y * rndr->size.x) + x;
+		if (rndr->depth_buffer[i] < z || rndr->depth_buffer[i] == 0)
+		{
+			rndr->depth_buffer[i] = z;
+			float z_scale = -z;
+//			float z_scale = 1 - (fabsf(z) / 200);
+//			float z_scale = 1 - (fabsf(z) * 0.005f);
+//			float z_scale = 1 - fabsf(z);
+//			z_scale = z_scale < 0 ? 0 : z_scale;
+			if (z_scale < 0 || z_scale > 1)
+				printf("z: %g\n", z);
+//			z_scale *= z_scale * z_scale;
+			z_scale *= 255;
+			rndr->pixels[i] = rgb_pack((t_rgb){z_scale, z_scale, z_scale});
+//			rndr->pixels[i] = rgb_pack(rgb_mul(color, z_scale));
+//			rndr->pixels[i] = rgb_pack(color);
+		}
+		y += coeff * direction.y;
+		x += direction.x;
+		color = rgb_add(color, color_increment);
+		z += z_inc;
+//		printf("0x%08x\n", color);
+	}
+}
+#else
+void	draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
+						 float a_z, float b_z)
 {
 	t_vec2i ab;
 	float coeff;
@@ -82,6 +143,7 @@ void	draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
 //		printf("0x%08x\n", color);
 	}
 }
+#endif
 
 void	draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
 					  float a_z, float b_z)

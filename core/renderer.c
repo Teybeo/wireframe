@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 16:10:42 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/19 19:09:50 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/09/20 19:57:26 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,17 @@ void	renderer_init(t_renderer *r, void *pixels, t_map map, t_vec2i size)
 	r->fov_angle = 90;
 	r->depth_buffer = malloc(sizeof(float) * size.x * size.y);
 	r->use_perspective = 1;
-	set_perspective(&r->projection, 0.1, 100, size.x / size.y, r->fov_angle);
+	set_perspective(&r->projection, 1, 100, size.x / size.y, r->fov_angle);
 	speed_factor = vec3_max_axis(vec3_sub(r->map.max, r->map.min)) / 100;
 	init_camera(&r->camera, speed_factor);
 }
+
 #if 1
+
 bool	transform_point(t_renderer r, t_vec4 *ptr, t_vec3i *ptr_i, t_mat4 model_clip)
 {
 	t_vec4	p;
+	float model_z = ptr->z;
 
 	p = *ptr;
 	ptr_i->z = p.w;
@@ -54,11 +57,12 @@ bool	transform_point(t_renderer r, t_vec4 *ptr, t_vec3i *ptr_i, t_mat4 model_cli
 	if ((p.x < -p.w || p.x > p.w)
 		|| (p.y < -p.w || p.y > p.w)
 		|| (p.z < -p.w || p.z > p.w))
-		return false;
+		return (false);
 	vec4_mul_scalar_this(&p, 1 / p.w);
 	p.x = p.x * r.size.x + (r.size.x * 0.5f);
 	p.y = -p.y * r.size.y + (r.size.y * 0.5f);
-	p.z = r.use_perspective ? p.w : p.z;
+	printf("model_z: %f, screen_z: %f\n", model_z, p.z);
+//	p.z = r.use_perspective ? p.w : p.z;
 	vec4_round2D_vec3i(p, ptr_i);
 	*ptr = p;
 	return (true);
@@ -82,6 +86,7 @@ void	renderer_render_segment(t_renderer r, t_segment segment, t_mat4 model_clip)
 	if (clip_line(&aa, &bb, r.size))
 		draw_line(&r, aa, bb, -a.z, -b.z);
 }
+
 #else
 void	renderer_render_segment(t_renderer r, t_vec4 a, t_vec4 b, t_mat4 model_clip)
 {
@@ -132,8 +137,8 @@ void	renderer_render_segment(t_renderer r, t_vec4 a, t_vec4 b, t_mat4 model_clip
 }
 #endif
 
-
 #if 1
+
 void	renderer_draw(t_renderer rndr)
 {
 	int			i;
@@ -151,6 +156,7 @@ void	renderer_draw(t_renderer rndr)
 		i++;
 	}
 }
+
 #else
 void	renderer_draw(t_renderer renderer)
 {
@@ -265,7 +271,7 @@ void	renderer_update(t_renderer *r)
 	aspect_ratio = (float)r->size.y / r->size.x;
 	camera_update(&r->camera);
 	if (r->use_perspective)
-		set_perspective(&r->projection, 0.1, 100, aspect_ratio, r->fov_angle);
+		set_perspective(&r->projection, 1, 100, aspect_ratio, r->fov_angle);
 	else
 		set_orthographic(&r->projection, r->size.x, r->size.y, -1000, 1000);
 	duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;

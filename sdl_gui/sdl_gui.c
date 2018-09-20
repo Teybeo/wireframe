@@ -85,9 +85,9 @@ void sdl_draw(t_sdl_app *ctx)
 //	SDL_RenderClear(ctx->sdl_renderer);
 //	SDL_SetRenderTarget(ctx->sdl_renderer, NULL);
 	SDL_RenderClear(ctx->sdl_renderer);
-	void* tex_pixels;
-	int osef;
-	void *tmp = ctx->renderer.pixels;
+//	void* tex_pixels;
+//	int osef;
+//	void *tmp = ctx->renderer.pixels;
 
 //	SDL_LockTexture(ctx->texture, NULL, &tex_pixels, &osef);
 //	memcpy(tex_pixels, ctx->bg_texture, 1600 * 900 * sizeof(Uint32));
