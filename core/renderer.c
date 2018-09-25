@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 16:10:42 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/20 19:57:26 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/09/25 19:29:12 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,12 @@ void	renderer_init(t_renderer *r, void *pixels, t_map map, t_vec2i size)
 
 #if 1
 
+/*
+** Z = [0, -1]
+*/
 bool	transform_point(t_renderer r, t_vec4 *ptr, t_vec3i *ptr_i, t_mat4 model_clip)
 {
 	t_vec4	p;
-	float model_z = ptr->z;
 
 	p = *ptr;
 	ptr_i->z = p.w;
@@ -61,8 +63,7 @@ bool	transform_point(t_renderer r, t_vec4 *ptr, t_vec3i *ptr_i, t_mat4 model_cli
 	vec4_mul_scalar_this(&p, 1 / p.w);
 	p.x = p.x * r.size.x + (r.size.x * 0.5f);
 	p.y = -p.y * r.size.y + (r.size.y * 0.5f);
-	printf("model_z: %f, screen_z: %f\n", model_z, p.z);
-//	p.z = r.use_perspective ? p.w : p.z;
+	p.z = (p.z - 1) * 0.5f;
 	vec4_round2D_vec3i(p, ptr_i);
 	*ptr = p;
 	return (true);
@@ -84,7 +85,7 @@ void	renderer_render_segment(t_renderer r, t_segment segment, t_mat4 model_clip)
 	if (transform_point(r, &b, &bb, model_clip) == false)
 		return ;
 	if (clip_line(&aa, &bb, r.size))
-		draw_line(&r, aa, bb, -a.z, -b.z);
+		draw_line(&r, aa, bb, a.z, b.z);
 }
 
 #else

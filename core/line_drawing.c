@@ -61,27 +61,23 @@ void	draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
 	while (x != b.x)
 	{
 		int i = ((int)y * rndr->size.x) + x;
-		if (rndr->depth_buffer[i] < z || rndr->depth_buffer[i] == 0)
+		if (rndr->depth_buffer[i] > z)
 		{
 			rndr->depth_buffer[i] = z;
-			float z_scale = -z;
-//			float z_scale = 1 - (fabsf(z) / 200);
-//			float z_scale = 1 - (fabsf(z) * 0.005f);
-//			float z_scale = 1 - fabsf(z);
-//			z_scale = z_scale < 0 ? 0 : z_scale;
-			if (z_scale < 0 || z_scale > 1)
-				printf("z: %g\n", z);
-//			z_scale *= z_scale * z_scale;
-			z_scale *= 255;
-			rndr->pixels[i] = rgb_pack((t_rgb){z_scale, z_scale, z_scale});
-//			rndr->pixels[i] = rgb_pack(rgb_mul(color, z_scale));
+			float z_scale = - z;
+			z_scale = fminf(z_scale * 20, 1);
+//			if (z_scale < 0 || z_scale > 1)
+//				printf("out of bounds z: %g\n", z_scale);
+//			z_scale *= 255;
+//			printf("z: %f\n", z_scale);
+//			rndr->pixels[i] = rgb_pack((t_rgb){z_scale, z_scale, z_scale});
+			rndr->pixels[i] = rgb_pack(rgb_mul(color, z_scale));
 //			rndr->pixels[i] = rgb_pack(color);
 		}
 		y += coeff * direction.y;
 		x += direction.x;
 		color = rgb_add(color, color_increment);
 		z += z_inc;
-//		printf("0x%08x\n", color);
 	}
 }
 #else
