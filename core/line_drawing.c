@@ -6,24 +6,20 @@
 #include <math.h>
 #include <stdio.h>
 
-void draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
-					  float d, float d1);
-void draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
-					  float d, float d1);
+#if 1
 
-void	draw_line(t_renderer *rndr, t_vec3i a, t_vec3i b, float a_z, float b_z)
+void	draw_line_x_axis(t_renderer *rndr, t_point a, t_point b);
+void	draw_line_y_axis(t_renderer *renderer, t_point a, t_point b);
+
+void	draw_line(t_renderer *rndr, t_point a, t_point b)
 {
-	t_vec2i increment;
 	t_vec2i ab;
 
 	ab = (t_vec2i){b.x - a.x, b.y - a.y};
-	increment.x = (ab.x > 0) ? 1 : -1;
-	increment.y = (ab.y > 0) ? 1 : -1;
-
 	if (abs(ab.x) >= abs(ab.y))
-		draw_line_x_axis(rndr, a, b, increment, a_z, b_z);
-//	else
-//		draw_line_y_axis(rndr, a, b, increment, a_z, b_z);
+		draw_line_x_axis(rndr, a, b);
+	else
+		draw_line_y_axis(rndr, a, b);
 }
 
 t_rgb	get_color_increment(t_rgb start, t_rgb end, float extent)
@@ -36,9 +32,61 @@ t_rgb	get_color_increment(t_rgb start, t_rgb end, float extent)
 	return (inc);
 }
 
-#if 1
+struct s_hax_x {
+	int		x;
+	float	y;
+	float	z;
+	t_rgb	color;
+};
+typedef struct s_hax_x t_hax_x;
 
-void	draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
+bool	prepare_line_drawing_x(t_point a, t_point b, t_hax_x *start, t_hax_x *inc)
+{
+	t_vec2i	ab;
+	t_vec2i	direction;
+
+	ab = (t_vec2i){b.x - a.x, b.y - a.y};
+	if (ab.x == 0)
+		return (false);
+	direction.x = (ab.x > 0) ? 1 : -1;
+	direction.y = (ab.y > 0) ? 1 : -1;
+	start->x = a.x;
+	start->y = a.y;
+	start->z = a.z;
+	start->color = rgb_unpack(a.color);
+	inc->x = direction.x;
+	inc->y = fabsf((float)ab.y / ab.x) * direction.y;
+	inc->z = (b.z - a.z) / abs(ab.x);
+	inc->color = get_color_increment(start->color, rgb_unpack(b.color), abs(ab.x));
+	return (true);
+}
+
+void	draw_line_x_axis(t_renderer *rndr, t_point a, t_point b)
+{
+	t_hax_x	current;
+	t_hax_x	increment;
+	float	fog_atten;
+	int		i;
+
+	if (!prepare_line_drawing_x(a, b, &current, &increment))
+		return ;
+	while (current.x != b.x)
+	{
+		i = ((int)current.y * rndr->size.x) + current.x;
+		if (rndr->depth_buffer[i] > current.z)
+		{
+			rndr->depth_buffer[i] = current.z;
+			fog_atten = rndr->use_fog ? fminf(-current.z * 50, 1) : 1;
+			rndr->pixels[i] = rgb_pack(rgb_mul(current.color, fog_atten));
+		}
+		current.y += increment.y;
+		current.x += increment.x;
+		current.z += increment.z;
+		current.color = rgb_add(current.color, increment.color);
+	}
+}
+
+void	draw_line_x_axis_old(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
 						 float a_z, float b_z)
 {
 	t_vec2i ab;
@@ -64,24 +112,132 @@ void	draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
 		if (rndr->depth_buffer[i] > z)
 		{
 			rndr->depth_buffer[i] = z;
-			float z_scale = - z;
-			z_scale = fminf(z_scale * 20, 1);
-//			if (z_scale < 0 || z_scale > 1)
-//				printf("out of bounds z: %g\n", z_scale);
-//			z_scale *= 255;
-//			printf("z: %f\n", z_scale);
-//			rndr->pixels[i] = rgb_pack((t_rgb){z_scale, z_scale, z_scale});
+			float z_scale = rndr->use_fog ? fminf(-z * 50, 1) : 1;
 			rndr->pixels[i] = rgb_pack(rgb_mul(color, z_scale));
-//			rndr->pixels[i] = rgb_pack(color);
 		}
 		y += coeff * direction.y;
 		x += direction.x;
-		color = rgb_add(color, color_increment);
 		z += z_inc;
+		color = rgb_add(color, color_increment);
 	}
 }
+
+struct s_hax_y {
+	float	x;
+	int		y;
+	float	z;
+	t_rgb	color;
+};
+typedef struct s_hax_y t_hax_y;
+
+bool prepare_line_drawing_y(t_point a, t_point b, t_hax_y *start, t_hax_y *increment)
+{
+	t_vec2i	ab;
+	t_vec2i	direction;
+
+	ab = (t_vec2i){b.x - a.x, b.y - a.y};
+	direction.x = (ab.x > 0) ? 1 : -1;
+	direction.y = (ab.y > 0) ? 1 : -1;
+
+	if (ab.y == 0)
+		return (false);
+	start->x = a.x;
+	start->y = a.y;
+	start->z = a.z;
+	start->color = rgb_unpack(a.color);
+	increment->x = fabsf((float)ab.x / ab.y) * direction.x;
+	increment->y = direction.y;
+	increment->color = get_color_increment(start->color, rgb_unpack(b.color), abs(ab.y));
+	increment->z = (b.z - a.z) / abs(ab.y);
+	return (true);
+}
+
+void	draw_line_y_axis(t_renderer *renderer, t_point a, t_point b)
+{
+	t_hax_y	current;
+	t_hax_y	increment;
+	float	fog_atten;
+	int		i;
+
+	if (!prepare_line_drawing_y(a, b, &current, &increment))
+		return ;
+	while (current.y != b.y)
+	{
+		i = (current.y * renderer->size.x) + (int)current.x;
+		if (renderer->depth_buffer[i] > current.z)
+		{
+			renderer->depth_buffer[i] = current.z;
+			fog_atten = renderer->use_fog ? fminf(-current.z * 50, 1) : 1;
+			renderer->pixels[i] = rgb_pack(rgb_mul(current.color, fog_atten));
+		}
+		current.x += increment.x;
+		current.y += increment.y;
+		current.z += increment.z;
+		current.color = rgb_add(current.color, increment.color);
+	}
+}
+
+void	draw_line_y_axis_old(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
+						 float a_z, float b_z)
+{
+	t_vec2i	ab;
+	float	coeff;
+	float	x;
+	int		y;
+	float	z;
+	float	z_inc;
+	t_rgb	color_increment;
+	t_rgb	color;
+
+	ab = (t_vec2i){b.x - a.x, b.y - a.y};
+	if (ab.y == 0)
+		return;
+	coeff = fabsf((float)ab.x / ab.y);
+	x = a.x;
+	y = a.y;
+	color = rgb_unpack(a.z);
+	color_increment = get_color_increment(color, rgb_unpack(b.z), abs(ab.y));
+	z_inc = (b_z - a_z) / abs(ab.y);
+	z = a_z;
+	while (y != b.y)
+	{
+		int i = (y * renderer->size.x) + (int)x;
+		if (renderer->depth_buffer[i] > z)
+		{
+			renderer->depth_buffer[i] = z;
+			float fog_atten = renderer->use_fog ? fminf(-z * 50, 1) : 1;
+			renderer->pixels[i] = rgb_pack(rgb_mul(color, fog_atten));
+		}
+		x += coeff * direction.x;
+		y += direction.y;
+		z += z_inc;
+		color = rgb_add(color, color_increment);
+	}
+}
+
 #else
-void	draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
+
+void draw_line_x_axis_old(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
+						  float d, float d1);
+void draw_line_y_axis_old(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
+						  float d, float d1);
+
+void	draw_line_old(t_renderer *rndr, t_vec3i a, t_vec3i b, float a_z, float b_z)
+{
+	t_vec2i increment;
+	t_vec2i ab;
+
+	ab = (t_vec2i){b.x - a.x, b.y - a.y};
+	increment.x = (ab.x > 0) ? 1 : -1;
+	increment.y = (ab.y > 0) ? 1 : -1;
+
+	if (abs(ab.x) >= abs(ab.y))
+		draw_line_x_axis_old(rndr, a, b, increment, a_z, b_z);
+	else
+		draw_line_y_axis_old(rndr, a, b, increment, a_z, b_z);
+}
+
+void	draw_line_x_axis_old(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
 						 float a_z, float b_z)
 {
 	t_vec2i ab;
@@ -139,9 +295,8 @@ void	draw_line_x_axis(t_renderer *rndr, t_vec3i a, t_vec3i b, t_vec2i direction,
 //		printf("0x%08x\n", color);
 	}
 }
-#endif
 
-void	draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
+void	draw_line_y_axis_old(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direction,
 					  float a_z, float b_z)
 {
 	t_vec2i ab;
@@ -205,3 +360,4 @@ void	draw_line_y_axis(t_renderer *renderer, t_vec3i a, t_vec3i b, t_vec2i direct
 	}
 }
 
+#endif

@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 15:02:59 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/05 15:02:59 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/09/27 19:47:15 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "vec3.h"
 # include "renderer.h"
 
-void draw_line(t_renderer *rndr, t_vec3i a, t_vec3i b, float d, float d1);
+void	draw_line(t_renderer *rndr, t_point a, t_point b);
+void	draw_line_old(t_renderer *rndr, t_vec3i a, t_vec3i b, float a_z, float b_z);
 
 #endif

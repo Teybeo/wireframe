@@ -34,6 +34,14 @@ struct s_vec4
 };
 typedef struct s_vec4 t_vec4;
 
+struct s_point {
+	int		x;
+	int		y;
+	float	z;
+	int		color;
+};
+typedef struct s_point	t_point;
+
 struct s_vec3i
 {
 	int x;
@@ -65,6 +73,7 @@ float vec3_max_axis(t_vec3 a);
 t_vec3	vec3_mul_scalar(t_vec3 vec, float scalar);
 t_vec3i	vec3_round(t_vec3 vec);
 t_vec2i	vec4_round2D(t_vec4 vec);
+void	vec4_round2D_point(t_vec4 vec, t_point *p);
 void	vec4_round2D_vec3i(t_vec4 vec, t_vec3i *veci);
 void	vec4_round2D_vec2i(t_vec4 vec, t_vec2i *veci);
 t_vec4	vec4(t_vec3 v);

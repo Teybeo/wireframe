@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 15:53:06 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/05 15:53:09 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/09/27 16:31:56 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # define MLX_KEY_R 15
 # define MLX_KEY_P 35
 # define MLX_KEY_T 17
+# define MLX_KEY_F 3
 # define MLX_KEY_ESC 53
 # define MLX_KEY_UP 126
 # define MLX_KEY_DOWN 125

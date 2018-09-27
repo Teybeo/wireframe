@@ -21,6 +21,7 @@
 # define BOTTOM	(1 << 3)
 # define TOP 	(1 << 4)
 
-int	clip_line(t_vec3i *a, t_vec3i *b, t_vec2i window);
+int	clip_line_old(t_vec3i *a, t_vec3i *b, t_vec2i window);
+int		clip_line(t_point *a, t_point *b, t_vec2i window);
 
 #endif

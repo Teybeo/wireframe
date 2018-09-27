@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 15:06:39 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/18 16:51:42 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/09/27 16:26:35 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ enum	e_renderer_key {
 	KEY_FOV_UP,
 	KEY_FOV_DOWN,
 	KEY_PROJECTION_TOOGLE,
+	KEY_FOG_TOOGLE,
 	KEY_RCOUNT
 };
 typedef enum e_renderer_key	t_renderer_key;
@@ -41,6 +42,7 @@ struct	s_renderer {
 	float		scale_factor;
 	float		fov_angle;
 	char		use_perspective;
+	char		use_fog;
 };
 typedef struct s_renderer	t_renderer;
 

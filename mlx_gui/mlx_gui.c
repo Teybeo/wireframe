@@ -15,7 +15,7 @@ int				key_event(int keycode, int state, void *param)
 	t_renderer_key	renderer_key;
 
 	ctx = param;
-//	printf("key: %d\n", keycode);
+	printf("key: %d\n", keycode);
 	camera_key = get_camera_key(keycode);
 	if (camera_key != KEY_UNKNOWN)
 		camera_key_event(&ctx->renderer.camera, camera_key, state);
@@ -147,5 +147,7 @@ t_renderer_key	get_renderer_key(int keycode)
 		return (KEY_FOV_DOWN);
 	if (keycode == MLX_KEY_T)
 		return (KEY_PROJECTION_TOOGLE);
+	if (keycode == MLX_KEY_F)
+		return (KEY_FOG_TOOGLE);
 	return (KEY_RUNKNOWN);
 }

@@ -79,7 +79,12 @@ int		clip_line_2D(t_vec2i *a, t_vec2i *b, t_vec2i window)
 	}
 }
 
-int		clip_line(t_vec3i *a, t_vec3i *b, t_vec2i window)
+int		clip_line_old(t_vec3i *a, t_vec3i *b, t_vec2i window)
+{
+	return (clip_line_2D((t_vec2i*)a, (t_vec2i*)b, window));
+}
+
+int		clip_line(t_point *a, t_point *b, t_vec2i window)
 {
 	return (clip_line_2D((t_vec2i*)a, (t_vec2i*)b, window));
 }
