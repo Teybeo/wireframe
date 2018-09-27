@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 16:10:42 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/27 19:51:21 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/09/27 19:52:21 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,33 +42,9 @@ void	renderer_init(t_renderer *r, void *pixels, t_map map, t_vec2i size)
 	init_camera(&r->camera, speed_factor);
 }
 
-#if 1
-
 /*
 ** Z = [0, -1]
 */
-bool	transform_point_old(t_renderer r, t_vec4 *ptr, t_vec3i *ptr_i, t_mat4 model_clip)
-{
-	t_vec4	p;
-
-	p = *ptr;
-	ptr_i->z = p.w;
-	p.w = 1;
-	p.y *= r.scale_factor;
-	mat4_mul_vec(&model_clip, &p);
-	if ((p.x < -p.w || p.x > p.w)
-		|| (p.y < -p.w || p.y > p.w)
-		|| (p.z < -p.w || p.z > p.w))
-		return (false);
-	vec4_mul_scalar_this(&p, 1 / p.w);
-	p.x = p.x * r.size.x + (r.size.x * 0.5f);
-	p.y = -p.y * r.size.y + (r.size.y * 0.5f);
-	p.z = (p.z - 1) * 0.5f;
-	vec4_round2D_vec3i(p, ptr_i);
-	*ptr = p;
-	return (true);
-}
-
 bool	transform_point(t_renderer r, t_vec4 p, t_point *ptr_i, t_mat4 model_clip)
 {
 	ptr_i->color = (int)p.w;
@@ -86,25 +62,6 @@ bool	transform_point(t_renderer r, t_vec4 p, t_point *ptr_i, t_mat4 model_clip)
 	vec4_round2D_point(p, ptr_i);
 	ptr_i->z = p.z;
 	return (true);
-}
-
-void	renderer_render_segment_old(t_renderer r, t_segment segment, t_mat4 model_clip)
-{
-	t_vec4	*vertex_ptr;
-	t_vec4	a;
-	t_vec4	b;
-	t_vec3i	aa;
-	t_vec3i	bb;
-
-	vertex_ptr = r.map.vertex_array.data;
-	a = vertex_ptr[segment.start_idx];
-	b = vertex_ptr[segment.end_idx];
-	if (transform_point_old(r, &a, &aa, model_clip) == false)
-		return ;
-	if (transform_point_old(r, &b, &bb, model_clip) == false)
-		return ;
-	if (clip_line_old(&aa, &bb, r.size))
-		draw_line_old(&r, aa, bb, a.z, b.z);
 }
 
 void	renderer_render_segment(t_renderer r, t_segment segment, t_mat4 model_clip)
@@ -125,56 +82,6 @@ void	renderer_render_segment(t_renderer r, t_segment segment, t_mat4 model_clip)
 	if (clip_line(&aa, &bb, r.size))
 		draw_line(&r, aa, bb);
 }
-
-#else
-void	renderer_render_segment(t_renderer r, t_vec4 a, t_vec4 b, t_mat4 model_clip)
-{
-	t_vec3i		aa;
-	t_vec3i		bb;
-
-	aa.z = a.w;
-	bb.z = b.w;
-	a.w = 1;
-	b.w = 1;
-
-	a.y *= r.scale_factor;
-	b.y *= r.scale_factor;
-
-	// Model to View to Clip
-	mat4_mul_vec(&model_clip, &a);
-	mat4_mul_vec(&model_clip, &b);
-	// Discard line if one or both points outside clipping volume
-	if ((a.x < -a.w || a.x > a.w)
-		|| (a.y < -a.w || a.y > a.w)
-		|| (a.z < -a.w || a.z > a.w)
-		|| (b.x < -b.w || b.x > b.w)
-		|| (b.y < -b.w || b.y > b.w)
-		|| (b.z < -b.w || b.z > b.w)
-	)
-		return;
-
-	// Clip to NDC
-	// (We keep vertex w untouched for depth tests later)
-	vec4_mul_scalar_this(&a, 1 / a.w);
-	vec4_mul_scalar_this(&b, 1 / b.w);
-
-	// NDC to Window
-	a.x =  a.x * r.size.x + (r.size.x * 0.5f);
-	a.y = -a.y * r.size.y + (r.size.y * 0.5f);
-	b.x =  b.x * r.size.x + (r.size.x * 0.5f);
-	b.y = -b.y * r.size.y + (r.size.y * 0.5f);
-
-	vec4_round2D_vec3i(a, &aa);
-	vec4_round2D_vec3i(b, &bb);
-
-	if (clip_line_old(&aa, &bb, r.size))
-	{
-		a.w = r.use_perspective ? a.w : a.z;
-		b.w = r.use_perspective ? b.w : b.z;
-		draw_line_old(&r, aa, bb, -a.w, -b.w);
-	}
-}
-#endif
 
 #if 1
 
