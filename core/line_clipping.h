@@ -16,10 +16,10 @@
 # include "vec3.h"
 
 # define INSIDE	0
-# define LEFT 	(1 << 1)
-# define RIGHT 	(1 << 2)
-# define BOTTOM	(1 << 3)
-# define TOP 	(1 << 4)
+# define LEFT 	(1 << 0)
+# define RIGHT 	(1 << 1)
+# define BOTTOM	(1 << 2)
+# define TOP 	(1 << 3)
 
 int	clip_line_old(t_vec3i *a, t_vec3i *b, t_vec2i window);
 int		clip_line(t_point *a, t_point *b, t_vec2i window);
