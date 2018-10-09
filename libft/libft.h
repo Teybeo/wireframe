@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/09 18:39:31 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/10/09 18:39:39 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef LIBFT_H
 # define LIBFT_H
 
@@ -6,9 +18,6 @@
 # endif
 
 # include <stddef.h>
-
-#define true 1
-#define false 0
 
 int		ft_atoi(char const *str);
 int		ft_is_space(char c);

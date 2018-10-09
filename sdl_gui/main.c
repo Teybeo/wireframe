@@ -6,11 +6,10 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 16:12:13 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/08 14:38:49 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/09 17:34:59 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "map_reader.h"
 #include "libft.h"
 #include "sdl_gui.h"
 

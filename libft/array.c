@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   array.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/09 18:37:44 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/10/09 18:37:44 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "array.h"
 
 #include "libft.h"
@@ -28,7 +40,7 @@ void	array_append(t_array *vec, void *data, size_t count)
 		return (array_append(vec, data, count));
 	}
 	ft_memcpy(vec->data + (vec->size * vec->elem_size), data,
-			  count * vec->elem_size);
+			count * vec->elem_size);
 	vec->size += count;
 }
 
@@ -43,7 +55,7 @@ void	shrink_to_fit(t_array *vec)
 void	print_stats(t_array arr, char *msg)
 {
 	printf("%s: %.2f KB,  %i / %zu * %zu B\n",
-		   msg,
-		   (arr.capacity * arr.elem_size) / 1024.f,
-		   arr.size, arr.capacity, arr.elem_size);
+		msg,
+		(arr.capacity * arr.elem_size) / 1024.f,
+		arr.size, arr.capacity, arr.elem_size);
 }

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include "map_reader.h"
 #include "mlx_gui.h"
 
 int	main(int argc, char **argv)

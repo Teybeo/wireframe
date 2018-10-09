@@ -3,8 +3,8 @@
 
 #include <SDL_video.h>
 #include <SDL_system.h>
-#include <map_reader.h>
-#include <renderer.h>
+#include "map_reader.h"
+#include "renderer.h"
 #include "array.h"
 
 struct s_sdl_app {

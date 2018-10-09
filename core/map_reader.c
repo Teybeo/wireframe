@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 16:01:17 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/09 14:35:16 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/09 17:32:03 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 void	parse_map_lines(t_map *map, t_array txt_line_array)
 {
