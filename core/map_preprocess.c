@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 15:52:40 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/27 19:39:40 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/09 17:22:06 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,12 @@ void	init_gradient(t_grad_step *gradient)
 	gradient[4].color = 0x00FFFFFF;
 	gradient[5].color = 0x00FFFFFF;
 }
+
 /*
 ** IEEE-758 has 24 (23 + exp) significands bits,
 ** so you can exactly represent any 24 bits RGB with a float without any loss
 */
+
 void	compute_colors(t_map *map)
 {
 	int			i;

@@ -1,44 +1,21 @@
-#include "line_drawing.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   line_drawing.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/09 17:53:31 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/10/09 17:54:43 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "rgb.h"
+#include "line_drawing.h"
 
 #include <stdlib.h>
 #include <math.h>
-#include <stdio.h>
 
-void	draw_line_x_axis(t_renderer *rndr, t_point a, t_point b);
-void	draw_line_y_axis(t_renderer *renderer, t_point a, t_point b);
-
-void	draw_line(t_renderer *rndr, t_point a, t_point b)
-{
-	t_vec2i ab;
-
-	ab = (t_vec2i){b.x - a.x, b.y - a.y};
-	if (abs(ab.x) >= abs(ab.y))
-		draw_line_x_axis(rndr, a, b);
-	else
-		draw_line_y_axis(rndr, a, b);
-}
-
-t_rgb	get_color_increment(t_rgb start, t_rgb end, float extent)
-{
-	t_rgb inc;
-
-	inc.r = (end.r - start.r) / extent;
-	inc.g = (end.g - start.g) / extent;
-	inc.b = (end.b - start.b) / extent;
-	return (inc);
-}
-
-struct s_hax_x {
-	int		x;
-	float	y;
-	float	z;
-	t_rgb	color;
-};
-typedef struct s_hax_x t_hax_x;
-
-bool	prepare_line_drawing_x(t_point a, t_point b, t_hax_x *start, t_hax_x *inc)
+bool	prepare_draw_line_x(t_point a, t_point b, t_hax_x *start, t_hax_x *incr)
 {
 	t_vec2i	ab;
 	t_vec2i	direction;
@@ -52,10 +29,10 @@ bool	prepare_line_drawing_x(t_point a, t_point b, t_hax_x *start, t_hax_x *inc)
 	start->y = a.y;
 	start->z = a.z;
 	start->color = rgb_unpack(a.color);
-	inc->x = direction.x;
-	inc->y = fabsf((float)ab.y / ab.x) * direction.y;
-	inc->z = (b.z - a.z) / abs(ab.x);
-	inc->color = get_color_increment(start->color, rgb_unpack(b.color), abs(ab.x));
+	incr->x = direction.x;
+	incr->y = fabsf((float)ab.y / ab.x) * direction.y;
+	incr->z = (b.z - a.z) / abs(ab.x);
+	incr->color = get_rgb_incr(start->color, rgb_unpack(b.color), abs(ab.x));
 	return (true);
 }
 
@@ -66,7 +43,7 @@ void	draw_line_x_axis(t_renderer *rndr, t_point a, t_point b)
 	float	fog_atten;
 	int		i;
 
-	if (!prepare_line_drawing_x(a, b, &current, &increment))
+	if (!prepare_draw_line_x(a, b, &current, &increment))
 		return ;
 	while (current.x != b.x)
 	{
@@ -84,15 +61,7 @@ void	draw_line_x_axis(t_renderer *rndr, t_point a, t_point b)
 	}
 }
 
-struct s_hax_y {
-	float	x;
-	int		y;
-	float	z;
-	t_rgb	color;
-};
-typedef struct s_hax_y t_hax_y;
-
-bool prepare_line_drawing_y(t_point a, t_point b, t_hax_y *start, t_hax_y *increment)
+bool	prepare_draw_line_y(t_point a, t_point b, t_hax_y *start, t_hax_y *incr)
 {
 	t_vec2i	ab;
 	t_vec2i	direction;
@@ -100,17 +69,16 @@ bool prepare_line_drawing_y(t_point a, t_point b, t_hax_y *start, t_hax_y *incre
 	ab = (t_vec2i){b.x - a.x, b.y - a.y};
 	direction.x = (ab.x > 0) ? 1 : -1;
 	direction.y = (ab.y > 0) ? 1 : -1;
-
 	if (ab.y == 0)
 		return (false);
 	start->x = a.x;
 	start->y = a.y;
 	start->z = a.z;
 	start->color = rgb_unpack(a.color);
-	increment->x = fabsf((float)ab.x / ab.y) * direction.x;
-	increment->y = direction.y;
-	increment->color = get_color_increment(start->color, rgb_unpack(b.color), abs(ab.y));
-	increment->z = (b.z - a.z) / abs(ab.y);
+	incr->x = fabsf((float)ab.x / ab.y) * direction.x;
+	incr->y = direction.y;
+	incr->color = get_rgb_incr(start->color, rgb_unpack(b.color), abs(ab.y));
+	incr->z = (b.z - a.z) / abs(ab.y);
 	return (true);
 }
 
@@ -121,7 +89,7 @@ void	draw_line_y_axis(t_renderer *renderer, t_point a, t_point b)
 	float	fog_atten;
 	int		i;
 
-	if (!prepare_line_drawing_y(a, b, &current, &increment))
+	if (!prepare_draw_line_y(a, b, &current, &increment))
 		return ;
 	while (current.y != b.y)
 	{
@@ -137,4 +105,15 @@ void	draw_line_y_axis(t_renderer *renderer, t_point a, t_point b)
 		current.z += increment.z;
 		current.color = rgb_add(current.color, increment.color);
 	}
+}
+
+void	draw_line(t_renderer *rndr, t_point a, t_point b)
+{
+	t_vec2i ab;
+
+	ab = (t_vec2i){b.x - a.x, b.y - a.y};
+	if (abs(ab.x) >= abs(ab.y))
+		draw_line_x_axis(rndr, a, b);
+	else
+		draw_line_y_axis(rndr, a, b);
 }

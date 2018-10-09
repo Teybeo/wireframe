@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 16:01:17 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/08 14:03:52 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/09 14:35:16 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,24 +23,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-t_map	load_fdf(char const *filepath)
-{
-	t_map	map;
-	t_array	line_array;
-
-	line_array = load_text_lines(filepath);
-	parse_map_lines(&map, line_array);
-	compute_boundingbox(&map);
-	do_center_map(&map);
-	compute_colors(&map);
-	free(line_array.data);
-	shrink_to_fit(&map.segment_array);
-	shrink_to_fit(&map.vertex_array);
-	print_stats(map.segment_array, "segment_array");
-	print_stats(map.vertex_array, "vertex_array");
-	return (map);
-}
 
 void	parse_map_lines(t_map *map, t_array txt_line_array)
 {

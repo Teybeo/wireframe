@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 15:06:39 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/27 16:26:35 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/09 17:45:08 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include "camera.h"
 # include "mat4.h"
 
-# include <array.h>
 # include <stdint.h>
 
 enum	e_renderer_key {
