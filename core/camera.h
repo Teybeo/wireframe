@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 14:52:03 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/05 14:52:03 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/09 15:45:02 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include <stdbool.h>
 # include <mat3.h>
-# include "map_reader.h"
 
 enum	e_camera_key {
 	KEY_UNKNOWN,
@@ -50,16 +49,7 @@ struct	s_camera {
 	float			x_angle;
 	float			speed_factor;
 	t_camera_mode	mode;
-	bool			move_forward;
-	bool			move_backward;
-	bool			strafe_right;
-	bool			strafe_left;
-	bool			move_upward;
-	bool			move_downward;
-	bool			up_arrow;
-	bool			down_arrow;
-	bool			left_arrow;
-	bool			right_arrow;
+	bool			key_state[KEY_COUNT];
 };
 
 typedef struct s_camera	t_camera;
@@ -68,5 +58,7 @@ void	init_camera(t_camera *camera, float speed_factor);
 void	camera_key_event(t_camera *camera, t_camera_key key, int state);
 void	camera_mouse_event(t_camera *camera, int x, int y);
 void	camera_update(t_camera *camera);
+void	compute_basis_vectors(t_camera *camera,
+							  t_vec3 *strafe, t_vec3 *upward, t_vec3 *backward);
 
 #endif

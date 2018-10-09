@@ -148,6 +148,15 @@ void mat3_set_identity(t_mat3 *m)
 	m->values[2][2] = 1;
 }
 
+t_vec3	mat3_get_column(t_mat3 m, int column)
+{
+	t_vec3	vec;
+	vec.x = m.values[0][column];
+	vec.y = m.values[1][column];
+	vec.z = m.values[2][column];
+	return (vec);
+}
+
 #include <stdio.h>
 void mat3_print(char const *msg, t_mat3 *m)
 {
