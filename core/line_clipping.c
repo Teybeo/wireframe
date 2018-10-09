@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 14:53:45 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/08 19:16:21 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/09 17:19:47 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	clip_point(t_vec2i a, t_vec2i b, t_vec2i window, t_area_code *code_ptr)
 ** Returns 0 when the 2 points have one or more common area (safe discard)
 */
 
-int		clip_line_2D(t_vec2i *a, t_vec2i *b, t_vec2i window)
+int		clip_line_2d(t_vec2i *a, t_vec2i *b, t_vec2i window)
 {
 	t_area_code	code_a;
 	t_area_code	code_b;
@@ -86,5 +86,5 @@ int		clip_line_2D(t_vec2i *a, t_vec2i *b, t_vec2i window)
 
 int		clip_line(t_point *a, t_point *b, t_vec2i window)
 {
-	return (clip_line_2D((t_vec2i*)a, (t_vec2i*)b, window));
+	return (clip_line_2d((t_vec2i *)a, (t_vec2i *)b, window));
 }
