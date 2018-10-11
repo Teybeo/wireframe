@@ -89,7 +89,7 @@ void	renderer_draw(t_renderer rndr)
 	segment_ptr = rndr.map.segment_array.data;
 	compute_transform(&rndr, &model_clip);
 	i = 0;
-	while (i <= rndr.map.segment_array.size)
+	while (i < rndr.map.segment_array.size)
 	{
 		renderer_draw_segment(rndr, segment_ptr[i], model_clip);
 		i++;
