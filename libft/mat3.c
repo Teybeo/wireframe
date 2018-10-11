@@ -111,7 +111,7 @@ t_mat3	mat3_mul2(t_mat3 a, t_mat3 b)
 	while (++i < 3)
 	{
 		column = mat3_get_column(b, i);
-		mat3_mul_vec3X(&a, &column);
+		mat3_mul_vec3_this(&a, &column);
 		res.values[0][i] = column.x;
 		res.values[1][i] = column.y;
 		res.values[2][i] = column.z;
@@ -136,7 +136,7 @@ t_vec3 mat3_mul_vec3(t_mat3 *m, t_vec3 vec) {
 	return result;
 }
 
-void mat3_mul_vec3X(t_mat3 *m, t_vec3 *vec) {
+void mat3_mul_vec3_this(t_mat3 *m, t_vec3 *vec) {
 	t_vec3 tmp = *vec;
 	vec->x = (tmp.x * m->values[0][0] +
 			  tmp.y * m->values[0][1] +

@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 16:10:42 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/09 17:45:01 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/11 15:32:31 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ bool	transform_point(t_renderer r, t_vec4 p, t_point *p_i, t_mat4 model_clip)
 	p.x = p.x * r.size.x + (r.size.x * 0.5f);
 	p.y = -p.y * r.size.y + (r.size.y * 0.5f);
 	p.z = (p.z - 1) * 0.5f;
-	vec4_round2D_point(p, p_i);
+	vec4_round2_point(p, p_i);
 	p_i->z = p.z;
 	return (true);
 }

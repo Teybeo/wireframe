@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   vec3.h                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/11 17:48:09 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/10/11 17:48:09 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef VEC3_H
 # define VEC3_H
 
@@ -30,19 +42,19 @@ struct	s_vec4
 	float w;
 };
 
-struct s_point {
-	int	x;
-	int	y;
-	float z;
-	int	color;
+struct	s_point {
+	int		x;
+	int		y;
+	float	z;
+	int		color;
 };
 
-struct s_vec2i {
+struct	s_vec2i {
 	int x;
 	int y;
 };
 
-struct s_segment {
+struct	s_segment {
 	int		start_idx;
 	int		end_idx;
 };
@@ -51,7 +63,7 @@ typedef struct s_vec3	t_vec3;
 typedef struct s_vec4	t_vec4;
 typedef struct s_point	t_point;
 typedef struct s_vec2i	t_vec2i;
-typedef struct s_segment t_segment;
+typedef struct s_segment	t_segment;
 
 t_vec3	vec3_add(t_vec3 a, t_vec3 b);
 t_vec3	vec3_sub(t_vec3 a, t_vec3 b);
@@ -62,7 +74,7 @@ void	vec4_mul_scalar_this(t_vec4 *vec, float scalar);
 t_vec3	vec3_max(t_vec3 a, t_vec3 b);
 t_vec3	vec3_min(t_vec3 a, t_vec3 b);
 float	vec3_max_axis(t_vec3 a);
-void	vec4_round2D_point(t_vec4 vec, t_point *p);
+void	vec4_round2_point(t_vec4 vec, t_point *p);
 int		color_mix(float factor, int a, int b);
 void	vec3_print(char const *msg, t_vec3 vec);
 

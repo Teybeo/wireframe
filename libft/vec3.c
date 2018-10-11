@@ -73,7 +73,7 @@ t_vec3	vec3_mul_scalar(t_vec3 vec, float scalar)
 	return (res);
 }
 
-void	vec4_round2D_point(t_vec4 vec, t_point *p)
+void	vec4_round2_point(t_vec4 vec, t_point *p)
 {
 	p->x = (int)(vec.x + 0.5f);
 	p->y = (int)(vec.y + 0.5f);

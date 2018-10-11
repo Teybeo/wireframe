@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mat3.h                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/11 17:49:09 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/10/11 17:49:47 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MAT3_H
 # define MAT3_H
 
 # include "vec3.h"
 
-struct s_mat3
+struct	s_mat3
 {
 	float values[3][3];
 };
@@ -21,9 +33,7 @@ t_vec3	mat3_get_column(t_mat3 m, int column);
 t_mat3	mat3_transpose(t_mat3 m);
 void	swap_float(float *a, float *b);
 
-//__attribute__((always_inline)) void mat3_mul_vec3X(t_mat3 *m, t_vec3 *vec);
-void mat3_mul_vec3X(t_mat3 *m, t_vec3 *vec);
-void mat3_print(char const *msg, t_mat3 *m);
-
+void	mat3_mul_vec3_this(t_mat3 *m, t_vec3 *vec);
+void	mat3_print(char const *msg, t_mat3 *m);
 
 #endif
