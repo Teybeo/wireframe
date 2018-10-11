@@ -35,8 +35,7 @@ enum	e_camera_key {
 };
 typedef enum e_camera_key	t_camera_key;
 
-enum	e_camera_mode
-{
+enum	e_camera_mode {
 	CAMERA_FREEFLY,
 	CAMERA_ORBIT
 };
@@ -51,7 +50,6 @@ struct	s_camera {
 	t_camera_mode	mode;
 	bool			key_state[KEY_COUNT];
 };
-
 typedef struct s_camera	t_camera;
 
 void	init_camera(t_camera *camera, float speed_factor);

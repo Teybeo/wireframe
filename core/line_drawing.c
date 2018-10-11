@@ -14,6 +14,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
 
 bool	prepare_draw_line_x(t_point a, t_point b, t_hax_x *start, t_hax_x *incr)
 {
@@ -42,12 +43,16 @@ void	draw_line_x_axis(t_renderer *rndr, t_point a, t_point b)
 	t_hax_x	increment;
 	float	fog_atten;
 	int		i;
-
+	
+	printf("%d, %d\n", a.x, a.y);
+	printf("%d, %d\n", b.x, b.y);
 	if (!prepare_draw_line_x(a, b, &current, &increment))
 		return ;
 	while (current.x != b.x)
 	{
 		i = ((int)current.y * rndr->size.x) + current.x;
+		if (i > rndr->size.x * rndr->size.y || i < 0)
+			printf("%d\n", i);
 		if (rndr->depth_buffer[i] > current.z)
 		{
 			rndr->depth_buffer[i] = current.z;
