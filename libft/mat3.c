@@ -1,7 +1,16 @@
-#include <math.h>
 #include "mat3.h"
+
+#include <math.h>
 #include "vec3.h"
 #include "libft.h"
+
+void mat3_set_identity(t_mat3 *m)
+{
+	ft_memzero(m, 3 * 3, sizeof(float));
+	m->values[0][0] = 1;
+	m->values[1][1] = 1;
+	m->values[2][2] = 1;
+}
 
 t_mat3	mat3_mul2(t_mat3 a, t_mat3 b);
 
@@ -17,6 +26,7 @@ void mat3_set_rotation(float x_angle, float y_angle, t_mat3 *m)
 	mat3_set_y_rotation(&y_rotation, y_angle);
 
 	*m = mat3_mul2(x_rotation, y_rotation);
+//	*m = mat3_mul(x_rotation, y_rotation);
 }
 
 /*
@@ -30,6 +40,7 @@ void mat3_set_x_rotation(t_mat3 *m, float angle) {
 	m->values[2][1] = -sinf(angle);
 	m->values[2][2] =  cosf(angle);
 }
+
 /*
 ** cos, ., -sin
 **   ., .,   .
@@ -51,7 +62,7 @@ void swap_float(float *a, float *b) {
 }
 
 /*
-** T(AB) = T(B)xT(A)
+** T(AB) = T(B) x T(A)
 */
 
 t_mat3 mat3_transpose(t_mat3 m)
@@ -99,7 +110,7 @@ t_mat3	mat3_mul2(t_mat3 a, t_mat3 b)
 	i = -1;
 	while (++i < 3)
 	{
-		column = (t_vec3){b.values[0][i], b.values[1][i], b.values[2][i]};
+		column = mat3_get_column(b, i);
 		mat3_mul_vec3X(&a, &column);
 		res.values[0][i] = column.x;
 		res.values[1][i] = column.y;
@@ -138,14 +149,6 @@ void mat3_mul_vec3X(t_mat3 *m, t_vec3 *vec) {
 	vec->z = (tmp.x * m->values[2][0] +
 			  tmp.y * m->values[2][1] +
 			  tmp.z * m->values[2][2]);
-}
-
-void mat3_set_identity(t_mat3 *m)
-{
-	ft_memzero(m, 3 * 3, sizeof(float));
-	m->values[0][0] = 1;
-	m->values[1][1] = 1;
-	m->values[2][2] = 1;
 }
 
 t_vec3	mat3_get_column(t_mat3 m, int column)

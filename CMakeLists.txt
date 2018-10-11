@@ -13,7 +13,7 @@ add_compile_options(-Wall -Wextra)
 #add_compile_options(-flto)
 
 set(CMAKE_C_FLAGS_DEBUG  "-g3")
-set(CMAKE_C_FLAGS_RELEASE "-g3 -O3 -flto -march=native")
+set(CMAKE_C_FLAGS_RELEASE "-g3 -O2 -flto -march=native")
 #set(CMAKE_C_FLAGS_RELEASE "-g3 -O3 -march=native")
 
 # Backend to use for windowing and events"
