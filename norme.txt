@@ -1,0 +1,158 @@
+Norme: ./core/errors.c
+Norme: ./core/map_loader.c
+Norme: ./core/camera.c
+Norme: ./core/line_clipping.c
+Norme: ./core/map_preprocess.c
+Norme: ./core/renderer_update.c
+Norme: ./core/map_reader.c
+Norme: ./core/renderer.c
+Norme: ./core/line_drawing.c
+Error (line 40): declarations must be followed by one empty line in draw_line_x_axis
+Error (line 46): spaces at the end of line
+Norme: ./libft/array.c
+Norme: ./libft/ft_is_space.c
+Norme: ./libft/ft_memchr.c
+Norme: ./libft/ft_memcpy.c
+Norme: ./libft/ft_putendl.c
+Norme: ./libft/ft_memzero.c
+Norme: ./libft/ft_strlen.c
+Norme: ./libft/ft_realloc.c
+Norme: ./libft/ft_atoi.c
+Norme: ./libft/ft_strndup.c
+Norme: ./libft/get_next_line.c
+Norme: ./libft/rgb.c
+Norme: ./libft/vector.c
+Norme: ./libft/vec3.c
+Error: 11 functions in the file
+Error: 42 header not at top of the file
+Norme: ./libft/mat3.c
+Error: global scope bad aligned
+Error: 12 functions in the file
+Error: 42 header not at top of the file
+Error (line 7): Space before function name
+Error (line 15): declaration of mat3_mul2 forbidden in .c
+Error (line 17): Space before function name
+Error (line 24): Empty line
+Error (line 27): Empty line
+Error (line 29): C++ comment
+Error (line 30, col 0): no empty line before block
+Error (line 37): Space before function name
+Error (line 37): bad spacing before mat3_set_x_rotation
+Error (line 37, col 49): no newline before block
+Error (line 38, col 18): bad spacing
+Error (line 39, col 18): bad spacing
+Error (line 41, col 18): bad spacing
+Error (line 49): Space before function name
+Error (line 49): bad spacing before mat3_set_y_rotation
+Error (line 49, col 49): no newline before block
+Error (line 50, col 18): bad spacing
+Error (line 51, col 18): bad spacing
+Error (line 53, col 18): bad spacing
+Error (line 56): Space before function name
+Error (line 56, col 36): no newline before block
+Error (line 68): Space before function name
+Error (line 83): declarations in mat3_mul are bad aligned
+Error (line 83): Space before function name
+Error (line 101, col 8): missing parentheses in return statement
+Error (line 104): declarations in mat3_mul2 are bad aligned
+Error (line 119, col 8): missing parentheses in return statement
+Error (line 122): Space before function name
+Error (line 122): declarations must be followed by one empty line in mat3_mul_vec3
+Error (line 122, col 44): no newline before block
+Error (line 123, col 8): result is instanciated during declaration
+Error (line 127): Empty line
+Error (line 131): Empty line
+Error (line 135): Empty line
+Error (line 136, col 8): missing parentheses in return statement
+Error (line 139): Space before function name
+Error (line 139): declarations must be followed by one empty line in mat3_mul_vec3_this
+Error (line 139, col 48): no newline before block
+Error (line 140, col 8): tmp is instanciated during declaration
+Error (line 142): must begin only by tabulations
+Error (line 143): must begin only by tabulations
+Error (line 144): Empty line
+Error (line 146): must begin only by tabulations
+Error (line 147): must begin only by tabulations
+Error (line 148): Empty line
+Error (line 150): must begin only by tabulations
+Error (line 151): must begin only by tabulations
+Error (line 154): declarations must be followed by one empty line in mat3_get_column
+Error (line 163): #include <stdio.h> should be before line 7
+Error (line 164): Space before function name
+Error (line 164): bad spacing before mat3_print
+Error (line 167): line has 91 characters
+Error (line 168): line has 91 characters
+Error (line 169): line has 91 characters
+Norme: ./libft/mat4.c
+Error: global scope bad aligned
+Error: 10 functions in the file
+Error: 42 header not at top of the file
+Error: file must end with a single empty line
+Error (line 20): Empty line
+Error (line 25): Empty line
+Error (line 30): Empty line
+Error (line 44): declarations must be followed by one empty line in mat4_mul_vec
+Error (line 46, col 8): temp is instanciated during declaration
+Error (line 51): Empty line
+Error (line 56): Empty line
+Error (line 61): Empty line
+Error (line 68): Space before function name
+Error (line 88): declarations in mat4_mul_this are bad aligned
+Error (line 88): Space before function name
+Error (line 110): declarations in mat4_mul are bad aligned
+Error (line 110): Space before function name
+Error (line 129, col 8): missing parentheses in return statement
+Error (line 132): set_perspective have 5 parameters
+Error (line 132): Space before function name
+Error (line 132): declarations in set_perspective must be at the top of the function
+Error (line 132): bad spacing after set_perspective
+Error (line 132): line has 92 characters
+Error (line 134): bad indentation
+Error (line 134): C++ comment
+Error (line 135, col 7): distance is instanciated during declaration
+Error (line 136, col 7): z_factor is instanciated during declaration
+Error (line 137, col 7): z_translation is instanciated during declaration
+Error (line 147): preprocessor block must be followed by one empty line
+Error (line 148): set_orthographic have 5 parameters
+Error (line 148): declarations must be followed by one empty line in set_orthographic
+Error (line 148): bad spacing before set_orthographic
+Error (line 148): bad spacing after set_orthographic
+Error (line 148): line has 88 characters
+Error (line 148, col 60): zNear not unixcase
+Error (line 148, col 73): zFar not unixcase
+Error (line 150, col 7): right is instanciated during declaration
+Error (line 151, col 7): left is instanciated during declaration
+Error (line 152, col 7): top is instanciated during declaration
+Error (line 153, col 7): bottom is instanciated during declaration
+Error (line 155, col 18): bad spacing
+Error (line 156, col 18): bad spacing
+Error (line 158, col 19): space after negative
+Error (line 159, col 19): space after negative
+Error (line 160, col 19): space after negative
+Error (line 162): preprocessor block must be followed by one empty line
+Error (line 163): set_orthographic have 5 parameters
+Error (line 163): declarations must be followed by one empty line in set_orthographic
+Error (line 163): bad spacing before set_orthographic
+Error (line 163): line has 88 characters
+Error (line 163, col 60): zNear not unixcase
+Error (line 163, col 73): zFar not unixcase
+Error (line 165, col 7): right is instanciated during declaration
+Error (line 166, col 7): top is instanciated during declaration
+Error (line 168, col 16): bad spacing
+Error (line 168, col 19): bad spacing
+Error (line 169, col 16): bad spacing
+Error (line 169, col 19): bad spacing
+Error (line 170, col 16): bad spacing
+Norme: ./sdl_gui/main.c
+Norme: ./sdl_gui/sdl_gui.c
+Warning: /Users/tdarchiv/42/wireframe/sdl_gui/sdl_gui.c may not compile or is invalid for some reasons.
+Norme: ./mlx_gui/main.c
+Norme: ./mlx_gui/mlx_gui.c
+Error: 10 functions in the file
+Error: 42 header not at top of the file
+Error (line 8): declaration of get_camera_key forbidden in .c
+Error (line 9): declaration of get_renderer_key forbidden in .c
+Error (line 66): C++ comment
+Error (line 102): Empty line
+Error (line 104): Empty line
+Error (line 112): C++ comment
