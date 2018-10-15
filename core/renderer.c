@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 16:10:42 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/15 14:52:18 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/15 15:20:10 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	renderer_init(t_renderer *r, void *pixels, t_map map, t_vec2i size)
 	r->depth_buffer = malloc(sizeof(float) * size.x * size.y);
 	r->use_perspective = 1;
 	r->use_fog = 0;
-	set_perspective(&r->projection, 1, 100, size.x / size.y, r->fov_angle);
+	r->projection = get_perspective(1, 100, size.x / size.y, r->fov_angle);
 	speed_factor = vec3_max_axis(vec3_sub(r->map.max, r->map.min)) / 100;
 	init_camera(&r->camera, speed_factor);
 }

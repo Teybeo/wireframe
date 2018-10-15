@@ -41,9 +41,9 @@ void	renderer_update(t_renderer *r)
 	aspect_ratio = (float)r->size.y / r->size.x;
 	camera_update(&r->camera);
 	if (r->use_perspective)
-		set_perspective(&r->projection, 1, 100, aspect_ratio, r->fov_angle);
+		r->projection = get_perspective(1, 100, aspect_ratio, r->fov_angle);
 	else
-		set_orthographic(&r->projection, r->size.x, r->size.y, -1000, 1000);
+		r->projection = get_orthographic(r->size.x, r->size.y, -1000, 1000);
 	duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
 	duration *= 1000;
 	elapsed_time += duration;
