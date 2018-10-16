@@ -43,9 +43,7 @@ void	draw_line_x_axis(t_renderer *rndr, t_point a, t_point b)
 	t_hax_x	increment;
 	float	fog_atten;
 	int		i;
-	
-//	printf("%d, %d\n", a.x, a.y);
-//	printf("%d, %d\n", b.x, b.y);
+
 	if (!prepare_draw_line_x(a, b, &current, &increment))
 		return ;
 	while (current.x != b.x)
