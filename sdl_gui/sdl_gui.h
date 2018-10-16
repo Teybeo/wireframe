@@ -11,7 +11,6 @@ struct s_sdl_app {
 	SDL_Window		*window;
 	SDL_Renderer	*sdl_renderer;
 	SDL_Texture		*texture;
-	uint32_t		*bg_texture;
 	uint32_t		*pixels;
 	t_renderer		renderer;
 	t_vec2i			texture_size;

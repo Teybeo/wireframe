@@ -33,24 +33,12 @@ void	renderer_event(t_renderer *renderer, t_renderer_key key)
 
 void	renderer_update(t_renderer *r)
 {
-	static clock_t	timestamp = 0;
-	static float	elapsed_time = 0;
-	float			duration;
-	float			aspect_ratio;
+	float	aspect_ratio;
 
 	aspect_ratio = (float)r->size.y / r->size.x;
-	camera_update(&r->camera);
 	if (r->use_perspective)
 		r->projection = get_perspective(1, 100, aspect_ratio, r->fov_angle);
 	else
 		r->projection = get_orthographic(r->size.x, r->size.y, -1000, 1000);
-	duration = (clock() - timestamp) / (float)CLOCKS_PER_SEC;
-	duration *= 1000;
-	elapsed_time += duration;
-	if (elapsed_time >= 20)
-	{
-		printf("Frametime: %.0f ms, %.2f fps\n", duration, 1000 / duration);
-		elapsed_time = 0;
-	}
-	timestamp = clock();
+	camera_update(&r->camera);
 }
