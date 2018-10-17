@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/05 15:53:06 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/09/27 16:31:56 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/17 17:44:55 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,20 @@
 # define MLX_KEY_DIVIDE 75
 # define MLX_KEY_MAX 256
 
-struct	s_mlx_context
+typedef struct	s_mlx_context
 {
 	void		*mlx_ptr;
 	void		*win_ptr;
 	void		*texture;
 	t_renderer	renderer;
 	bool		is_mouse_captured;
-};
-typedef struct s_mlx_context	t_mlx_context;
+}				t_mlx_context;
 
-void	init_mlx(t_mlx_context *ctx, t_map map);
+void			init_mlx(t_mlx_context *ctx, t_map map);
+
+t_camera_key	get_camera_key(int keycode);
+t_renderer_key	get_renderer_key(int keycode);
+int				keydown_event(int keycode, void *param);
+int				keyup_event(int keycode, void *param);
 
 #endif

@@ -17,8 +17,8 @@ set(CMAKE_C_FLAGS_RELEASE "-g3 -O2 -flto -march=native")
 #set(CMAKE_C_FLAGS_RELEASE "-g3 -O3 -march=native")
 
 # Backend to use for windowing and events"
-#set(GuiBackend "MLX")
-set(GuiBackend "SDL")
+set(GuiBackend "MLX")
+#set(GuiBackend "SDL")
 
 # AdressSanitizer (linux/mac only)
 set(USE_ASAN OFF)

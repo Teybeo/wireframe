@@ -1,6 +1,7 @@
 target_sources(fdf PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/main.c"
         "${CMAKE_CURRENT_LIST_DIR}/mlx_gui.c"
+        "${CMAKE_CURRENT_LIST_DIR}/mlx_keyboard.c"
         )
 set(libpath "${CMAKE_CURRENT_LIST_DIR}/../minilibx_macos/")
 find_library(MLX_LIB mlx PATHS ${libpath} NO_DEFAULT_PATH)
