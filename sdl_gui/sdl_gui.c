@@ -1,13 +1,18 @@
-#include "sdl_gui.h"
-#include <SDL.h>
-#include <zconf.h>
-#include <array.h>
-#include <renderer.h>
-#include <map_reader.h>
-#include <time.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sdl_gui.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/17 15:06:44 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/10/17 15:34:01 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-t_camera_key get_camera_key(SDL_Scancode scancode);
-t_renderer_key get_renderer_key(SDL_Scancode scancode);
+#include "sdl_gui.h"
+
+#include <SDL.h>
 
 void	sdl_init(t_sdl_app *ctx, t_map map)
 {
@@ -47,7 +52,8 @@ void	sdl_draw(t_sdl_app *ctx)
 {
 	SDL_RenderClear(ctx->sdl_renderer);
 	renderer_draw(ctx->renderer);
-	SDL_UpdateTexture(ctx->texture, NULL, ctx->renderer.pixels, ctx->texture_size.x * sizeof(Uint32));
+	SDL_UpdateTexture(ctx->texture, NULL, ctx->renderer.pixels,
+			ctx->texture_size.x * sizeof(Uint32));
 	SDL_RenderCopy(ctx->sdl_renderer, ctx->texture, NULL, NULL);
 	SDL_RenderPresent(ctx->sdl_renderer);
 }
@@ -78,8 +84,7 @@ void	sdl_event(t_sdl_app *ctx)
 
 	while (SDL_PollEvent(&event))
 	{
-		if (event.type == SDL_QUIT)
-			ctx->is_running = false;
+		ctx->is_running = !(event.type == SDL_QUIT);
 		if (event.type == SDL_KEYDOWN)
 		{
 			camera_key = get_camera_key(event.key.keysym.scancode);
@@ -91,52 +96,10 @@ void	sdl_event(t_sdl_app *ctx)
 			SDL_SetRelativeMouseMode(ctx->is_mouse_captured);
 		}
 		if (event.type == SDL_KEYUP)
-		{
-			camera_key = get_camera_key(event.key.keysym.scancode);
-			camera_key_event(&ctx->renderer.camera, camera_key, 0);
-		}
-		if (event.type == SDL_MOUSEMOTION)
-		{
-			if (ctx->is_mouse_captured)
-				camera_mouse_event(&ctx->renderer.camera, event.motion.xrel, event.motion.yrel);
-		}
+			camera_key_event(&ctx->renderer.camera,
+					get_camera_key(event.key.keysym.scancode), 0);
+		if (event.type == SDL_MOUSEMOTION && ctx->is_mouse_captured)
+			camera_mouse_event(&ctx->renderer.camera, event.motion.xrel,
+					event.motion.yrel);
 	}
-}
-
-t_camera_key get_camera_key(SDL_Scancode scancode)
-{
-	t_camera_key table[SDL_NUM_SCANCODES] = {0};
-
-	table[SDL_SCANCODE_W] = KEY_FORWARD;
-	table[SDL_SCANCODE_S] = KEY_BACKWARD;
-	table[SDL_SCANCODE_A] = KEY_LEFT;
-	table[SDL_SCANCODE_D] = KEY_RIGHT;
-	table[SDL_SCANCODE_Q] = KEY_UPWARD;
-	table[SDL_SCANCODE_Z] = KEY_DOWNWARD;
-	table[SDL_SCANCODE_UP] = KEY_UP_ARROW;
-	table[SDL_SCANCODE_DOWN] = KEY_DOWN_ARROW;
-	table[SDL_SCANCODE_LEFT] = KEY_LEFT_ARROW;
-	table[SDL_SCANCODE_RIGHT] = KEY_RIGHT_ARROW;
-	table[SDL_SCANCODE_C] = KEY_CAMERA_MODE_TOGGLE;
-	table[SDL_SCANCODE_R] = KEY_CAMERA_RESET;
-	table[SDL_SCANCODE_P] = KEY_CAMERA_PRINT_POS;
-
-	return table[scancode];
-}
-
-t_renderer_key get_renderer_key(SDL_Scancode scancode)
-{
-	if (scancode == SDL_SCANCODE_KP_PLUS)
-		return KEY_SCALE_UP;
-	if (scancode == SDL_SCANCODE_KP_MINUS)
-		return KEY_SCALE_DOWN;
-	if (scancode == SDL_SCANCODE_KP_MULTIPLY)
-		return KEY_FOV_UP;
-	if (scancode == SDL_SCANCODE_KP_DIVIDE)
-		return KEY_FOV_DOWN;
-	if (scancode == SDL_SCANCODE_T)
-		return KEY_PROJECTION_TOOGLE;
-	if (scancode == SDL_SCANCODE_F)
-		return KEY_FOG_TOOGLE;
-	return KEY_RUNKNOWN;
 }

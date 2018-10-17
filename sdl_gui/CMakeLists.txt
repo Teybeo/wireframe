@@ -1,6 +1,7 @@
 target_sources(fdf PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/main.c"
-        "${CMAKE_CURRENT_LIST_DIR}/sdl_gui.c")
+        "${CMAKE_CURRENT_LIST_DIR}/sdl_gui.c"
+        "${CMAKE_CURRENT_LIST_DIR}/sdl_keyboard.c")
 
 # Add SDL2 path to list of searched paths for packages
 set(CMAKE_PREFIX_PATH "D:/Dev/Lib/SDL2-2.0.8")
