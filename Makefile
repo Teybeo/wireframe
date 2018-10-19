@@ -54,16 +54,12 @@ INCLUDES += $(MLX_INCLUDES)
 LIBS += $(MLX_LIBS)
 endif
 
-mlx sdl: debug build
-
-debug:
-	@echo $(OBJS)
-	@echo $(INCLUDES)
-	@echo $(LIBS)
+mlx sdl: build
 
 build: $(OBJS)
 	make -C ./libft
 	gcc -o $(NAME) $(OBJS) $(INCLUDES) $(LIBS)
+	touch build
 
 # $^ is the dependencies of the rule
 # $@ is the name of the rule
@@ -76,6 +72,7 @@ clean :
 
 fclean : clean
 	make fclean -C ./libft
+	rm -f build
 	rm -f $(NAME)
 
 re : fclean $(NAME)
