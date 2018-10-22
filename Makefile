@@ -39,11 +39,6 @@ SDL_OBJS = $(SDL_SRCS:.c=.o)
 SDL_CFLAGS = $(shell sdl2-config --cflags)
 SDL_LDFLAGS = $(shell sdl2-config --libs)
 
-all: $(NAME)
-
-# make fdf
-$(NAME): build
-
 ifeq ($(MAKECMDGOALS), sdl)
 OBJS += $(SDL_OBJS)
 INCLUDES += $(SDL_CFLAGS)
@@ -54,12 +49,13 @@ INCLUDES += $(MLX_INCLUDES)
 LIBS += $(MLX_LIBS)
 endif
 
-mlx sdl: build
+all: $(NAME)
 
-build: $(OBJS)
+mlx sdl: $(NAME)
+
+$(NAME): $(OBJS)
 	make -C ./libft
 	gcc -o $(NAME) $(OBJS) $(INCLUDES) $(LIBS)
-	touch build
 
 # $^ is the dependencies of the rule
 # $@ is the name of the rule
@@ -67,12 +63,11 @@ build: $(OBJS)
 	gcc $(FLAGS) -c $^ $(INCLUDES) -o $@
 
 clean :
-	make fclean -C ./libft
+	make clean -C ./libft
 	rm -f $(OBJS) $(MLX_OBJS) $(SDL_OBJS)
 
 fclean : clean
 	make fclean -C ./libft
-	rm -f build
 	rm -f $(NAME)
 
 re : fclean $(NAME)
