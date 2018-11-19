@@ -109,6 +109,8 @@ t_array	load_text_lines(char const *filepath)
 			array_append(&line_array, &line, 1);
 		i++;
 	}
+	if (line_array.size == 0)
+		exit_with_message(ERROR_EMPTY_FILE);
 	return (line_array);
 }
 
