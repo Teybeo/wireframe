@@ -49,8 +49,6 @@ void	draw_line_x_axis(t_renderer *rndr, t_point a, t_point b)
 	while (current.x != b.x)
 	{
 		i = ((int)current.y * rndr->size.x) + current.x;
-		if (i > rndr->size.x * rndr->size.y || i < 0)
-			printf("%d\n", i);
 		if (rndr->depth_buffer[i] > current.z)
 		{
 			rndr->depth_buffer[i] = current.z;

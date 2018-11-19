@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 17:58:39 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/17 17:58:39 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/19 15:17:33 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,13 @@ int				key_event(int keycode, int state, void *param)
 	renderer_key = get_renderer_key(keycode);
 	if (renderer_key != KEY_RUNKNOWN && state == 1)
 		renderer_event(&ctx->renderer, renderer_key);
-	if (keycode == MLX_KEY_ESC && state == 1)
+	if (keycode == MLX_KEY_CURSOR && state == 1)
 	{
 		ctx->is_mouse_captured = !ctx->is_mouse_captured;
 		mlx_set_relative_mouse_mode(ctx->win_ptr, ctx->is_mouse_captured);
 	}
+	if (keycode == MLX_KEY_ESC)
+		exit(0);
 	return (0);
 }
 
