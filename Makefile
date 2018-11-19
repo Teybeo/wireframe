@@ -13,6 +13,7 @@ SRCS += core/line_drawing.c
 OBJS =  $(SRCS:.c=.o)
 
 FLAGS = -Wall -Wextra -Werror
+FLAGS += -O2 -march=native -flto
 
 LIBS = -l ft -L libft
 INCLUDES = -I libft/ -I core/
@@ -55,6 +56,7 @@ mlx sdl: $(NAME)
 
 $(NAME): $(OBJS)
 	make -C ./libft
+	make -C ./minilibx_macos
 	gcc -o $(NAME) $(OBJS) $(INCLUDES) $(LIBS)
 
 # $^ is the dependencies of the rule
@@ -64,10 +66,12 @@ $(NAME): $(OBJS)
 
 clean :
 	make clean -C ./libft
+	make clean -C ./minilibx_macos
 	rm -f $(OBJS) $(MLX_OBJS) $(SDL_OBJS)
 
 fclean : clean
 	make fclean -C ./libft
+	make fclean -C ./minilibx_macos
 	rm -f $(NAME)
 
 re : fclean $(NAME)

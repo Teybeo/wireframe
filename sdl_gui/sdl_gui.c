@@ -70,7 +70,6 @@ void	sdl_update(t_sdl_app *context)
 	elapsed_time += duration;
 	if (elapsed_time >= 20)
 	{
-		printf("Frametime: %.0f ms, %.2f fps\n", duration, 1000 / duration);
 		elapsed_time = 0;
 	}
 	timestamp = clock();

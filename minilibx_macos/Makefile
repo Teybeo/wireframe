@@ -14,7 +14,9 @@ $(NOM):	$(OBJ)
 	ranlib $(NOM)
 
 clean:
-	rm -f $(NOM) $(OBJ) *~
-	rm -f mlx_app
+	rm -f $(OBJ) *~
 
-re: clean all
+fclean: clean
+	rm -f $(NOM)
+
+re: fclean all

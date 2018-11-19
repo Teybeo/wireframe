@@ -23,6 +23,7 @@ FILES += mat4_projections.c
 OBJS = $(FILES:.c=.o)
 
 FLAGS = -Wall -Wextra -Werror
+FLAGS += -O2 -march=native -flto
 
 all: $(NAME)
 
