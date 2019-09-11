@@ -1,0 +1,15 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: macOS-10.14
+    
+    steps:
+    - uses: actions/checkout@master
+    - name: make
+      run: make
+    - name: make check
+      run: ./fdf maps/mars.fdf
